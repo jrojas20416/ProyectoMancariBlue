@@ -1,0 +1,399 @@
+﻿@{
+    ViewData["Title"] = "Empleados";
+}
+@functions {
+    string NombreCompleto(string n, string a)
+    {
+        return n + " " + a;
+
+    }
+
+}
+<div class="app-title">
+    <div>
+        <h1><i class="fa fa-th-list" style="margin-right: 10px;"></i>Administración de Empleados</h1>
+        <p>Empleados</p>
+        <br>
+        <a asp-action="CrearEmpleado" asp-controller="Empleado" class="btn btn-primary"><i class="fa fa-plus" aria-hidden="true"></i>Crear Empleado</a>
+    </div>
+    <ul class="app-breadcrumb breadcrumb side">
+        <li class="breadcrumb-item"><i class="fa fa-home fa-lg"></i></li>
+        <li class="breadcrumb-item">Empleados</li>
+    </ul>
+</div>
+<div class="row" style="flex-direction:column">
+    <div class="col-md-14">
+        <div class="tile">
+            <div class="tile-body">
+                <div class="table-responsive">
+                    <table class="table table-hover table-bordered" id="templeados">
+                        <thead>
+                            <tr>
+                                <th>
+                                    Cédula
+                                </th>
+                                <th>
+                                    Nombre Completo
+                                </th>
+                                <th>
+                                    Puesto
+                                </th>
+                                <th>
+                                    Fecha de Ingreso
+                                </th>
+                                <th>
+                                    Estado
+                                </th>
+                                <th>
+                                    Acciones
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    1-1492-0416
+                                </td>
+                                <td>
+                                    Josue Rojas Chaves
+                                </td>
+                                <td>
+                                    Administrador
+                                </td>
+                                <td>
+                                    02/04/2024
+                                </td>
+                                <td>
+                                    <span class="badge badge-success">Activo</span>
+                                </td>
+                                <td>
+
+                                    <a class="btn btn-info" style="color: white" id="generarPlanillaBtn">Generar Planilla</a>
+                                    <a class="btn btn-info" style="color: white" id="generarAguinaldoBtn">Generar Aguinaldo</a>
+                                    <a class="btn btn-info" asp-action="GenerarLiquidacion" asp-controller="Empleado">Generar Liquidación</a>
+
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    1-1492-0416
+                                </td>
+                                <td>
+                                    Josue Rojas Chaves
+                                </td>
+                                <td>
+                                    Administrador
+                                </td>
+                                <td>
+                                    02/04/2024
+                                </td>
+                                <td>
+                                    <span class="badge badge-success">Activo</span>
+                                </td>
+                                <td>
+                                    <a class="btn btn-info" asp-action="GenerarPlanilla" asp-controller="Empleado">Generar Planilla</a>
+                                    <a class="btn btn-info" asp-action="GenerarAguinaldo" asp-controller="Empleado">Generar Aguinaldo</a>
+                                    <a class="btn btn-info" asp-action="GenerarLiquidacion" asp-controller="Empleado">Generar Liquidación</a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="generarPlanillaModal" tabindex="-1" role="dialog" aria-labelledby="generarPlanillaModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="generarPlanillaModalLabel">Generar Planilla</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <table class="table">
+                    <tbody>
+                        <tr>
+                            <td>Nombre:</td>
+                            <td>Josue Rojas Chaves</td>
+                        </tr>
+                        <tr>
+                            <td>Puesto:</td>
+                            <td>Administrador</td>
+                        </tr>
+                        <tr>
+                            <td>Fecha Ingreso:</td>
+                            <td>02/04/2024</td>
+                        </tr>
+                        <tr>
+                            <td>Antigüedad (Años):</td>
+                            <td>2</td>
+                        </tr>
+                        <tr>
+                            <td>Salario:</td>
+                            <td>$1,800</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <!-- Divisor -->
+                <hr>
+
+                <!-- Segunda tabla -->
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Patrono</th>
+                            <th>Salario Bruto</th>
+                            <th>CCSS (9.67%)</th>
+                            <th>LPT (1%)</th>
+                            <th>Total Deducciones</th>
+                            <th>Salario Neto</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>3-101-677745</td>
+                            <td>₡900.0000</td>
+                            <td>₡87.030</td>
+                            <td>₡9.000</td>
+                            <td>₡96.030</td>
+                            <td>$803.970</td>
+                        </tr>
+                        <tr>
+                            <td>3-101-677745</td>
+                            <td>₡900.0000</td>
+                            <td>₡87.030</td>
+                            <td>₡9.000</td>
+                            <td>₡96.030</td>
+                            <td>$803.970</td>
+                        </tr>
+                        <tr>
+                            <td>3-101-677745</td>
+                            <td>₡900.0000</td>
+                            <td>₡87.030</td>
+                            <td>₡9.000</td>
+                            <td>₡96.030</td>
+                            <td>$803.970</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Regresar</button>
+                <button type="button" class="btn btn-primary" onclick="imprimirPagina()">Imprimir</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="generarAguinaldoModal" tabindex="-1" role="dialog" aria-labelledby="generarAguinaldoModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="generarAguinaldoModal">Generar Aguinaldo</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <table class="table">
+                    <tbody>
+                        <tr>
+                            <td>Nombre:</td>
+                            <td>Josue Rojas Chaves</td>
+                        </tr>
+                        <tr>
+                            <td>Puesto:</td>
+                            <td>Administrador</td>
+                        </tr>
+                        <tr>
+                            <td>Fecha Ingreso:</td>
+                            <td>02/04/2024</td>
+                        </tr>
+                        <tr>
+                            <td>Antigüedad (Años):</td>
+                            <td>2</td>
+                        </tr>
+                        <tr>
+                            <td>Salario:</td>
+                            <td>₡900.0000</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <!-- Divisor -->
+                <hr>
+                <div style="display: flex;">
+                <!-- Segunda tabla -->
+                <table class="table" style="flex: 1;">
+                    <thead>
+                        <tr>
+                            <th>Mes</th>
+                            <th>Salario Bruto</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Primera sección de tres filas -->
+                        <tr>
+                            <td>Diciembre 2023</td>
+                            <td>₡900.0000</td>
+                        </tr>
+                        <tr>
+                            <td>Enero 2024</td>
+                            <td>₡900.0000</td>
+                        </tr>
+                        <tr>
+                            <td>Febrero 2024</td>
+                            <td>₡900.0000</td>
+                        </tr>
+                        <tr>
+                            <td>Marzo 2024</td>
+                            <td>₡900.0000</td>
+                        </tr>
+                        <tr>
+                            <td>Abril 2024</td>
+                            <td>₡900.0000</td>
+                        </tr>
+                        <tr>
+                            <td>Mayo 2024</td>
+                            <td>₡900.0000</td>
+                        </tr>
+                    </tbody>
+
+                </table>
+                <table class="table" style="flex: 1;">
+                        <thead>
+                            <tr>
+                                <th>Mes</th>
+                                <th>Salario Bruto</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        <!-- Segunda sección de tres filas -->
+                        <tr>
+                            <td>Junio 2024</td>
+                            <td>₡900.0000</td>
+                        </tr>
+                        <tr>
+                            <td>Julio 2024</td>
+                            <td>₡900.0000</td>
+                        </tr>
+                        <tr>
+                            <td>Agosto 2024</td>
+                            <td>₡900.0000</td>
+                        </tr>
+                        <tr>
+                            <td>Septiembre 2024</td>
+                            <td>₡900.0000</td>
+                        </tr>
+                        <tr>
+                            <td>Octubre 2024</td>
+                            <td>₡900.0000</td>
+                        </tr>
+                        <tr>
+                            <td>Noviembre 2024</td>
+                            <td>₡900.0000</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+                <hr>
+                <!-- Segunda tabla -->
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Total Salarios</th>
+                            <th>Total Aguinaldo</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>₡10.800.0000</td>
+                            <td>₡900.0000</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Regresar</button>
+                <button type="button" class="btn btn-primary" onclick="imprimirPagina()">Imprimir</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts {
+    <script src="~/js/plugins/jquery.datatables.min.js"></script>
+    <script src="~/js/plugins/datatables.bootstrap.min.js"></script>
+    <script type="text/javascript">$('#templeados').DataTable();</script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <!-- SweetAlert2 JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/11.2.0/sweetalert2.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('.cambiar-estado-btn').click(function (e) {
+                e.preventDefault();
+
+                var id = $(this).data('id');
+
+                // Mostrar confirmación con SweetAlert2
+                Swal.fire({
+                    title: 'Confirmación',
+                    text: '¿Estás seguro de que deseas cambiar el estado?',
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonText: 'Sí',
+                    cancelButtonText: 'No'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // Realizar la llamada AJAX si se confirma la acción
+                        $.ajax({
+                            url: '@Url.Action("Index", "Empleado")',
+                            type: 'GET',
+                            success: function (response) {
+                                // Mostrar mensaje de éxito con SweetAlert2
+                                Swal.fire('Éxito', 'El estado ha sido cambiado correctamente.', 'success').then(function () {
+                                    // Recargar la página
+                                    location.reload();
+                                });
+                            },
+                            error: function (xhr, status, error) {
+                                // Mostrar mensaje de error con SweetAlert2
+                                Swal.fire('Error', 'Ha ocurrido un error al cambiar el estado.', 'error');
+                                console.error('Error:', error);
+                            }
+                        });
+                    }
+                });
+            });
+        });
+    </script>
+    <script>
+        $(document).ready(function () {
+            $('#generarPlanillaBtn').click(function () {
+                $('#generarPlanillaModal').modal('show');
+            });
+        });
+    </script>
+    <script>
+        $(document).ready(function () {
+            $('#generarAguinaldoBtn').click(function () {
+                $('#generarAguinaldoModal').modal('show');
+            });
+        });
+    </script>
+    <script>
+        function imprimirPagina() {
+            window.print();
+        }
+    </script>
+}
+
+

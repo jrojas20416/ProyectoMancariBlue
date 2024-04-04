@@ -1,0 +1,206 @@
+﻿@{
+    ViewData["Title"] = "Empleados";
+}
+@functions {
+    string NombreCompleto(string n, string a)
+    {
+        return n + " " + a;
+
+    }
+
+}
+<div class="app-title">
+    <div>
+        <h1><i class="fa fa-th-list" style="margin-right: 10px;"></i>Administración de Empleados</h1>
+        <p>Empleados</p>
+        <br>
+        <a asp-action="CrearEmpleado" asp-controller="Empleado" class="btn btn-primary"><i class="fa fa-plus" aria-hidden="true"></i>Crear Empleado</a>
+    </div>
+    <ul class="app-breadcrumb breadcrumb side">
+        <li class="breadcrumb-item"><i class="fa fa-home fa-lg"></i></li>
+        <li class="breadcrumb-item">Empleados</li>
+    </ul>
+</div>
+<div class="row" style="flex-direction:column">
+        <div class="col-md-14">
+            <div class="tile">
+                <div class="tile-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover table-bordered" id="templeados">
+                            <thead>
+                                <tr>
+                                <th>
+                                   Cédula
+                                </th>
+                                    <th>
+                                        Nombre Completo
+                                    </th>
+                                    <th>
+                                        Correo
+                                    </th>
+
+                                    <th>
+                                        Puesto
+                                    </th>
+                                    <th>
+                                        Fecha de Ingreso
+                                    </th>
+                                <th >
+                                    Vacaciones
+                                </th>
+                                <th>
+                                    Estado
+                                </th>
+                                    <th>
+                                       Acciones
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                    <tr>
+                                        <td>
+                                            1-1492-0416
+                                        </td>
+                                        <td>
+                                            Josue Rojas Chaves
+                                        </td>
+
+                                        <td>
+                                           svcrove@outlook.com
+                                        </td>
+                                        <td>
+                                            Administrador
+                                        </td>
+                                <td>
+                                    02/04/2024
+                                </td>
+                                <td style="text-align:center">
+                                    <i class="fa fa-exclamation-circle"  aria-hidden="true"></i>
+                                </td>
+                                <td>
+                                    <span class="badge badge-success">Activo</span>
+                                </td>
+                                        <td>
+                                    <a class="btn btn-primary" asp-action="EditarEmpleado" asp-controller="Empleado">Editar</a>
+                                    <a class="btn btn-info" asp-action="VerEmpleado" sp-controller="Empleado">Detalle</a>
+                                                <a class="btn btn-danger cambiar-estado-btn" href="#">Desactivar</a>
+                                            
+                                        </td>
+                                    </tr>
+                            <tr>
+                                <td>
+                                    1-1492-0416
+                                </td>
+                                <td>
+                                    Josue Rojas Chaves
+                                </td>
+
+                                <td>
+                                    svcrove@outlook.com
+                                </td>
+                                <td>
+                                    Administrador
+                                </td>
+                                <td>
+                                    02/04/2024
+                                </td>
+                                <td style="text-align:center">
+                                    <i class="fa fa-check-circle" aria-hidden="true"></i>
+                                </td>
+                                <td>
+                                    <span class="badge badge-danger">Inactivo</span>
+                                </td>
+                                <td>
+                                    <a class="btn btn-primary" asp-action="EditarEmpleado" asp-controller="Empleado">Editar</a>
+                                    <a class="btn btn-info" asp-action="VerEmpleado" sp-controller="Empleado">Detalle</a>
+                                    <a class="btn btn-success cambiar-estado-btn" href="#">Activar</a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    1-1492-0416
+                                </td>
+                                <td>
+                                    Josue Rojas Chaves
+                                </td>
+
+                                <td>
+                                    svcrove@outlook.com
+                                </td>
+                                <td>
+                                    Administrador
+                                </td>
+                                <td>
+                                    02/04/2024
+                                </td>
+                                <td style="text-align:center">
+                                    <i class="fa fa-check-circle" aria-hidden="true"></i>
+                                </td>
+                                <td >
+                                    <span class="badge badge-success">Activo</span>
+                                </td>
+
+                                <td>
+                                    <a class="btn btn-primary" asp-action="EditarEmpleados" asp-controller="Empleados">Editar</a>
+                                    <a class="btn btn-info" asp-action="VerEmpleados" sp-controller="Empleados">Detalle</a>
+                                    <a class="btn btn-danger cambiar-estado-btn" href="#">Desactivar</a>
+
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+@section Scripts {
+    <script src="~/js/plugins/jquery.datatables.min.js"></script>
+    <script src="~/js/plugins/datatables.bootstrap.min.js"></script>
+    <script type="text/javascript">$('#templeados').DataTable();</script>
+    <script>
+
+        $(document).ready(function () {
+            $('.cambiar-estado-btn').click(function (e) {
+                e.preventDefault();
+
+                var id = $(this).data('id');
+
+                // Mostrar confirmación con SweetAlert2
+                Swal.fire({
+                    title: 'Confirmación',
+                    text: '¿Estás seguro de que deseas cambiar el estado?',
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonText: 'Sí',
+                    cancelButtonText: 'No'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // Realizar la llamada AJAX si se confirma la acción
+                        $.ajax({
+                            url: '@Url.Action("Index", "Empleado")',
+                            type: 'GET',
+                            success: function (response) {
+                                // Mostrar mensaje de éxito con SweetAlert2
+                                Swal.fire('Éxito', 'El estado ha sido cambiado correctamente.', 'success').then(function () {
+                                    // Recargar la página
+                                    location.reload();
+                                });
+                            },
+                            error: function (xhr, status, error) {
+                                // Mostrar mensaje de error con SweetAlert2
+                                Swal.fire('Error', 'Ha ocurrido un error al cambiar el estado.', 'error');
+                                console.error('Error:', error);
+                            }
+                        });
+                    }
+                });
+            });
+        });
+
+    </script>
+
+}
+
+

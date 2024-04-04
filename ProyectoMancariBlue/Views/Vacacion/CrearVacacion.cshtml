@@ -1,0 +1,160 @@
+﻿@{
+    ViewData["Title"] = "CrearVacaciones";
+}
+
+<div class="app-title">
+    <div>
+        <h1><i class="fa fa-th-list"></i>Crear Vacaciones</h1>
+        <p>Vacaciones</p>
+
+    </div>
+    <ul class="app-breadcrumb breadcrumb side">
+        <li class="breadcrumb-item"><i class="fa fa-home fa-lg"></i></li>
+        <li class="breadcrumb-item">Vacaciones</li>
+    </ul>
+</div>
+<div class="col-md-12">
+    <div class="tile">
+        <h3 class="tile-title">Crear Vacaciones</h3>
+        <div class="tile-body">
+            <form asp-action="Index" asp-controller="Vacacion" method="post" enctype="multipart/form-data">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="control-label">Cedula</label>
+                            <select class="form-control" id="cedulaSelect" onchange="rellenarCampos()">
+                                <option value="">Seleccionar...</option>
+                                <option value="1-1492-4016">1-1492-0416</option>
+                                <option value="1-0740-0756">1-0740-0756</option>
+                                <option value="1-0246-0562">1-0246-0562</option>
+                            </select>
+                            <span class="text-danger">Campo requerido</span>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label">Nombre</label>
+                            <input class="form-control" id="nombreInput" />
+                            <span class="text-danger">Campo requerido</span>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label">Apellidos</label>
+                            <input class="form-control" id="apellidosInput" />
+                            <span class="text-danger">Campo requerido</span>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label">Puesto</label>
+                            <input class="form-control" id="puestoInput" />
+                            <span class="text-danger">Campo requerido</span>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label">Correo</label>
+                            <input class="form-control" id="correoInput" />
+                            <span class="text-danger">Campo requerido</span>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label">Saldo Vacaciones</label>
+                            <input class="form-control" id="saldoInput" />
+                            <span class="text-danger">Campo requerido</span>
+                        </div>
+                    </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label">Fecha Inicio</label>
+                                <input class="form-control" type="date"/>
+                                <span class="text-danger">Campo requerido</span>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label">Fecha Final</label>
+                                <input class="form-control" type="date" />
+                                <span class="text-danger">Campo requerido</span>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label">Días Solicitados</label>
+                                <input class="form-control" />
+                                <span class="text-danger">Campo requerido</span>
+                            </div>
+                        </div>
+                </div>
+                <div class="form-group">
+                    <button class="btn btn-primary" type="submit"><i class="fa fa-fw fa-lg fa-check-circle"></i>Crear</button>&nbsp;&nbsp;&nbsp;<a class="btn btn-secondary" href="javascript:history.back();"><i class="fa fa-fw fa-lg fa-times-circle"></i>Cancelar</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+@section Scripts {
+
+    <script>
+        // Función para mostrar u ocultar la previsualización de la imagen
+        function actualizarPrevisualizacion() {
+            var fileInput = document.getElementById('Imagen');
+            var previsualizacionContainer = document.getElementById('previsualizacionContainer');
+            var imgPrevisualizacion = document.getElementById('imagenPrevisualizacion');
+
+            if (fileInput.files && fileInput.files[0]) {
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    imgPrevisualizacion.setAttribute('src', e.target.result);
+                }
+                reader.readAsDataURL(fileInput.files[0]);
+                previsualizacionContainer.style.display = 'block';
+            } else {
+                imgPrevisualizacion.setAttribute('src', '#');
+                previsualizacionContainer.style.display = 'none';
+            }
+        }
+
+        // Asignar los eventos change y load al input de tipo file
+        var imagenInput = document.getElementById('Imagen');
+        imagenInput.addEventListener('change', actualizarPrevisualizacion);
+        imagenInput.addEventListener('load', actualizarPrevisualizacion);
+    </script>
+
+    <script>
+        function rellenarCampos() {
+            var select = document.getElementById("cedulaSelect");
+            var selectedOption = select.options[select.selectedIndex].value;
+            var nombre = "";
+            var apellidos = "";
+            var nacionalidad = "";
+            var correo = "";
+            var edad = "";
+
+            // Aquí puedes agregar lógica para asignar valores a las variables
+            // dependiendo de la opción seleccionada.
+
+            switch (selectedOption) {
+                case "1-1492-4016":
+                    nombre = "Josue";
+                    apellidos = "Rojas Chaves";
+                    puesto = "Administrador";
+                    correo = "svcrove@outlook.com";
+                    saldo = "20";
+                    break;
+                case "1-0740-0756":
+                    nombre = "Marta";
+                    apellidos = "Rojas Chaves";
+                    puesto = "Contador";
+                    correo = "marojac@gmail.com";
+                    saldo = "3";
+                    break
+                case "1-0246-0562":
+                    nombre = "Pedro";
+                    apellidos = "Sanchez Chaves";
+                    puesto = "Ganadero";
+                    correo = "pesancro@gmail.com";
+                    saldo = "7";
+                    break;
+                default:
+                    break;
+            }
+
+            document.getElementById("nombreInput").value = nombre;
+            document.getElementById("apellidosInput").value = apellidos;
+            document.getElementById("puestoInput").value = puesto;
+            document.getElementById("correoInput").value = correo;
+            document.getElementById("saldoInput").value = saldo;
+        }
+    </script>
+
+}

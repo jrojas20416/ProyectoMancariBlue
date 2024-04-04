@@ -1,0 +1,155 @@
+﻿@{
+    ViewData["Title"] = "Vacaciones";
+}
+@functions {
+    string NombreCompleto(string n, string a)
+    {
+        return n + " " + a;
+
+    }
+
+}
+
+
+<div class="app-title">
+    <div>
+        <h1><i class="fa fa-th-list" style="margin-right: 10px;"></i>Administración de Vacaciones</h1>
+        <p>Vacaciones</p>
+        <br>
+        <a asp-action="CrearVacacion" asp-controller="Vacacion" class="btn btn-primary"><i class="fa fa-plus" aria-hidden="true"></i>Crear Vacaciones</a>
+    </div>
+    <ul class="app-breadcrumb breadcrumb side">
+        <li class="breadcrumb-item"><i class="fa fa-home fa-lg"></i></li>
+        <li class="breadcrumb-item">Vacaciones</li>
+    </ul>
+</div>
+    <div class="row" style="flex-direction:column" >
+        <div class="col-md-14">
+            <div class="tile">
+                <div class="tile-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover table-bordered" id="tvacaciones">
+                            <thead>
+                                <tr>
+                                <th>
+                                   Cédula del Empleado
+                                </th>
+                                    <th>
+                                        Nombre Completo
+                                    </th>
+                                    <th>
+                                        Fecha de Inicio
+                                    </th>
+                                <th>
+                                    Fecha Final
+                                </th>
+                                <th>
+                                    Estado Vacaciones
+                                </th>
+                                    <th>
+                                       Acciones
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                    <tr>
+                                        <td>
+                                            1-1492-0416
+                                        </td>
+                                        <td>
+                                            Josue Rojas Chaves
+                                        </td>
+                                        <td>
+                                            02/04/2024
+                                        </td>
+                                <td>
+                                    19/04/2024
+                                </td>
+                                <td>
+                                    <span class="badge badge-warning">En Proceso</span>
+                                </td>
+                                        <td>
+                                    <a class="btn btn-primary" asp-action="EditarVacacion" asp-controller="Vacacion">Editar</a>
+                                    <a class="btn btn-info" asp-action="VerVacacion" sp-controller="Vacacion">Detalle Vacaciones</a>
+                                                <a class="btn btn-danger cambiar-estado-btn" href="#">Eliminar</a>
+                                            
+                                        </td>
+                                    </tr>
+                            <tr>
+                                <td>
+                                    1-1492-0416
+                                </td>
+                                <td>
+                                    Josue Rojas Chaves
+                                </td>
+                                <td>
+                                    10/03/2024
+                                </td>
+                                <td>
+                                    13/03/2024
+                                </td>
+                                <td>
+                                    <span class="badge badge-success">Finalizadas</span>
+                                </td>
+                                <td>
+                                    <a class="btn btn-info" asp-action="VerVacacion" sp-controller="Vacacion">Detalle Vacaciones</a>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+@section Scripts {
+    <script src="~/js/plugins/jquery.datatables.min.js"></script>
+    <script src="~/js/plugins/datatables.bootstrap.min.js"></script>
+    <script type="text/javascript">$('#tvacaciones').DataTable();</script>
+    <script>
+
+        $(document).ready(function () {
+            $('.cambiar-estado-btn').click(function (e) {
+                e.preventDefault();
+
+                var id = $(this).data('id');
+
+                // Mostrar confirmación con SweetAlert2
+                Swal.fire({
+                    title: 'Confirmación',
+                    text: '¿Estás seguro de que deseas eliminar las vacaciones?',
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonText: 'Sí',
+                    cancelButtonText: 'No'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // Realizar la llamada AJAX si se confirma la acción
+                        $.ajax({
+                            url: '@Url.Action("Index", "Empleado")',
+                            type: 'GET',
+                            data: { id: id },
+                            success: function (response) {
+                                // Mostrar mensaje de éxito con SweetAlert2
+                                Swal.fire('Éxito', 'Vacaciones Eliminadas Correctamente.', 'success').then(function () {
+                                    // Recargar la página
+                                    location.reload();
+                                });
+                            },
+                            error: function (xhr, status, error) {
+                                // Mostrar mensaje de error con SweetAlert2
+                                Swal.fire('Error', 'Ha ocurrido un error al eliminar las vacaciones.', 'error');
+                                console.error('Error:', error);
+                            }
+                        });
+                    }
+                });
+            });
+        });
+
+    </script>
+
+}
+
+
