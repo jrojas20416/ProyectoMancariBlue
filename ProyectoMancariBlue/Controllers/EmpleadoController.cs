@@ -27,7 +27,12 @@ namespace ProyectoMancariBlue.Controllers
 
         public IActionResult IndexPrestacion()
         {
-            return View(IndexPrestacion);
+            return View();
+        }
+
+        public IActionResult GenerarLiquidacion()
+        {
+            return View();
         }
 
     }

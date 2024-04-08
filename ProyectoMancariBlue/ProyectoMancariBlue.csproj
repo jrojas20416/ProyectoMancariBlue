@@ -7,7 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Views\Animal\" />
     <Folder Include="wwwroot\templates\vendors\dataTables.fixedColumns\" />
   </ItemGroup>
 

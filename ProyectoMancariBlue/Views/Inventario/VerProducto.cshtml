@@ -1,0 +1,88 @@
+﻿@{
+    ViewData["Title"] = "VerProducto";
+}
+
+<div class="app-title">
+    <div>
+        <h1><i class="fa fa-th-list"></i>Ver Producto</h1>
+        <p>Productos</p>
+
+    </div>
+    <ul class="app-breadcrumb breadcrumb side">
+        <li class="breadcrumb-item"><i class="fa fa-home fa-lg"></i></li>
+        <li class="breadcrumb-item">Productos</li>
+    </ul>
+</div>
+<div class="col-md-12">
+    <div class="tile">
+        <h3 class="tile-title">Ver Productos</h3>
+        <div class="tile-body">
+            <form asp-action="Index" asp-controller="Inventario" method="post" enctype="multipart/form-data">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="control-label">Código</label>
+                            <input class="form-control" value="VAC001" readonly />
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label">Nombre</label>
+                            <input class="form-control" value="Vacuna 1" readonly />
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label">Descripción</label>
+                            <input class="form-control" value="Vacuna para desparacitar ganador" readonly />
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="control-label">Categoría</label>
+                            <input class="form-control" value="Desparacitante" readonly />
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label">Proveedor</label>
+                            <input class="form-control" value="Proveedor 1" readonly />
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label">Stock</label>
+                            <input class="form-control" value="20" readonly/>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                   <a class="btn btn-secondary" href="javascript:history.back();"><i class="fa fa-fw fa-lg fa-times-circle"></i>Regresar</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+@section Scripts {
+
+    <script>
+        // Función para mostrar u ocultar la previsualización de la imagen
+        function actualizarPrevisualizacion() {
+            var fileInput = document.getElementById('Imagen');
+            var previsualizacionContainer = document.getElementById('previsualizacionContainer');
+            var imgPrevisualizacion = document.getElementById('imagenPrevisualizacion');
+
+            if (fileInput.files && fileInput.files[0]) {
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    imgPrevisualizacion.setAttribute('src', e.target.result);
+                }
+                reader.readAsDataURL(fileInput.files[0]);
+                previsualizacionContainer.style.display = 'block';
+            } else {
+                imgPrevisualizacion.setAttribute('src', '#');
+                previsualizacionContainer.style.display = 'none';
+            }
+        }
+
+        // Asignar los eventos change y load al input de tipo file
+        var imagenInput = document.getElementById('Imagen');
+        imagenInput.addEventListener('change', actualizarPrevisualizacion);
+        imagenInput.addEventListener('load', actualizarPrevisualizacion);
+    </script>
+
+
+}

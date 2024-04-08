@@ -1,0 +1,106 @@
+﻿@{
+    ViewData["Title"] = "EditarVacuna";
+}
+
+<div class="app-title">
+    <div>
+        <h1><i class="fa fa-th-list" style="margin-right: 10px;"></i>Editar Vacunas</h1>
+        <p>Vacunas</p>
+
+    </div>
+    <ul class="app-breadcrumb breadcrumb side">
+        <li class="breadcrumb-item"><i class="fa fa-home fa-lg"></i></li>
+        <li class="breadcrumb-item">Vacunas</li>
+    </ul>
+</div>
+<div class="col-md-12">
+    <div class="tile">
+        <h3 class="tile-title">Editar Vacuna</h3>
+        <div class="tile-body">
+            <form asp-action="Index" asp-controller="Vacuna" method="post" enctype="multipart/form-data">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label">Codigo Animal</label>
+                                <input class="form-control" value="001" readonly />
+                            </div>
+                        <div class="form-group">
+                            <label class="control-label">Código Vacuna</label>
+                            <input class="form-control" id="codigoInput" />
+                            <span class="text-danger">Campo requerido</span>
+                        </div>
+                            <div class="form-group">
+                                <label class="control-label">Fecha Aplicación</label>
+                                <input class="form-control"/>
+                            <span class="text-danger">Campo requerido</span>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label">Próxima Aplicación</label>
+                                <input class="form-control" />
+                            <span class="text-danger">Campo requerido</span>
+                            </div>
+                    </div>
+                    <div class="col-md-6">
+                           <div class="form-group">
+                                <label class="control-label">Vacuna</label>
+                                <select class="form-control" id="vacunaSelect" onchange="rellenarCamposV()">
+                                    <option value="">Seleccionar...</option>
+                                    <option value="Vacuna 1">Vacuna 1</option>
+                                    <option value="Vacuna 2">Vacuna 2</option>
+                                    <option value="Vacuna 3">Vacuna 3</option>
+                                </select>
+                                <span class="text-danger">Campo requerido</span>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label">Categoría Vacuna</label>
+                                <input class="form-control" id="categoriaInput" />
+                                <span class="text-danger">Campo requerido</span>
+                            </div>
+                            </div>
+                    </div>
+                <div class="form-group">
+                    <button class="btn btn-primary" type="submit"><i class="fa fa-fw fa-lg fa-check-circle"></i>Editar</button>&nbsp;&nbsp;&nbsp;<a class="btn btn-secondary" href="javascript:history.back();"><i class="fa fa-fw fa-lg fa-times-circle"></i>Cancelar</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts {
+
+      <script>
+        function rellenarCamposV() {
+            var select = document.getElementById("vacunaSelect");
+            var selectedOption = select.options[select.selectedIndex].value;
+            var categoria = "";
+            var codigo = "";
+
+
+            // Aquí puedes agregar lógica para asignar valores a las variables
+            // dependiendo de la opción seleccionada.
+
+            switch (selectedOption) {
+                case "Vacuna 1":
+                    categoria = "Desparacitante";
+                    codigo = "1234";
+                    break;
+                case "Vacuna 2":
+                    categoria = "Analgésico";
+                    codigo = "4567";
+                    break
+                case "Vacuna 3":
+                    categoria = "Suplemento"
+                    codigo = "7890"
+                    break;
+                default:
+                    break;
+            }
+
+            document.getElementById("categoriaInput").value = categoria;
+            document.getElementById("codigoInput").value = codigo;
+        }
+    </script>
+
+}
