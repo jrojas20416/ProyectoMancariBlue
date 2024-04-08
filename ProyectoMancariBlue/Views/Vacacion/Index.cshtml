@@ -127,7 +127,7 @@
                     if (result.isConfirmed) {
                         // Realizar la llamada AJAX si se confirma la acción
                         $.ajax({
-                            url: '@Url.Action("Index", "Empleado")',
+                            url: '@Url.Action("Index", "Vacacion")',
                             type: 'GET',
                             data: { id: id },
                             success: function (response) {

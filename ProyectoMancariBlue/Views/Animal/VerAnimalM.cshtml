@@ -1,0 +1,120 @@
+﻿@{
+    ViewData["Title"] = "VerAnimalP";
+}
+
+<div class="app-title">
+    <div>
+        <h1><i class="fa fa-th-list" style="margin-right: 10px;"></i>Registro Generacional Madres</h1>
+        <p>Animales</p>
+
+    </div>
+    <ul class="app-breadcrumb breadcrumb side">
+        <li class="breadcrumb-item"><i class="fa fa-home fa-lg"></i></li>
+        <li class="breadcrumb-item">Animales</li>
+    </ul>
+</div>
+<div class="col-md-12">
+    <div class="tile">
+        <h3 class="tile-title">Registro Generacional Madres</h3>
+        <div class="tile-body">
+            <form asp-action="Index" asp-controller="Animal" method="post" enctype="multipart/form-data">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="control-label">Código</label>
+                            <input class="form-control" value="003" disabled />
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label">Genero</label>
+                            <input class="form-control" value="Macho" disabled />
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label">Peso (KG)</label>
+                            <input class="form-control" value="86" disabled />
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="control-label">Fecha Nacimiento</label>
+                            <input class="form-control" value="01/01/2024" disabled />
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label">Raza</label>
+                            <input class="form-control" value="Raza 1" disabled />
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label">Crías</label>
+                            <input class="form-control" value="5" disabled>
+                        </div>
+                    </div>
+
+                </div>
+
+                <hr>
+                <h3 class="tile-title">Crías Registradas</h3>
+                <div class="row" style="flex-direction:column">
+                    <div class="col-md-12">
+                        <div class="tile">
+                            <div class="tile-body">
+                                <div class="table-responsive">
+                                    <table class="table table-hover table-bordered" id="tcrias">
+                                        <thead>
+                                            <tr>
+                                                <th>
+                                                    Código
+                                                </th>
+                                                <th>
+                                                    Código Padre
+                                                </th>
+                                                <th>
+                                                    Genero
+                                                </th>
+                                                <th>
+                                                    Fecha Nacimiento
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>
+                                                    002
+                                                </td>
+                                                <td>
+                                                    003
+                                                </td>
+                                                <td>
+                                                    Macho
+                                                </td>
+                                                <td>
+                                                    30/01/2024
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    014
+                                                </td>
+                                                <td>
+                                                    010
+                                                </td>
+                                                <td>
+                                                    Macho
+                                                </td>
+                                                <td>
+                                                    21/06/2024
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <a class="btn btn-secondary" href="javascript:history.back();"><i class="fa fa-fw fa-lg fa-times-circle"></i>Regresar</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

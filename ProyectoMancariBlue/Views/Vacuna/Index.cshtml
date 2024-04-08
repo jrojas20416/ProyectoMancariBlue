@@ -1,0 +1,159 @@
+﻿@{
+    ViewData["Title"] = "Vacunas";
+}
+
+<div class="app-title">
+    <div>
+        <h1><i class="fa fa-th-list" style="margin-right: 10px;"></i>Administración de Vacunas</h1>
+        <p>Vacunas</p>
+        <br>
+        <a asp-action="CrearVacuna" asp-controller="Vacuna" class="btn btn-primary"><i class="fa fa-plus" aria-hidden="true"></i>Agregar Vacunas</a>
+    </div>
+    <ul class="app-breadcrumb breadcrumb side">
+        <li class="breadcrumb-item"><i class="fa fa-home fa-lg"></i></li>
+        <li class="breadcrumb-item">Vacunas</li>
+    </ul>
+</div>
+    <div class="row" style="flex-direction:column" >
+        <div class="col-md-14">
+            <div class="tile">
+                <div class="tile-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover table-bordered" id="tvacunas">
+                            <thead>
+                                <tr>
+                                <th>
+                                   Código Vacuna
+                                </th>
+                                    <th>
+                                       Código Animal
+                                    </th>
+                                    <th>
+                                        Fecha Aplicación
+                                    </th>
+                                <th>
+                                    Vacuna
+                                </th>
+                                <th>
+                                    Categoría Vacuna
+                                </th>
+                                <th>
+                                    Próxima Vacuna
+                                </th>
+                                    <th>
+                                       Acciones
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                    <tr>
+                                        <td>
+                                           1234
+                                        </td>
+                                        <td>
+                                          0001
+                                        </td>
+                                        <td>
+                                       15/01/2024
+                                        </td>
+                                <td>
+                                   Vacuna 1
+                                </td>
+                                <td>
+                                    Desparacitante
+                                </td>
+                                <td>
+                                    15/03/2024
+                                </td>
+                                        <td>
+                                    <a class="btn btn-primary" asp-action="EditarVacuna" asp-controller="Vacuna">Editar</a>
+                                    <a class="btn btn-info" asp-action="VerVacuna" sp-controller="Vacuna">Detalle Vacuna</a>
+                                                <a class="btn btn-danger cambiar-estado-btn" href="#">Eliminar</a>
+                                            
+                                        </td>
+                                    </tr>
+                            <tr>
+                                <td>
+                                   5678
+                                </td>
+                                <td>
+                                   0003
+                                </td>
+                                <td>
+                                   20/01/2024
+                                </td>
+                                <td>
+                                    Vacuna 3
+                                </td>
+                                <td>
+                                Analgésico
+                                </td>
+
+                                <td>
+                                 20/03/2024
+                                </td>
+                                <td>
+                                    <a class="btn btn-primary" asp-action="EditarVacuna" asp-controller="Vacuna">Editar</a>
+                                    <a class="btn btn-info" asp-action="VerVacuna" sp-controller="Vacuna">Detalle Vacuna</a>
+                                    <a class="btn btn-danger cambiar-estado-btn" href="#">Eliminar</a>
+
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+@section Scripts {
+    <script src="~/js/plugins/jquery.datatables.min.js"></script>
+    <script src="~/js/plugins/datatables.bootstrap.min.js"></script>
+    <script type="text/javascript">$('#tvacunas').DataTable();</script>
+    <script>
+
+        $(document).ready(function () {
+            $('.cambiar-estado-btn').click(function (e) {
+                e.preventDefault();
+
+                var id = $(this).data('id');
+
+                // Mostrar confirmación con SweetAlert2
+                Swal.fire({
+                    title: 'Confirmación',
+                    text: '¿Estás seguro de que deseas eliminar la Vacuna?',
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonText: 'Sí',
+                    cancelButtonText: 'No'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // Realizar la llamada AJAX si se confirma la acción
+                        $.ajax({
+                            url: '@Url.Action("Index", "Vacuna")',
+                            type: 'GET',
+                            data: { id: id },
+                            success: function (response) {
+                                // Mostrar mensaje de éxito con SweetAlert2
+                                Swal.fire('Éxito', 'Vacuna Eliminada Correctamente.', 'success').then(function () {
+                                    // Recargar la página
+                                    location.reload();
+                                });
+                            },
+                            error: function (xhr, status, error) {
+                                // Mostrar mensaje de error con SweetAlert2
+                                Swal.fire('Error', 'Ha ocurrido un error al eliminar la Vacuna.', 'error');
+                                console.error('Error:', error);
+                            }
+                        });
+                    }
+                });
+            });
+        });
+
+    </script>
+
+}
+
+

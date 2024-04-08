@@ -1,5 +1,182 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
+﻿@{
+    ViewData["Title"] = "Inventario";
 }
+
+<div class="app-title">
+    <div>
+        <h1><i class="fa fa-th-list" style="margin-right: 10px;"></i>Administración de Inventario</h1>
+        <p>Inventario</p>
+        <br>
+        <a asp-action="CrearProducto" asp-controller="Inventario" class="btn btn-primary"><i class="fa fa-plus" aria-hidden="true"></i>Agregar Producto</a>
+    </div>
+    <ul class="app-breadcrumb breadcrumb side">
+        <li class="breadcrumb-item"><i class="fa fa-home fa-lg"></i></li>
+        <li class="breadcrumb-item">Inventario</li>
+    </ul>
+</div>
+<div class="row" style="flex-direction:column">
+    <div class="col-md-14">
+        <div class="tile">
+            <div class="tile-body">
+                <div class="table-responsive">
+                    <table class="table table-hover table-bordered" id="tproductos">
+                        <thead>
+                            <tr>
+                                <th>
+                                    Código
+                                </th>
+                                <th>
+                                   Nombre Producto
+                                </th>
+                                <th>
+                                    Categoría
+                                </th>
+                                <th>
+                                    Descripción
+                                </th>
+                                <th>
+                                    Proveedor
+                                </th>
+                                <th>
+                                    Stock
+                                </th>
+                                <th>
+                                    Acciones
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                   VAC001
+                                </td>
+                                <td>
+                                    Vacuna 1
+                                </td>
+                                <td>
+                                    Desparacitante
+                                </td>
+                                <td>
+                                    Vacuna para la desparacitación de ganador
+                                </td>
+                                <td>
+                                    Proveedor 1
+                                </td>
+                                <td>
+                                    16
+                                </td>
+                                <td>
+                                    <a class="btn btn-primary" asp-action="EditarProducto" asp-controller="Inventario">Editar</a>
+                                    <a class="btn btn-info" asp-action="VerProducto" sp-controller="Inventario">Detalle</a>
+                                    <a class="btn btn-danger cambiar-estado-btn" href="#">Desactivar</a>
+
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    VAC002
+                                </td>
+                                <td>
+                                    Vacuna 2
+                                </td>
+                                <td>
+                                    Analgésico
+                                </td>
+                                <td>
+                                    Vacuna para el alivio de dolores
+                                </td>
+                                <td>
+                                    Proveedor 2
+                                </td>
+                                <td>
+                                    2
+                                </td>
+                                <td>
+                                    <a class="btn btn-primary" asp-action="EditarProducto" asp-controller="Inventario">Editar</a>
+                                    <a class="btn btn-info" asp-action="VerProducto" sp-controller="Inventario">Detalle</a>
+                                    <a class="btn btn-danger cambiar-estado-btn" href="#">Desactivar</a>
+
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    VAC003
+                                </td>
+                                <td>
+                                    Vacuna 3
+                                </td>
+                                <td>
+                                    Suplemento
+                                </td>
+                                <td>
+                                    Vacuna para vitaminica para ganado
+                                </td>
+                                <td>
+                                    Proveedor 3
+                                </td>
+                                <td>
+                                    7
+                                </td>
+                                <td>
+                                    <a class="btn btn-primary" asp-action="EditarProducto" asp-controller="Inventario">Editar</a>
+                                    <a class="btn btn-info" asp-action="VerProducto" sp-controller="Inventario">Detalle</a>
+                                    <a class="btn btn-danger cambiar-estado-btn" href="#">Desactivar</a>
+
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/js/plugins/jquery.datatables.min.js"></script>
+    <script src="~/js/plugins/datatables.bootstrap.min.js"></script>
+    <script type="text/javascript">$('#tproductos').DataTable();</script>
+    <script>
+
+        $(document).ready(function () {
+            $('.cambiar-estado-btn').click(function (e) {
+                e.preventDefault();
+
+                var id = $(this).data('id');
+
+                // Mostrar confirmación con SweetAlert2
+                Swal.fire({
+                    title: 'Confirmación',
+                    text: '¿Estás seguro de que deseas cambiar el estado?',
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonText: 'Sí',
+                    cancelButtonText: 'No'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // Realizar la llamada AJAX si se confirma la acción
+                        $.ajax({
+                            url: '@Url.Action("Index", "Inventario")',
+                            type: 'GET',
+                            success: function (response) {
+                                // Mostrar mensaje de éxito con SweetAlert2
+                                Swal.fire('Éxito', 'El estado ha sido cambiado correctamente.', 'success').then(function () {
+                                    // Recargar la página
+                                    location.reload();
+                                });
+                            },
+                            error: function (xhr, status, error) {
+                                // Mostrar mensaje de error con SweetAlert2
+                                Swal.fire('Error', 'Ha ocurrido un error al cambiar el estado.', 'error');
+                                console.error('Error:', error);
+                            }
+                        });
+                    }
+                });
+            });
+        });
+
+    </script>
+
+}
+

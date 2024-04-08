@@ -1,5 +1,6 @@
 ﻿@{
     ViewData["Title"] = "Index";
+
 }
 
 <div class="app-title">
@@ -11,8 +12,19 @@
         <li class="breadcrumb-item"><a asp-action="Index" asp-controller="Home">Inicio</a></li>
     </ul>
 </div>
+
+<main style="display: flex; justify-content: center; align-items: center; height: 15vh;margin-bottom: 40px; ">
+    <div style="text-align: center;">
+        <img src="~/img/logo.png" class="logo-image" width="200px" height="auto">
+        <p style="margin: 0; text-align: center; font-size: 18px; margin-bottom: 40px;">
+            Somos una empresa de gestion ganadera, la cual se enfoca en el negocio de venta de ganado de engorde. Cumplimos con todas regulaciones y procesos establecidos por la ley para garantizar
+            un correcto manejo de nuestro ganado y asegurar optimas condiciones para el mismo.</p>
+    </div>
+</main>
+
+
 <div class="row">
-    <div class="col-md-6 col-lg-3">
+    <div class="col-md-6 col-lg-6">
         <div class="widget-small info coloured-icon">
             <i class="icon fa fa-users fa-3x"></i>
             <div class="info">
@@ -21,27 +33,29 @@
             </div>
         </div>
     </div>
-    <div class="col-md-6 col-lg-3">
+    <div class="col-md-6 col-lg-6">
         <div class="widget-small info coloured-icon">
-            <i class="icon fa fa-id-card fa-3x"></i>
+            <i class="icon fa fa-tags fa-3x"></i>
             <div class="info">
                 <h4>Animales</h4>
                 <p><b>36</b></p>
             </div>
         </div>
     </div>
-    <div class="col-md-6 col-lg-3">
+</div>
+<div class="row">
+    <div class="col-md-6 col-lg-6">
         <div class="widget-small info coloured-icon">
-            <i class="icon fa fa-calendar fa-3x"></i>
+            <i class="icon fa fa fa-truck fa-3x"></i>
             <div class="info">
                 <h4>Inventario</h4>
                 <p><b>102</b></p>
             </div>
         </div>
     </div>
-    <div class="col-md-6 col-lg-3">
+    <div class="col-md-6 col-lg-6">
         <div class="widget-small info coloured-icon">
-            <i class="icon fa fa-map fa-3x"></i>
+            <i class="icon fa fa-university fa-3x"></i>
             <div class="info">
                 <h4>Transacciones</h4>
                 <p><b>42</b></p>

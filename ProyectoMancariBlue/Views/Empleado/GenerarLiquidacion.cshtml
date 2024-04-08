@@ -1,0 +1,187 @@
+﻿@{
+    ViewData["Title"] = "CrearLiquidacion";
+}
+
+<div class="app-title">
+    <div>
+        <h1><i class="fa fa-th-list" style="margin-right: 10px;"></i>Detalle Liquidación</h1>
+        <p>Empleados</p>
+
+    </div>
+    <ul class="app-breadcrumb breadcrumb side">
+        <li class="breadcrumb-item"><i class="fa fa-home fa-lg"></i></li>
+        <li class="breadcrumb-item">Empleados</li>
+    </ul>
+</div>
+<div class="col-md-12">
+    <div class="tile">
+        <h3 class="tile-title">Detalle de liquidación</h3>
+        <div class="tile-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="control-label">Cedula</label>
+                        <input class="form-control" value="1-1492-0416" readonly />
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label">Nombre</label>
+                        <input class="form-control" value="Josue" readonly />
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label">Apellidos</label>
+                        <input class="form-control" value="Rojas Chaves" readonly />
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label">Antiguedad (Años)</label>
+                        <input class="form-control" value="2" readonly />
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="control-label">Puesto</label>
+                        <input class="form-control" value="Administrador" readonly />
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label">Fecha de Ingreso</label>
+                        <input type="date" class="form-control" value="2024-04-02" readonly />
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label">Salario</label>
+                        <input class="form-control" value="₡900.000" readonly />
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label">Saldo Vacaciones</label>
+                        <input class="form-control" value="20" readonly />
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="control-label">Motivo Salida</label>
+                        <select class="form-control">
+                            <option value="">Seleccionar...</option>
+                            <option value="Despido RP">Despido Responsabilidad Patronal</option>
+                            <option value="Despido NRP">Despido Sin Responsabilidad Patronal</option>
+                            <option value="Renuncia">Renuncia</option>
+                            <option value="Pension">Pension</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label">Preaviso</label>
+                        <select class="form-control">
+                            <option value="">Seleccionar...</option>
+                            <option value="Si">Si</option>
+                            <option value="No">No</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="control-label">Tipo Pago</label>
+                        <select class="form-control">
+                            <option value="">Seleccionar...</option>
+                            <option value="Mensual">Mensual</option>
+                            <option value="Quincenal">Quincenal</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label">Fecha Salida</label>
+                        <input type="date" class="form-control" />
+                    </div>
+                </div>
+            </div>
+                <div class="form-group">
+                <a class="btn btn-info" style="color: white" id="generarLiquidacionBtn">Generar Liquidacion</a>&nbsp;&nbsp;&nbsp;<a class="btn btn-secondary" href="javascript:history.back();"><i class="fa fa-fw fa-lg fa-times-circle"></i>Regresar</a>
+                </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="generarLiquidacionModal" tabindex="-1" role="dialog" aria-labelledby="generarPlanillaModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="generarPlanillaModalLabel">Generar Liquidación</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <table class="table">
+                    <tbody>
+                        <tr>
+                            <td>Nombre:</td>
+                            <td>Josue Rojas Chaves</td>
+                        </tr>
+                        <tr>
+                            <td>Puesto:</td>
+                            <td>Administrador</td>
+                        </tr>
+                        <tr>
+                            <td>Fecha Ingreso:</td>
+                            <td>02/04/2024</td>
+                        </tr>
+                        <tr>
+                            <td>Antigüedad (Años):</td>
+                            <td>2</td>
+                        </tr>
+                        <tr>
+                            <td>Salario:</td>
+                            <td>₡900.000</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <!-- Divisor -->
+                <hr>
+
+                <!-- Segunda tabla -->
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Aguinaldo</th>
+                            <th>Vacaciones</th>
+                            <th>Preaviso</th>
+                            <th>Cesantía</th>
+                            <th>Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>₡356.803</td>
+                            <td>₡359.906</td>
+                            <td>₡449.882</td>
+                            <td>₡2.765.9877</td>
+                            <td>₡4.765.9877</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Regresar</button>
+                <button type="button" class="btn btn-primary" onclick="imprimirPagina()">Imprimir</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/js/plugins/jquery.datatables.min.js"></script>
+    <script src="~/js/plugins/datatables.bootstrap.min.js"></script>
+    <script type="text/javascript">$('#templeados').DataTable();</script>
+    <!-- SweetAlert2 JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/11.2.0/sweetalert2.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#generarLiquidacionBtn').click(function () {
+                $('#generarLiquidacionModal').modal('show');
+            });
+        });
+    </script>
+    <script>
+        function imprimirPagina() {
+            window.print();
+        }
+    </script>
+}
