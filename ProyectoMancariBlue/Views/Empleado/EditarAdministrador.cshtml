@@ -1,0 +1,98 @@
+﻿@{
+    ViewData["Title"] = "EditarAdministrador";
+}
+
+<div class="app-title">
+    <div>
+        <h1><i class="fa fa-th-list" style="margin-right: 10px;"></i>Editar Administrador</h1>
+        <p>Administradores</p>
+
+    </div>
+    <ul class="app-breadcrumb breadcrumb side">
+        <li class="breadcrumb-item"><i class="fa fa-home fa-lg"></i></li>
+        <li class="breadcrumb-item">Administradores</li>
+    </ul>
+</div>
+<div class="col-md-12">
+    <div class="tile">
+        <h3 class="tile-title">Editar Administrador</h3>
+        <div class="tile-body">
+            <form asp-action="IndexA" asp-controller="Empleado" method="post" enctype="multipart/form-data">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="control-label">Cedula</label>
+                            <input class="form-control" value="1-1492-0416" disabled />
+
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label">Nombre</label>
+                            <input class="form-control" value="Josue" readonly/>
+
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label">Apellidos</label>
+                            <input class="form-control" value="Rojas Chaves" readonly/>
+
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="control-label">Puesto</label>
+                            <input class="form-control" value="Ganadero" readonly />
+
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label">Fecha de Ingreso</label>
+                            <input type="date" class="form-control" value="2024-02-15" disabled />
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label">Rol</label>
+                            <select class="form-control">
+                                <option value="">Seleccionar...</option>
+                                <option value="Rol 1">Rol 1</option>
+                                <option value="Rol 2">Rol 2</option>
+                                <option value="Rol 3">Rol 3</option>
+                            </select>
+                            <span class="text-danger">Campo requerido</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <button class="btn btn-primary" type="submit"><i class="fa fa-fw fa-lg fa-check-circle"></i>Editar</button>&nbsp;&nbsp;&nbsp;<a class="btn btn-secondary" href="javascript:history.back();"><i class="fa fa-fw fa-lg fa-times-circle"></i>Cancelar</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+@section Scripts {
+
+    <script>
+        // Función para mostrar u ocultar la previsualización de la imagen
+        function actualizarPrevisualizacion() {
+            var fileInput = document.getElementById('Imagen');
+            var previsualizacionContainer = document.getElementById('previsualizacionContainer');
+            var imgPrevisualizacion = document.getElementById('imagenPrevisualizacion');
+
+            if (fileInput.files && fileInput.files[0]) {
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    imgPrevisualizacion.setAttribute('src', e.target.result);
+                }
+                reader.readAsDataURL(fileInput.files[0]);
+                previsualizacionContainer.style.display = 'block';
+            } else {
+                imgPrevisualizacion.setAttribute('src', '#');
+                previsualizacionContainer.style.display = 'none';
+            }
+        }
+
+        // Asignar los eventos change y load al input de tipo file
+        var imagenInput = document.getElementById('Imagen');
+        imagenInput.addEventListener('change', actualizarPrevisualizacion);
+        imagenInput.addEventListener('load', actualizarPrevisualizacion);
+    </script>
+
+
+}

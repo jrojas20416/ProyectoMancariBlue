@@ -35,5 +35,25 @@ namespace ProyectoMancariBlue.Controllers
             return View();
         }
 
+
+        public IActionResult IndexA()
+        {
+            return View();
+        }
+
+        public IActionResult CrearAdministrador()
+        {
+            return View();
+        }
+
+        public IActionResult VerAdministrador()
+        {
+            return View();
+        }
+
+        public IActionResult EditarAdministrador()
+        {
+            return View();
+        }
     }
 }
