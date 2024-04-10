@@ -1,0 +1,99 @@
+﻿@{
+    ViewData["Title"] = "VerReporte";
+}
+
+<div class="app-title">
+    <div>
+        <h1><i class="fa fa-th-list" style="margin-right: 10px;"></i>Ver Reporte</h1>
+        <p>Reportes</p>
+
+    </div>
+    <ul class="app-breadcrumb breadcrumb side">
+        <li class="breadcrumb-item"><i class="fa fa-home fa-lg"></i></li>
+        <li class="breadcrumb-item">Reportes</li>
+    </ul>
+</div>
+<div class="col-md-12">
+    <div class="tile">
+        <h3 class="tile-title">Ver Reporte</h3>
+        <div class="tile-body">
+            <form id="reporte-form" method="post" enctype="multipart/form-data">
+                <div class="text-danger" id="validation-summary"></div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="control-label">Código CVO</label>
+                            <input id="codigoCVO" class="form-control" value="CVO-001" readonly />
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label">Código Transporte</label>
+                            <input id="codigoTransporte" class="form-control" value="TR00-2" readonly />
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label">Transacción</label>
+                            <input id="transaccion" class="form-control" value="001-T" readonly />
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label">Importe</label>
+                            <input id="importe" class="form-control" value="₡420.000" readonly />
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="control-label">Identificación</label>
+                            <input id="identificacion" class="form-control" value="3-2323-2232" readonly />
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label">Nombre Cliente</label>
+                            <input id="nombre" class="form-control" value="Cliente 1" readonly />
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label">Ganado</label>
+                            <input id="ganado" class="form-control" value="001" readonly />
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label">Fecha Venta</label>
+                            <input id="venta" class="form-control" type="date" value="2024-04-20" readonly />
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <button class="btn btn-primary" onclick="exportarExcel()"><i class="fa fa-fw fa-lg fa-file-excel-o"></i>Descargar</button>&nbsp;&nbsp;&nbsp; <a class="btn btn-secondary" href="javascript:history.back();"><i class="fa fa-fw fa-lg fa-times-circle"></i>Regresar</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.4/xlsx.full.min.js"></script>
+
+    <script>
+        function exportarExcel() {
+            // Crear un nuevo libro de Excel
+            var wb = XLSX.utils.book_new();
+
+            // Obtener los valores de los campos del formulario
+            var codigoCVO = document.getElementById('codigoCVO').value;
+            var codigoTransporte = document.getElementById('codigoTransporte').value;
+            var transaccion = document.getElementById('transaccion').value;
+            var importe = document.getElementById('importe').value;
+            var identificacion = document.getElementById('identificacion').value;
+            var nombre = document.getElementById('nombre').value;
+            var ganado = document.getElementById('ganado').value;
+            var fechaVenta = document.getElementById('venta').value;
+
+            // Crear una nueva hoja de trabajo
+            var ws = XLSX.utils.json_to_sheet([
+                { 'Código CVO': codigoCVO, 'Código Transporte': codigoTransporte, 'Transacción': transaccion, 'Importe': importe, 'Identificación': identificacion, 'Nombre Cliente': nombre, 'Ganado': ganado, 'Fecha Venta': fechaVenta }
+            ]);
+
+            // Agregar la hoja de trabajo al libro de Excel
+            XLSX.utils.book_append_sheet(wb, ws, 'Formulario');
+
+            // Guardar el archivo
+            var nombreArchivo = 'formulario.xlsx';
+            XLSX.writeFile(wb, nombreArchivo);
+        }
+    </script>
+}

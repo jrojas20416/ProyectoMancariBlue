@@ -2,7 +2,7 @@
 
 namespace ProyectoMancariBlue.Controllers
 {
-    public class AdministracionController : Controller
+    public class ReporteController : Controller
     {
         public IActionResult Index()
         {

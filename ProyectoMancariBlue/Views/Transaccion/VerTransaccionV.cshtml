@@ -1,0 +1,59 @@
+﻿@{
+    ViewData["Title"] = "VerTransaccionV";
+}
+
+<div class="app-title">
+    <div>
+        <h1><i class="fa fa-th-list" style="margin-right: 10px;"></i>Detalle de Transaccion</h1>
+        <p>Transacciones</p>
+
+    </div>
+    <ul class="app-breadcrumb breadcrumb side">
+        <li class="breadcrumb-item"><i class="fa fa-home fa-lg"></i></li>
+        <li class="breadcrumb-item">Transacciones</li>
+    </ul>
+</div>
+<div class="col-md-12">
+    <div class="tile">
+        <h3 class="tile-title">Ver Detalle de Transacción</h3>
+        <div class="tile-body">
+            <form asp-action="Index" asp-controller="Transaccion" method="post" enctype="multipart/form-data">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="control-label">Codígo</label>
+                            <input class="form-control" value="002-C" readonly />
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label">Identificación</label>
+                            <input class="form-control" value="1-1492-0416" readonly />
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label">Cliente</label>
+                            <input  class="form-control" value="Cliente 1" readonly />
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="control-label">Fecha Venta</label>
+                            <input class="form-control" value="2024-04-12" readonly />
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label">Ganado</label>
+                            <input class="form-control" value="001" readonly />
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label">Importe Compra</label>
+                            <input class="form-control" value="₡120.000" readonly/>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <a class="btn btn-secondary" href="javascript:history.back();"><i class="fa fa-fw fa-lg fa-times-circle"></i>Regresar</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

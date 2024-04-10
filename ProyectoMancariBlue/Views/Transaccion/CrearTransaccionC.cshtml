@@ -1,0 +1,134 @@
+﻿@{
+    ViewData["Title"] = "CrearTransaccionC";
+}
+
+<div class="app-title">
+    <div>
+        <h1><i class="fa fa-th-list" style="margin-right: 10px;"></i>Crear Transacciones</h1>
+        <p>Transacciones</p>
+
+    </div>
+    <ul class="app-breadcrumb breadcrumb side">
+        <li class="breadcrumb-item"><i class="fa fa-home fa-lg"></i></li>
+        <li class="breadcrumb-item">Transacciones</li>
+    </ul>
+</div>
+<div class="col-md-12">
+    <div class="tile">
+        <h3 class="tile-title">Crear Transacción de Compra</h3>
+        <div class="tile-body">
+            <form asp-action="Index" asp-controller="Transaccion" method="post" enctype="multipart/form-data">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="control-label">Proveedor</label>
+                            <select id="proveedor" class="form-control">
+                                <option value="proveedor1">Proveedor 1</option>
+                                <option value="proveedor2">Proveedor 2</option>
+                                <option value="proveedor3">Proveedor 3</option>
+                            </select>
+                            <span class="text-danger">Campo requerido</span>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label">Identificación</label>
+                            <input id="identificacion" class="form-control" readonly />
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label">Categoría</label>
+                            <input id="categoria" class="form-control" readonly />
+                       
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label">Fecha</label>
+                            <input class="form-control" type="date"/>
+                            <span class="text-danger">Campo requerido</span>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="control-label">Producto</label>
+                            <select id="producto" class="form-control">
+                                <option value="producto1">Producto 1</option>
+                                <option value="producto2">Producto 2</option>
+                                <option value="producto3">Producto 3</option>
+                            </select>
+                            <span class="text-danger">Campo requerido</span>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label">Descripción</label>
+                            <input class="form-control" />
+                            <span class="text-danger">Campo requerido</span>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label">Importe Compra</label>
+                            <input class="form-control" />
+                            <span class="text-danger">Campo requerido</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <button class="btn btn-primary" type="submit"><i class="fa fa-fw fa-lg fa-check-circle"></i>Crear</button>&nbsp;&nbsp;&nbsp;<a class="btn btn-secondary" href="javascript:history.back();"><i class="fa fa-fw fa-lg fa-times-circle"></i>Cancelar</a>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+
+    <script>
+        // Función para mostrar u ocultar la previsualización de la imagen
+        function actualizarPrevisualizacion() {
+            var fileInput = document.getElementById('Imagen');
+            var previsualizacionContainer = document.getElementById('previsualizacionContainer');
+            var imgPrevisualizacion = document.getElementById('imagenPrevisualizacion');
+
+            if (fileInput.files && fileInput.files[0]) {
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    imgPrevisualizacion.setAttribute('src', e.target.result);
+                }
+                reader.readAsDataURL(fileInput.files[0]);
+                previsualizacionContainer.style.display = 'block';
+            } else {
+                imgPrevisualizacion.setAttribute('src', '#');
+                previsualizacionContainer.style.display = 'none';
+            }
+        }
+
+        // Asignar los eventos change y load al input de tipo file
+        var imagenInput = document.getElementById('Imagen');
+        imagenInput.addEventListener('change', actualizarPrevisualizacion);
+        imagenInput.addEventListener('load', actualizarPrevisualizacion);
+    </script>
+
+    <script src="~/js/plugins/jquery.datatables.min.js"></script>
+    <script src="~/js/plugins/datatables.bootstrap.min.js"></script>
+    <script type="text/javascript">$('#templeados').DataTable();</script>
+    <script>
+        $(document).ready(function () {
+            $('#proveedor').change(function () {
+                var proveedor = $(this).val();
+                switch (proveedor) {
+                    case 'proveedor1':
+                        $('#categoria').val('Categoría 1');
+                        $('#identificacion').val('3-3232-02323');
+                        break;
+                    case 'proveedor2':
+                        $('#categoria').val('Categoría 2');
+                        $('#identificacion').val('3-2132-1212312');
+                        break;
+                    case 'proveedor3':
+                        $('#categoria').val('Categoría 3');
+                        $('#identificacion').val('3-32323-32323');
+                        break;
+                    default:
+                        $('#categoria').val('');
+                        $('#identificacion').val('');
+                }
+            });
+        });
+    </script>
+}

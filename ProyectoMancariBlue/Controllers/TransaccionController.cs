@@ -4,26 +4,40 @@ namespace ProyectoMancariBlue.Controllers
 {
     public class Transaccion : Controller
     {
+
         public IActionResult Index()
         {
             return View();
         }
-
-
-        public IActionResult CrearTransaccion()
+        public IActionResult CrearTransaccionC()
+        {
+            return View();
+        }
+        public IActionResult CrearTransaccionV()
         {
             return View();
         }
 
-        public IActionResult EditarTransaccion()
+        public IActionResult EditarTransaccionC()
         {
             return View();
         }
 
-        public IActionResult VerTransaccion()
+        public IActionResult EditarTransaccionV()
         {
             return View();
         }
+
+        public IActionResult VerTransaccionC()
+        {
+            return View();
+        }
+
+        public IActionResult VerTransaccionV()
+        {
+            return View();
+        }
+
 
 
     }

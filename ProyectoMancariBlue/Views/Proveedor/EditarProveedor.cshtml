@@ -1,10 +1,10 @@
 ﻿@{
-    ViewData["Title"] = "CrearProveedor";
+    ViewData["Title"] = "EditarProveedor";
 }
 
 <div class="app-title">
     <div>
-        <h1><i class="fa fa-th-list" style="margin-right: 10px;"></i>Crear Proveedor</h1>
+        <h1><i class="fa fa-th-list" style="margin-right: 10px;"></i>Editar Proveedor</h1>
         <p>Proveedores</p>
 
     </div>
@@ -15,33 +15,37 @@
 </div>
 <div class="col-md-12">
     <div class="tile">
-        <h3 class="tile-title">Crear Proveedor</h3>
+        <h3 class="tile-title">Editar Proveedor</h3>
         <div class="tile-body">
             <form asp-action="Index" asp-controller="Proveedor" method="post" enctype="multipart/form-data">
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                 <div class="row">
                     <div class="col-md-6">
                         <div class="form-group">
+                            <label class="control-label">Código</label>
+                            <input class="form-control" value="001-P" disabled />
+                        </div>
+                        <div class="form-group">
                             <label class="control-label">Identificación</label>
-                            <input class="form-control" />
+                            <input class="form-control" value="3-123-3233" />
                             <span class="text-danger">Campo requerido</span>
                         </div>
                         <div class="form-group">
                             <label class="control-label">Proveedor</label>
-                            <input class="form-control"  />
-                            <span class="text-danger">Campo requerido</span>
-                        </div>
-
-                        <div class="form-group">
-                            <label class="control-label">Teléfono</label>
-                            <input class="form-control" />
+                            <input class="form-control" value="Proveedor 1" />
                             <span class="text-danger">Campo requerido</span>
                         </div>
                     </div>
                     <div class="col-md-6">
+
+                        <div class="form-group">
+                            <label class="control-label">Teléfono</label>
+                            <input class="form-control" value="Telefono 1" />
+                            <span class="text-danger">Campo requerido</span>
+                        </div>
                         <div class="form-group">
                             <label class="control-label">Correo</label>
-                            <input class="form-control"  />
+                            <input class="form-control" value="Correo1" />
                             <span class="text-danger">Campo requerido</span>
                         </div>
                         <div class="form-group">
@@ -57,7 +61,7 @@
                     </div>
                 </div>
                 <div class="form-group">
-                    <button class="btn btn-primary" type="submit"><i class="fa fa-fw fa-lg fa-check-circle"></i>Crear</button>&nbsp;&nbsp;&nbsp;<a class="btn btn-secondary" href="javascript:history.back();"><i class="fa fa-fw fa-lg fa-times-circle"></i>Cancelar</a>
+                    <button class="btn btn-primary" type="submit"><i class="fa fa-fw fa-lg fa-check-circle"></i>Editar</button>&nbsp;&nbsp;&nbsp;<a class="btn btn-secondary" href="javascript:history.back();"><i class="fa fa-fw fa-lg fa-times-circle"></i>Cancelar</a>
                 </div>
 
             </form>
@@ -65,33 +69,9 @@
     </div>
 </div>
 
-
 @section Scripts {
+    <script src="~/js/plugins/jquery.datatables.min.js"></script>
+    <script src="~/js/plugins/datatables.bootstrap.min.js"></script>
 
-    <script>
-        // Función para mostrar u ocultar la previsualización de la imagen
-        function actualizarPrevisualizacion() {
-            var fileInput = document.getElementById('Imagen');
-            var previsualizacionContainer = document.getElementById('previsualizacionContainer');
-            var imgPrevisualizacion = document.getElementById('imagenPrevisualizacion');
-
-            if (fileInput.files && fileInput.files[0]) {
-                var reader = new FileReader();
-                reader.onload = function (e) {
-                    imgPrevisualizacion.setAttribute('src', e.target.result);
-                }
-                reader.readAsDataURL(fileInput.files[0]);
-                previsualizacionContainer.style.display = 'block';
-            } else {
-                imgPrevisualizacion.setAttribute('src', '#');
-                previsualizacionContainer.style.display = 'none';
-            }
-        }
-
-        // Asignar los eventos change y load al input de tipo file
-        var imagenInput = document.getElementById('Imagen');
-        imagenInput.addEventListener('change', actualizarPrevisualizacion);
-        imagenInput.addEventListener('load', actualizarPrevisualizacion);
-    </script>
 
 }

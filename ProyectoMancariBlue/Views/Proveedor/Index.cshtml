@@ -1,5 +1,188 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
+﻿@{
+    ViewData["Title"] = "Proveedor";
+}
+@functions {
+    string NombreCompleto(string n, string a)
+    {
+        return n + " " + a;
+
+    }
+
+}
+<div class="app-title">
+    <div>
+        <h1><i class="fa fa-th-list" style="margin-right: 10px;"></i>Administración de Proveedores</h1>
+        <p>Proveedores</p>
+        <br>
+        <a asp-action="CrearProveedor" asp-controller="Proveedor" class="btn btn-primary"><i class="fa fa-plus" aria-hidden="true"></i>Crear Proveedor</a>
+    </div>
+    <ul class="app-breadcrumb breadcrumb side">
+        <li class="breadcrumb-item"><i class="fa fa-home fa-lg"></i></li>
+        <li class="breadcrumb-item">Proveedores</li>
+    </ul>
+</div>
+<div class="row" style="flex-direction:column">
+    <div class="col-md-14">
+        <div class="tile">
+            <div class="tile-body">
+                <div class="table-responsive">
+                    <table class="table table-hover table-bordered" id="tproveedor">
+                        <thead>
+                            <tr>
+                                <th>
+                                    Código
+                                </th>
+                                <th>
+                                    Identificación
+                                </th>
+                                <th>
+                                    Proveedor
+                                </th>
+                                <th>
+                                    Teléfono
+                                </th>
+                                <th>
+                                    Correo
+                                </th>
+                                <th>
+                                    Categoría
+                                </th>
+                                <th>
+                                    Acciones
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    001-P
+                                </td>
+                                <td>
+                                   3-12123-123123
+                                </td>
+                                <td>
+                                   Proveedor 1
+                                </td>
+                                <td>
+                                    Telefono 1
+                                </td>
+                                <td>
+                                    correo1@gmail.com
+                                </td>
+                                <td>
+                                    Categoría 1
+                                </td>
+                                <td>
+                                    <a class="btn btn-primary" asp-action="EditarProveedor" asp-controller="Proveedor">Editar</a>
+                                    <a class="btn btn-info" asp-action="VerProveedor" sp-controller="Proveedor">Detalle</a>
+                                    <a class="btn btn-danger cambiar-estado-btn" href="#">Desactivar</a>
+
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    002-P
+                                </td>
+                                <td>
+                                    3-12123-123323
+                                </td>
+                                <td>
+                                    Proveedor 2
+                                </td>
+                                <td>
+                                    Telefono 2
+                                </td>
+                                <td>
+                                    correo2@gmail.com
+                                </td>
+                                <td>
+                                    Categoría 2
+                                </td>
+                                <td>
+                                    <a class="btn btn-primary" asp-action="EditarProveedor" asp-controller="Proveedor">Editar</a>
+                                    <a class="btn btn-info" asp-action="VerProveedor" sp-controller="Proveedor">Detalle</a>
+                                    <a class="btn btn-danger cambiar-estado-btn" href="#">Desactivar</a>
+
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    003-P
+                                </td>
+                                <td>
+                                    3-12123-123323
+                                </td>
+                                <td>
+                                    Proveedor 3
+                                </td>
+                                <td>
+                                    Telefono 3
+                                </td>
+                                <td>
+                                    correo3@gmail.com
+                                </td>
+                                <td>
+                                    Categoría 3
+                                </td>
+                                <td>
+                                    <a class="btn btn-primary" asp-action="EditarProveedor" asp-controller="Proveedor">Editar</a>
+                                    <a class="btn btn-info" asp-action="VerProveedor" sp-controller="Proveedor">Detalle</a>
+                                    <a class="btn btn-danger cambiar-estado-btn" href="#">Desactivar</a>
+
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/js/plugins/jquery.datatables.min.js"></script>
+    <script src="~/js/plugins/datatables.bootstrap.min.js"></script>
+    <script type="text/javascript">$('#tproveedor').DataTable();</script>
+    <script>
+
+        $(document).ready(function () {
+            $('.cambiar-estado-btn').click(function (e) {
+                e.preventDefault();
+
+                var id = $(this).data('id');
+
+                // Mostrar confirmación con SweetAlert2
+                Swal.fire({
+                    title: 'Confirmación',
+                    text: '¿Está seguro de que desea desactivar el proveedor?',
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonText: 'Sí',
+                    cancelButtonText: 'No'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // Realizar la llamada AJAX si se confirma la acción
+                        $.ajax({
+                            url: '@Url.Action("Index", "Proveedor")',
+                            type: 'GET',
+                            success: function (response) {
+                                // Mostrar mensaje de éxito con SweetAlert2
+                                Swal.fire('Éxito', 'El proveedor ha sido desactivado.', 'success').then(function () {
+                                    // Recargar la página
+                                    location.reload();
+                                });
+                            },
+                            error: function (xhr, status, error) {
+                                // Mostrar mensaje de error con SweetAlert2
+                                Swal.fire('Error', 'Ha ocurrido un error al desactivar el proveedor.', 'error');
+                                console.error('Error:', error);
+                            }
+                        });
+                    }
+                });
+            });
+        });
+
+    </script>
+
 }

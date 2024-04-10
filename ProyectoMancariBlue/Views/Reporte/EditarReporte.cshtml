@@ -1,0 +1,122 @@
+﻿@{
+    ViewData["Title"] = "EditarReporte";
+}
+
+<div class="app-title">
+    <div>
+        <h1><i class="fa fa-th-list" style="margin-right: 10px;"></i>Editar Reporte</h1>
+        <p>Reportes</p>
+
+    </div>
+    <ul class="app-breadcrumb breadcrumb side">
+        <li class="breadcrumb-item"><i class="fa fa-home fa-lg"></i></li>
+        <li class="breadcrumb-item">Reportes</li>
+    </ul>
+</div>
+<div class="col-md-12">
+    <div class="tile">
+        <h3 class="tile-title">Editar Reporte</h3>
+        <div class="tile-body">
+            <form asp-action="Index" asp-controller="Reporte" method="post" enctype="multipart/form-data">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="control-label">Código CVO</label>
+                            <input class="form-control" value="CVO-001"/>
+                            <span class="text-danger">Campo requerido</span>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label">Código Transporte</label>
+                            <input class="form-control" value="TR00-2" />
+                            <span class="text-danger">Campo requerido</span>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label">Transacción</label>
+                            <select id="transaccion" class="form-control" onchange="rellenarCampos()">
+                                <option value="001-T">001-T</option>
+                                <option value="002-T">002-T</option>
+                                <option value="003-T" selected>003-T</option> <!-- Esta opción estará seleccionada por defecto -->
+                            </select>
+                            <span class="text-danger">Campo requerido</span>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label">Importe</label>
+                            <input id="importe" class="form-control" readonly />
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="control-label">Identificación</label>
+                            <input id="identificacion" class="form-control" readonly />
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label">Nombre Cliente</label>
+                            <input id="nombre" class="form-control" readonly />
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label">Ganado</label>
+                            <input id="ganado" class="form-control" readonly />
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label">Fecha Venta</label>
+                            <input id="venta" class="form-control" type="date" readonly />
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <button class="btn btn-primary" type="submit"><i class="fa fa-fw fa-lg fa-check-circle"></i>Editar</button>&nbsp;&nbsp;&nbsp;<a class="btn btn-secondary" href="javascript:history.back();"><i class="fa fa-fw fa-lg fa-times-circle"></i>Cancelar</a>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function rellenarCampos() {
+            var select = document.getElementById("transaccion");
+            var selectedOption = select.options[select.selectedIndex].value;
+            var importe = "";
+            var identificacion = "";
+            var nombre = "";
+            var ganado = "";
+            var venta = "";
+
+            // Aquí puedes agregar lógica para asignar valores a las variables
+            // dependiendo de la opción seleccionada.
+
+            switch (selectedOption) {
+                case "001-T":
+                    importe = '₡120.000';
+                    identificacion = '3-1232-323';
+                    nombre = 'Cliente 1';
+                    ganado = '001';
+                    venta = '2024-04-05'; // Formato: año-mes-día
+                    break
+                case "002-T":
+                    importe = '₡410.000';
+                    identificacion = '3-4232-323';
+                    nombre = 'Cliente 2';
+                    ganado = '002';
+                    venta = '2024-01-20'; // Formato: año-mes-día
+                    break
+                case "003-T":
+                    importe = '₡750.000';
+                    identificacion = '3-3232-3767';
+                    nombre = 'Cliente 3';
+                    ganado = '003';
+                    venta = '2024-04-20'; // Formato: año-mes-día
+                    break;
+                default:
+                    break;
+            }
+            document.getElementById("importe").value = importe;
+            document.getElementById("identificacion").value = identificacion;
+            document.getElementById("nombre").value = nombre;
+            document.getElementById("ganado").value = ganado;
+            document.getElementById("venta").value = venta;
+        }
+    </script>
+}

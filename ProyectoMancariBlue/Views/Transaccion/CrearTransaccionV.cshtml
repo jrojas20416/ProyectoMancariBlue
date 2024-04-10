@@ -1,71 +1,65 @@
 ﻿@{
-    ViewData["Title"] = "EditarProducto";
+    ViewData["Title"] = "CrearTransaccionV";
 }
 
 <div class="app-title">
     <div>
-        <h1><i class="fa fa-th-list"></i>Editar Producto</h1>
-        <p>Productos</p>
+        <h1><i class="fa fa-th-list" style="margin-right: 10px;"></i>Crear Transacciones</h1>
+        <p>Transacciones</p>
 
     </div>
     <ul class="app-breadcrumb breadcrumb side">
         <li class="breadcrumb-item"><i class="fa fa-home fa-lg"></i></li>
-        <li class="breadcrumb-item">Productos</li>
+        <li class="breadcrumb-item">Transacciones</li>
     </ul>
 </div>
 <div class="col-md-12">
     <div class="tile">
-        <h3 class="tile-title">Editar Productos</h3>
+        <h3 class="tile-title">Crear Transacción de Venta</h3>
         <div class="tile-body">
-            <form asp-action="Index" asp-controller="Inventario" method="post" enctype="multipart/form-data">
+            <form asp-action="Index" asp-controller="Transaccion" method="post" enctype="multipart/form-data">
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                 <div class="row">
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label class="control-label">Código</label>
-                            <input class="form-control" value="VAC001" disabled />
-                        </div>
-                        <div class="form-group">
-                            <label class="control-label">Nombre</label>
-                            <input class="form-control" value="Vacuna 1" />
+                            <label class="control-label">Identificación</label>
+                            <input class="form-control" />
                             <span class="text-danger">Campo requerido</span>
                         </div>
                         <div class="form-group">
-                            <label class="control-label">Descripción</label>
-                            <input class="form-control" value="Vacuna para desparacitar ganador"/>
+                            <label class="control-label">Nombre Cliente</label>
+                            <input class="form-control" />
+                            <span class="text-danger">Campo requerido</span>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label">Fecha Venta</label>
+                            <input class="form-control" type="date"/>
                             <span class="text-danger">Campo requerido</span>
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label class="control-label">Categoría</label>
-                            <select class="form-control">
-                                <option value="">Seleccionar...</option>
-                                <option value="Desparacitante">Desparasitante</option>
-                                <option value="Analgésico">Analgésico</option>
-                                <option value="Sumplemento">Suplemento</option>
+                            <label class="control-label">Ganado</label>
+                            <select id="producto" class="form-control">
+                                <option value="codigo1">001</option>
+                                <option value="codigo2">002</option>
+                                <option value="codigo3">003</option>
                             </select>
                             <span class="text-danger">Campo requerido</span>
                         </div>
                         <div class="form-group">
-                            <label class="control-label">Proveedor</label>
-                            <select class="form-control">
-                                <option value="">Seleccionar...</option>
-                                <option value="Proveedor 1">Proveedor 1</option>
-                                <option value="Proveedor 2">Proveedor 2</option>
-                                <option value="Proveedor 3">Proveedor 3</option>
-                            </select>
-                            <span class="text-danger">Campo requerido</span>
-                        </div>
-                        <div class="form-group">
-                            <label class="control-label">Stock</label>
-                            <input class="form-control" value="20" />
+                            <label class="control-label">Importe Venta</label>
+                            <input class="form-control" />
                             <span class="text-danger">Campo requerido</span>
                         </div>
                     </div>
                 </div>
+                <div class="row">
+                    <div class="col-md-6">
+                    </div>
+                </div>
                 <div class="form-group">
-                    <button class="btn btn-primary" type="submit"><i class="fa fa-fw fa-lg fa-check-circle"></i>Editar</button>&nbsp;&nbsp;&nbsp;<a class="btn btn-secondary" href="javascript:history.back();"><i class="fa fa-fw fa-lg fa-times-circle"></i>Cancelar</a>
+                    <button class="btn btn-primary" type="submit"><i class="fa fa-fw fa-lg fa-check-circle"></i>Crear</button>&nbsp;&nbsp;&nbsp;<a class="btn btn-secondary" href="javascript:history.back();"><i class="fa fa-fw fa-lg fa-times-circle"></i>Cancelar</a>
                 </div>
             </form>
         </div>
@@ -98,6 +92,5 @@
         imagenInput.addEventListener('change', actualizarPrevisualizacion);
         imagenInput.addEventListener('load', actualizarPrevisualizacion);
     </script>
-
 
 }

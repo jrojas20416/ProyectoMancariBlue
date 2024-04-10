@@ -1,5 +1,60 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
+﻿@{
+    ViewData["Title"] = "VerProveedor";
 }
+
+<div class="app-title">
+    <div>
+        <h1><i class="fa fa-th-list" style="margin-right: 10px;"></i>Detalle de Proveedor</h1>
+        <p>Proveedores</p>
+
+    </div>
+    <ul class="app-breadcrumb breadcrumb side">
+        <li class="breadcrumb-item"><i class="fa fa-home fa-lg"></i></li>
+        <li class="breadcrumb-item">Proveedores</li>
+    </ul>
+</div>
+<div class="col-md-12">
+    <div class="tile">
+        <h3 class="tile-title">Detalle de Proveedor</h3>
+        <div class="tile-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="control-label">Código</label>
+                        <input class="form-control" value="001-P" readonly />
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label">IdentificaciÓn</label>
+                        <input class="form-control" value="3-212-3223" readonly />
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label">Proveedor</label>
+                        <input class="form-control" value="Proveedor 1" readonly />
+                    </div>
+
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="control-label">Teléfono</label>
+                        <input class="form-control" value="Telefono 1" readonly />
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label">Correo</label>
+                        <input class="form-control" value="correo1@gmail.com" readonly />
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label">Categoría</label>
+                        <input class="form-control" value="Categoría 1" readonly />
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                </div>
+            </div>
+            <div class="form-group">
+                <a class="btn btn-secondary" href="javascript:history.back();"><i class="fa fa-fw fa-lg fa-times-circle"></i>Regresar</a>
+            </div>
+        </div>
+    </div>
+</div>
