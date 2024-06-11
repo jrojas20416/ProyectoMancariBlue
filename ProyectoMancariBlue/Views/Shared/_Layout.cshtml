@@ -22,8 +22,8 @@
             <li class="dropdown">
                 <a class="app-nav__item" href="#" data-toggle="dropdown" aria-label="Open Profile Menu"><i class="fa fa-user fa-lg"></i></a>
                 <ul class="dropdown-menu settings-menu dropdown-menu-right">
-                    <li><a class="dropdown-item" asp-controller="Home" asp-action="CambiarContrasena"><i class="fa fa-lock fa-lg"></i> Cambiar Contraseña</a></li>
-                    <li><a class="dropdown-item" asp-controller="Home" asp-action="CerrarSesion"><i class="fa fa-sign-out fa-lg"></i>Cerrar Sesion</a></li>
+                    <li><a class="dropdown-item" asp-controller="Empleado" asp-action="CambiarContrasena"><i class="fa fa-lock fa-lg"></i> Cambiar Contraseña</a></li>
+                    <li><a class="dropdown-item" asp-controller="Empleado" asp-action="CerrarSesion"><i class="fa fa-sign-out fa-lg"></i>Cerrar Sesion</a></li>
                 </ul>
             </li>
         </ul>
@@ -33,11 +33,15 @@
     <aside class="app-sidebar">
         <div class="app-sidebar__user">
             <div>
-                <p class="app-sidebar__user-name">
-                    @{
-                        var nombreCompleto = "Josue Rojas Chaves";
-                    }
+                @if (Context.Request.Cookies.ContainsKey("NombreCompleto"))
+                {
+                    var nombreCompleto = Context.Request.Cookies["NombreCompleto"];
                     @nombreCompleto
+                }
+                else
+                {
+                    <span>User</span>
+                }
                 </p>
                 <p class="app-sidebar__user-designation">Administrador</p>
             </div>
@@ -50,7 +54,7 @@
                     <span class="app-menu__label">Módulo Empleados</span>
                 </a>
                 <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                    <a class="dropdown-item" asp-action="Index" asp-controller="Empleado">Empleados</a>
+                    <a class="dropdown-item" asp-action="GetEmpleados" asp-controller="Empleado">Empleados</a>
                     <a class="dropdown-item" asp-action="Index" asp-controller="Vacacion">Vacaciones</a>
                     <a class="dropdown-item" asp-action="IndexPrestacion" asp-controller="Empleado">Prestaciones</a>
                 </div>
@@ -108,7 +112,7 @@
                     <span class="app-menu__label">Módulo Usuarios</span>
                 </a>
                 <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                    <a class="dropdown-item" asp-action="IndexA" asp-controller="Empleado">Usuarios</a>
+                    <a class="dropdown-item" asp-action="GetAdmins" asp-controller="Empleado" asp-route-estado="true">Usuarios</a>
                 </div>
             </li>
 

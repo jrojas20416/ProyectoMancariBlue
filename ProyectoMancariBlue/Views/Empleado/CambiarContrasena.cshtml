@@ -1,0 +1,31 @@
+﻿@model ProyectoMancariBlue.Models.Obj.CambiarContrasena
+@{
+    ViewData["Title"] = "CambiarContrasena";
+    Layout = "~/Views/Shared/LoginLayout.cshtml";
+}
+
+
+<div class="changePass-box">
+    <form class="login-form" asp-action="CambiarContrasena" method="post">
+        <h4 class="login-head"><i class="fa fa-lg fa-fw fa-user"></i>Cambiar contraseña</h4>
+
+        <div class="form-group">
+            <label asp-for="oldPassword" class="control-label"></label>
+            <input asp-for="oldPassword" class="form-control" type="password" placeholder="*********" autofocus>
+            <span asp-validation-for="oldPassword" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="password" class="control-label"></label>
+            <input asp-for="password" class="form-control" type="password" placeholder="*********" autofocus>
+            <span asp-validation-for="password" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="confirmPassword" class="control-label"></label>
+            <input asp-for="confirmPassword" class="form-control" type="password" placeholder="*********" autofocus>
+            <span asp-validation-for="confirmPassword" class="text-danger"></span>
+        </div>
+        <div class="form-group btn-container">
+            <button type="submit" class="btn btn-primary btn-block" href=""><i class="fa fa-sign-in fa-lg fa-fw"></i>Cambiar</button>
+        </div>
+    </form>
+</div>

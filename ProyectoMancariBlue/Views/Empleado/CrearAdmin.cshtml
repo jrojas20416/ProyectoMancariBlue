@@ -1,0 +1,150 @@
+﻿@model ProyectoMancariBlue.Models.Obj.Empleado
+
+@{
+    ViewData["Title"] = "CrearAdmin";
+}
+
+<div class="app-title">
+    <div>
+        <h1><i class="fa fa-th-list" style="margin-right: 10px;"></i>Crear Administrador</h1>
+        <p>Administradores</p>
+
+    </div>
+    <ul class="app-breadcrumb breadcrumb side">
+        <li class="breadcrumb-item"><i class="fa fa-home fa-lg"></i></li>
+        <li class="breadcrumb-item">Administradores</li>
+    </ul>
+</div>
+<div class="col-md-12">
+    <div class="tile">
+        <h3 class="tile-title">Crear Administrador</h3>
+        <iv class="tile-body">
+            <form asp-action="CrearAdmin" method="post">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                <div class="form-group">
+                    <label asp-for="Id" class="control-label">Empleado</label>
+                    <select id="EmpleadoId" class="form-control" asp-items="ViewBag.Empleados">
+                        <option value="">Seleccione un empleado</option>
+                    </select>
+                    <span asp-validation-for="Id" class="text-danger"></span>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label asp-for="Cedula" class="control-label"></label>
+                            <input asp-for="Cedula" class="form-control" id="Cedula" disabled />
+                            <span asp-validation-for="Cedula" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Nombre" class="control-label"></label>
+                            <input asp-for="Nombre" class="form-control" id="Nombre" disabled />
+                            <span asp-validation-for="Nombre" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Apellidos" class="control-label"></label>
+                            <input asp-for="Apellidos" class="form-control" id="Apellidos" disabled />
+                            <span asp-validation-for="Apellidos" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label asp-for="Puesto" class="control-label"></label>
+                            <input asp-for="Puesto" class="form-control" id="Puesto" disabled />
+                            <span asp-validation-for="Puesto" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="IdRol" class="control-label">Rol</label>
+                            <select asp-for="IdRol" class="form-control" asp-items="ViewBag.Roles">
+                                <option value="">Seleccione un Rol</option>
+                            </select>
+                            <span asp-validation-for="IdRol" class="text-danger"></span>
+                        </div>
+                </div>
+                <div class="form-group">
+                    <button class="btn btn-primary" type="submit"><i class="fa fa-fw fa-lg fa-check-circle"></i>Registrar</button>&nbsp;&nbsp;&nbsp;
+                    <a class="btn btn-secondary" href="javascript:history.back();"><i class="fa fa-fw fa-lg fa-times-circle"></i>Cancelar</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+@section Scripts {
+
+    <script>
+        // Función para mostrar u ocultar la previsualización de la imagen
+        function actualizarPrevisualizacion() {
+            var fileInput = document.getElementById('Imagen');
+            var previsualizacionContainer = document.getElementById('previsualizacionContainer');
+            var imgPrevisualizacion = document.getElementById('imagenPrevisualizacion');
+
+            if (fileInput.files && fileInput.files[0]) {
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    imgPrevisualizacion.setAttribute('src', e.target.result);
+                }
+                reader.readAsDataURL(fileInput.files[0]);
+                previsualizacionContainer.style.display = 'block';
+            } else {
+                imgPrevisualizacion.setAttribute('src', '#');
+                previsualizacionContainer.style.display = 'none';
+            }
+        }
+
+        // Asignar los eventos change y load al input de tipo file
+        var imagenInput = document.getElementById('Imagen');
+        imagenInput.addEventListener('change', actualizarPrevisualizacion);
+        imagenInput.addEventListener('load', actualizarPrevisualizacion);
+    </script>
+
+    <script>
+        $(document).ready(function () {
+            $('#EmpleadoId').change(function () {
+                var empleadoId = $(this).val();
+                if (empleadoId) {
+                    $.ajax({
+                        url: '/Empleado/ObtenerEmpleado', // URL de tu endpoint en el backend para obtener los detalles del empleado
+                        type: 'GET',
+                        data: { id: empleadoId },
+                        success: function (data) {
+                            // Rellenar los campos con la información del empleado recibida del backend
+                            $('#Cedula').val(data.cedula);
+                            $('#Nombre').val(data.nombre);
+                            $('#Apellidos').val(data.apellidos);
+                            $('#Puesto').val(data.puesto);
+
+                            // Habilitar los campos de nombre, apellidos y cedula
+                            $('#Cedula').prop('disabled', false);
+                            $('#Nombre').prop('disabled', false);
+                            $('#Apellidos').prop('disabled', false);
+                        },
+                        error: function () {
+                            // Manejar el error, por ejemplo, limpiar los campos y deshabilitarlos
+                            $('#Cedula').val('');
+                            $('#Nombre').val('');
+                            $('#Apellidos').val('');
+                            $('#Puesto').val('');
+                            $('#Cedula').prop('disabled', true);
+                            $('#Nombre').prop('disabled', true);
+                            $('#Apellidos').prop('disabled', true);
+                        }
+                    });
+                } else {
+                    // Limpiar los campos si no se ha seleccionado ningún empleado
+                    $('#Cedula').val('');
+                    $('#Nombre').val('');
+                    $('#Apellidos').val('');
+                    $('#Puesto').val('');
+
+                    // Deshabilitar los campos de nombre, apellidos y cedula
+                    $('#Cedula').prop('disabled', true);
+                    $('#Nombre').prop('disabled', true);
+                    $('#Apellidos').prop('disabled', true);
+                }
+            });
+        });
+    </script>
+   
+
+}

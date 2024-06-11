@@ -1,4 +1,5 @@
-﻿@{
+﻿@model ProyectoMancariBlue.Models.Obj.Home
+@{
     ViewData["Title"] = "Index";
 
 }
@@ -29,7 +30,7 @@
             <i class="icon fa fa-users fa-3x"></i>
             <div class="info">
                 <h4>Empleados</h4>
-                <p><b>7</b></p>
+                <p><b>@Model.Empleados</b></p>
             </div>
         </div>
     </div>
@@ -38,7 +39,7 @@
             <i class="icon fa fa-tags fa-3x"></i>
             <div class="info">
                 <h4>Animales</h4>
-                <p><b>36</b></p>
+                <p><b>@Model.Animales</b></p>
             </div>
         </div>
     </div>

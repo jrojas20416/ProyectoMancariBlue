@@ -1,5 +1,7 @@
-﻿@{
-    ViewData["Title"] = "EditarAdministrador";
+﻿@model ProyectoMancariBlue.Models.Obj.Empleado
+
+@{
+    ViewData["Title"] = "EditarAdmin";
 }
 
 <div class="app-title">
@@ -17,45 +19,36 @@
     <div class="tile">
         <h3 class="tile-title">Editar Administrador</h3>
         <div class="tile-body">
-            <form asp-action="IndexA" asp-controller="Empleado" method="post" enctype="multipart/form-data">
+            <form asp-action="EditarAdmin" method="post">
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                 <div class="row">
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label class="control-label">Cedula</label>
-                            <input class="form-control" value="1-1492-0416" disabled />
-
+                            <label asp-for="Nombre" class="control-label"></label>
+                            <input asp-for="Nombre" class="form-control" disabled />
+                            <span asp-validation-for="Nombre" class="text-danger"></span>
                         </div>
                         <div class="form-group">
-                            <label class="control-label">Nombre</label>
-                            <input class="form-control" value="Josue" readonly/>
-
+                            <label asp-for="Apellidos" class="control-label"></label>
+                            <input asp-for="Apellidos" class="form-control" disabled />
+                            <span asp-validation-for="Apellidos" class="text-danger"></span>
                         </div>
                         <div class="form-group">
-                            <label class="control-label">Apellidos</label>
-                            <input class="form-control" value="Rojas Chaves" readonly/>
-
+                            <label asp-for="Puesto" class="control-label"></label>
+                            <input asp-for="Puesto" class="form-control" disabled />
+                            <span asp-validation-for="Puesto" class="text-danger"></span>
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label class="control-label">Puesto</label>
-                            <input class="form-control" value="Ganadero" readonly />
-
+                            <label asp-for="Correo" class="control-label"></label>
+                            <input asp-for="Correo" class="form-control" disabled />
+                            <span asp-validation-for="Correo" class="text-danger"></span>
                         </div>
                         <div class="form-group">
-                            <label class="control-label">Fecha de Ingreso</label>
-                            <input type="date" class="form-control" value="2024-02-15" disabled />
-                        </div>
-                        <div class="form-group">
-                            <label class="control-label">Rol</label>
-                            <select class="form-control">
-                                <option value="">Seleccionar...</option>
-                                <option value="Rol 1">Rol 1</option>
-                                <option value="Rol 2">Rol 2</option>
-                                <option value="Rol 3">Rol 3</option>
-                            </select>
-                            <span class="text-danger">Campo requerido</span>
+                            <label asp-for="IdRol" class="control-label">Roles</label>
+                            <select asp-for="IdRol" class="form-control" asp-items="ViewBag.Roles"></select>
+                            <span asp-validation-for="IdRol" class="text-danger"></span>
                         </div>
                     </div>
                 </div>
@@ -93,6 +86,5 @@
         imagenInput.addEventListener('change', actualizarPrevisualizacion);
         imagenInput.addEventListener('load', actualizarPrevisualizacion);
     </script>
-
 
 }

@@ -1,5 +1,8 @@
-﻿@{
-    ViewData["Title"] = "Animales";
+﻿@model IEnumerable<ProyectoMancariBlue.Models.Obj.Animal>
+
+
+@{
+    ViewData["Title"] = "Index";
 }
 
 <div class="app-title">
@@ -7,77 +10,112 @@
         <h1><i class="fa fa-th-list" style="margin-right: 10px;"></i>Administración de Animales</h1>
         <p>Animales</p>
         <br>
-        <a asp-action="CrearAnimal" asp-controller="Animal" class="btn btn-primary"><i class="fa fa-plus" aria-hidden="true"></i>Crear Animal</a>
+        <a asp-action="Create" class="btn btn-primary"><i class="fa fa-plus" aria-hidden="true"></i>Crear Animal</a>
     </div>
     <ul class="app-breadcrumb breadcrumb side">
         <li class="breadcrumb-item"><i class="fa fa-home fa-lg"></i></li>
         <li class="breadcrumb-item">Animales</li>
     </ul>
 </div>
-<div class="row" style="flex-direction:column">
-    <div class="col-md-14">
+
+@if (Model.Any())
+{
+<div class="row">
+    <div class="col-md-12">
         <div class="tile">
             <div class="tile-body">
                 <div class="table-responsive">
                     <table class="table table-hover table-bordered" id="tanimales">
                         <thead>
                             <tr>
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.Id)
+                                    </th>
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.Madre)
+                                    </th>
                                 <th>
-                                    Código
+                                    @Html.DisplayNameFor(model => model.Padre)
                                 </th>
                                 <th>
-                                   Madre
+                                    @Html.DisplayNameFor(model => model.Genero)
                                 </th>
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.PartosRegistrados)
+                                    </th>
                                 <th>
-                                    Padre
+                                    @Html.DisplayNameFor(model => model.PesoKG)
                                 </th>
+                               
                                 <th>
-                                  Género
+                                    @Html.DisplayNameFor(model => model.Raza)
                                 </th>
-                                <th>
-                                    Peso (KG)
-                                </th>
-                                <th>
-                                  Raza
-                                </th>
-                                <th>
-                                    Vacunación
-                                </th>
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.FechaNacimiento)
+                                    </th>
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.Estado)
+                                    </th>
                                 <th>
                                     Acciones
                                 </th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td>
-                                    0003
-                                </td>
-                                <td>
-                                    0001
-                                </td>
-                                <td>
-                                    0002
-                                </td>
-                                <td>
-                                    Hembra
-                                </td>
-                                <td>
-                                   86
-                                </td>
-                                <td>
-                                    Raza 1
-                                </td>
-                                <td style="text-align:center">
-                                    <i class="fa fa-exclamation-circle" aria-hidden="true"></i>
-                                </td>
-                                <td>
-                                    <a class="btn btn-primary" asp-action="EditarAnimal" asp-controller="Animal">Editar</a>
-                                    <a class="btn btn-info" asp-action="VerAnimal" sp-controller="Animal">Detalle</a>
-                                    <a class="btn btn-danger cambiar-estado-btn" href="#">Cambiar Estado</a>
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Id)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Madre)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Padre)
+                                    </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.Genero)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.PartosRegistrados)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.PesoKG)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.Raza)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.FechaNacimiento)
+                                        </td>
+                                        <td>
+                                            @if (item.Estado)
+                                            {
 
-                                </td>
-                            </tr>
+                                                <span class="badge badge-success">Activo</span>
+                                            }
+                                            else
+                                            {
+                                                <span class="badge badge-danger">Inactivo</span>
+
+                                            }
+                                        </td>
+                                    <td>
+                                        <a class="btn btn-primary" asp-action="Edit" asp-route-id="@item.Id">Editar</a> 
+                                        <a class="btn btn-info" asp-action="Details" asp-route-id="@item.Id">Ver</a>
+                                            @if (item.Estado)
+                                            {
+                                                <a class="btn btn-danger cambiar-estado-btn" href="#" data-id="@item.Id">Desactivar</a>
+
+                                            }
+                                            else
+                                            {
+                                                <a class="btn btn-success cambiar-estado-btn" href="#" data-id="@item.Id">Activar</a>
+                                            }
+                                    </td>
+                                </tr>
+                            }
                         </tbody>
                     </table>
                 </div>
@@ -85,11 +123,18 @@
         </div>
     </div>
 </div>
+}
+else
+{
+<div>
+    <h3>Lo sentimos no tenemos datos por mostrar</h3>
+</div>
+}
 
 @section Scripts {
     <script src="~/js/plugins/jquery.datatables.min.js"></script>
     <script src="~/js/plugins/datatables.bootstrap.min.js"></script>
-    <script type="text/javascript">$('#tanimales').DataTable();</script>
+    <script type="text/javascript">$('#tanimals').DataTable();</script>
     <script>
 
         $(document).ready(function () {
@@ -101,7 +146,7 @@
                 // Mostrar confirmación con SweetAlert2
                 Swal.fire({
                     title: 'Confirmación',
-                    text: '¿Estás seguro de que deseas cambiar el estado?',
+                    text: '¿Estás seguro de que cambiar el esatdo?',
                     icon: 'question',
                     showCancelButton: true,
                     confirmButtonText: 'Sí',
@@ -110,18 +155,19 @@
                     if (result.isConfirmed) {
                         // Realizar la llamada AJAX si se confirma la acción
                         $.ajax({
-                            url: '@Url.Action("Index", "Animal")',
-                            type: 'GET',
+                            url: '@Url.Action("Delete", "Animal")',
+                            type: 'POST',
+                            data: { id: id },
                             success: function (response) {
                                 // Mostrar mensaje de éxito con SweetAlert2
-                                Swal.fire('Éxito', 'El estado ha sido cambiado correctamente.', 'success').then(function () {
+                                Swal.fire('Éxito', 'Se ha cambiado el estado correctamente.', 'success').then(function () {
                                     // Recargar la página
                                     location.reload();
                                 });
                             },
                             error: function (xhr, status, error) {
                                 // Mostrar mensaje de error con SweetAlert2
-                                Swal.fire('Error', 'Ha ocurrido un error al cambiar el estado.', 'error');
+                                Swal.fire('Error', 'Error al cambiar el estado.', 'error');
                                 console.error('Error:', error);
                             }
                         });

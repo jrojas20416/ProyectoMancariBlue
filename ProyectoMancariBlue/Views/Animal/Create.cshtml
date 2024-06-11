@@ -1,0 +1,88 @@
+﻿@model ProyectoMancariBlue.Models.Obj.Animal
+
+@{
+    ViewData["Title"] = "CrearAnimal";
+}
+
+<div class="app-title">
+    <div>
+        <h1><i class="fa fa-th-list" style="margin-right: 10px;"></i>Crear Animales</h1>
+        <p>Empleados</p>
+
+    </div>
+    <ul class="app-breadcrumb breadcrumb side">
+        <li class="breadcrumb-item"><i class="fa fa-home fa-lg"></i></li>
+        <li class="breadcrumb-item">Animales</li>
+    </ul>
+</div>
+<div class="col-md-12">
+    <div class="tile">
+        <h3 class="tile-title">Crear Animal</h3>
+        <div class="tile-body">
+            <form asp-action="Create" asp-controller="Animal" method="post" enctype="multipart/form-data">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label asp-for="Padre" class="control-label"></label>
+                            <input asp-for="Padre" class="form-control" />
+                            <span asp-validation-for="Padre" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="Madre" class="control-label"></label>
+                            <input asp-for="Madre" class="form-control" />
+                            <span asp-validation-for="Madre" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Raza" class="control-label"></label>
+                            <input asp-for="Raza" class="form-control" />
+                        </div>
+
+                                <div class="form-group">
+                                    <label asp-for="Genero" class="control-label"></label>
+                                    <input asp-for="Genero" class="form-control" />
+                                    <span asp-validation-for="Genero" class="text-danger"></span>
+                                </div>
+                    </div>
+                    <div class="col-md-6">
+                            <div class="form-group">
+                                <label asp-for="PartosRegistrados" class="control-label"></label>
+                                <input asp-for="PartosRegistrados" class="form-control" />
+                                <span asp-validation-for="PartosRegistrados" class="text-danger"></span>
+                            </div>
+
+                            <div class="form-group">
+                                <label asp-for="PesoKG" class="control-label"></label>
+                                <input asp-for="PesoKG" class="form-control" />
+                                <span asp-validation-for="PesoKG" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="FechaNacimiento" class="control-label"></label>
+                                <input asp-for="FechaNacimiento" class="form-control" />
+                                <span asp-validation-for="FechaNacimiento" class="text-danger"></span>
+                            </div>
+                            <div class="toggle-flip">
+                                <label asp-for="Estado" class="control-label"></label><br>
+                                <label>
+                                    <input asp-for="Estado" type="checkbox"><span class="flip-indecator" data-toggle-on="Activo" data-toggle-off="Inactivo"></span>
+                                </label><br>
+                                <span asp-validation-for="Estado" class="text-danger"></span>
+                            </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <button class="btn btn-primary" type="submit"><i class="fa fa-fw fa-lg fa-check-circle"></i>Crear</button>&nbsp;&nbsp;&nbsp;<a class="btn btn-secondary" href="javascript:history.back();"><i class="fa fa-fw fa-lg fa-times-circle"></i>Cancelar</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+@section Scripts {
+
+    
+}

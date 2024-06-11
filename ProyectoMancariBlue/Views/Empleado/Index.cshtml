@@ -1,206 +1,63 @@
-﻿@{
-    ViewData["Title"] = "Empleados";
+﻿@model ProyectoMancariBlue.Models.Obj.EmpleadoInicio
+
+@{
+    ViewData["Title"] = "Login";
+    Layout = "LoginLayout";
 }
-@functions {
-    string NombreCompleto(string n, string a)
-    {
-        return n + " " + a;
 
-    }
-
-}
-<div class="app-title">
-    <div>
-        <h1><i class="fa fa-th-list" style="margin-right: 10px;"></i>Administración de Empleados</h1>
-        <p>Empleados</p>
-        <br>
-        <a asp-action="CrearEmpleado" asp-controller="Empleado" class="btn btn-primary"><i class="fa fa-plus" aria-hidden="true"></i>Crear Empleado</a>
-    </div>
-    <ul class="app-breadcrumb breadcrumb side">
-        <li class="breadcrumb-item"><i class="fa fa-home fa-lg"></i></li>
-        <li class="breadcrumb-item">Empleados</li>
-    </ul>
-</div>
-<div class="row" style="flex-direction:column">
-        <div class="col-md-14">
-            <div class="tile">
-                <div class="tile-body">
-                    <div class="table-responsive">
-                        <table class="table table-hover table-bordered" id="templeados">
-                            <thead>
-                                <tr>
-                                <th>
-                                   Cédula
-                                </th>
-                                    <th>
-                                        Nombre Completo
-                                    </th>
-                                    <th>
-                                        Correo
-                                    </th>
-
-                                    <th>
-                                        Puesto
-                                    </th>
-                                    <th>
-                                        Fecha de Ingreso
-                                    </th>
-                                <th >
-                                    Vacaciones
-                                </th>
-                                <th>
-                                    Estado
-                                </th>
-                                    <th>
-                                       Acciones
-                                    </th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                    <tr>
-                                        <td>
-                                            1-1492-0416
-                                        </td>
-                                        <td>
-                                            Josue Rojas Chaves
-                                        </td>
-
-                                        <td>
-                                           svcrove@outlook.com
-                                        </td>
-                                        <td>
-                                            Ganaero
-                                        </td>
-                                <td>
-                                    02/04/2024
-                                </td>
-                                <td style="text-align:center">
-                                    <i class="fa fa-exclamation-circle"  aria-hidden="true"></i>
-                                </td>
-                                <td>
-                                    <span class="badge badge-success">Activo</span>
-                                </td>
-                                        <td>
-                                    <a class="btn btn-primary" asp-action="EditarEmpleado" asp-controller="Empleado">Editar</a>
-                                    <a class="btn btn-info" asp-action="VerEmpleado" sp-controller="Empleado">Detalle</a>
-                                                <a class="btn btn-danger cambiar-estado-btn" href="#">Desactivar</a>
-                                            
-                                        </td>
-                                    </tr>
-                            <tr>
-                                <td>
-                                    1-1492-0416
-                                </td>
-                                <td>
-                                    Manuel Barrantes Garcia
-                                </td>
-
-                                <td>
-                                    manu@outlook.com
-                                </td>
-                                <td>
-                                    Asistente
-                                </td>
-                                <td>
-                                    02/04/2024
-                                </td>
-                                <td style="text-align:center">
-                                    <i class="fa fa-check-circle" aria-hidden="true"></i>
-                                </td>
-                                <td>
-                                    <span class="badge badge-danger">Inactivo</span>
-                                </td>
-                                <td>
-                                    <a class="btn btn-primary" asp-action="EditarEmpleado" asp-controller="Empleado">Editar</a>
-                                    <a class="btn btn-info" asp-action="VerEmpleado" sp-controller="Empleado">Detalle</a>
-                                    <a class="btn btn-success cambiar-estado-btn" href="#">Activar</a>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    1-1492-0416
-                                </td>
-                                <td>
-                                    Ariana Montero Salazar
-                                </td>
-
-                                <td>
-                                    armosa@outlook.com
-                                </td>
-                                <td>
-                                    Veterinario
-                                </td>
-                                <td>
-                                    02/04/2024
-                                </td>
-                                <td style="text-align:center">
-                                    <i class="fa fa-check-circle" aria-hidden="true"></i>
-                                </td>
-                                <td >
-                                    <span class="badge badge-success">Activo</span>
-                                </td>
-
-                                <td>
-                                    <a class="btn btn-primary" asp-action="EditarEmpleados" asp-controller="Empleados">Editar</a>
-                                    <a class="btn btn-info" asp-action="VerEmpleados" sp-controller="Empleados">Detalle</a>
-                                    <a class="btn btn-danger cambiar-estado-btn" href="#">Desactivar</a>
-
-                                </td>
-                            </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
+<div class="login-box">
+    <form class="login-form" asp-action="Login" method="post">
+        <h2 class="login-head"><i class="fa fa-lg fa-fw fa-user"></i>Iniciar Sesion</h2>
+        <div class="form-group">
+            <label asp-for="EmpleadoLogin.Empleado" class="control-label"></label>
+            <input asp-for="EmpleadoLogin.Empleado" class="form-control" placeholder="Numero de cedula o correo" />
+            <span asp-validation-for="EmpleadoLogin.Empleado" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="EmpleadoLogin.Contrasena" class="control-label"></label>
+            <input asp-for="EmpleadoLogin.Contrasena" type="password" class="form-control" placeholder="*******" />
+            <span asp-validation-for="EmpleadoLogin.Contrasena" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <div class="utility">
+                <p class="semibold-text mb-2"><a href="#" data-toggle="flip">Olvido su contraseña?</a></p>
             </div>
         </div>
-    </div>
-
-@section Scripts {
-    <script src="~/js/plugins/jquery.datatables.min.js"></script>
-    <script src="~/js/plugins/datatables.bootstrap.min.js"></script>
-    <script type="text/javascript">$('#templeados').DataTable();</script>
+        @if (!string.IsNullOrEmpty(ViewData["ReturnUrl"] as string))
+        {
+            <input type="hidden" name="ReturnUrl" value="@ViewData["ReturnUrl"]" />
+        }
+        <div class="form-group btn-container">
+            <button class="btn btn-primary btn-block"><i class="fa fa-sign-in fa-lg fa-fw"></i>Inciar Sesión</button>
+        </div>
+    </form>
+    <form class="forget-form" asp-action="RestablecerContrasena" method="post">
+        <h5 class="login-head"><i class="fa fa-lg fa-fw fa-user"></i>Restablecer Contraseña</h5>
+        <div class="form-group">
+            <label asp-for="RestorePassword.Cedula" class="control-label"></label>
+            <input asp-for="RestorePassword.Cedula" class="form-control" placeholder="123456789" />
+            <span asp-validation-for="RestorePassword.Correo" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="RestorePassword.Correo" class="control-label"></label>
+            <input asp-for="RestorePassword.Correo" class="form-control" placeholder="ejemplo@gmail.com" />
+            <span asp-validation-for="RestorePassword.Cedula" class="text-danger"></span>
+        </div>
+        <div class="form-group btn-container">
+            <button class="btn btn-primary btn-block"><i class="fa fa-unlock fa-lg fa-fw"></i>Restablecer</button>
+        </div>
+        <div class="form-group mt-3">
+            <p class="semibold-text mb-0"><a href="#" data-toggle="flip"><i class="fa fa-angle-left fa-fw"></i> Volver al Login</a></p>
+        </div>
+    </form>
+</div>
+@section Scripts
+{
     <script>
-
-        $(document).ready(function () {
-            $('.cambiar-estado-btn').click(function (e) {
-                e.preventDefault();
-
-                var id = $(this).data('id');
-
-                // Mostrar confirmación con SweetAlert2
-                Swal.fire({
-                    title: 'Confirmación',
-                    text: '¿Estás seguro de que deseas cambiar el estado?',
-                    icon: 'question',
-                    showCancelButton: true,
-                    confirmButtonText: 'Sí',
-                    cancelButtonText: 'No'
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        // Realizar la llamada AJAX si se confirma la acción
-                        $.ajax({
-                            url: '@Url.Action("Index", "Empleado")',
-                            type: 'GET',
-                            success: function (response) {
-                                // Mostrar mensaje de éxito con SweetAlert2
-                                Swal.fire('Éxito', 'El estado ha sido cambiado correctamente.', 'success').then(function () {
-                                    // Recargar la página
-                                    location.reload();
-                                });
-                            },
-                            error: function (xhr, status, error) {
-                                // Mostrar mensaje de error con SweetAlert2
-                                Swal.fire('Error', 'Ha ocurrido un error al cambiar el estado.', 'error');
-                                console.error('Error:', error);
-                            }
-                        });
-                    }
-                });
-            });
+        $('.login-content [data-toggle="flip"]').click(function () {
+            $('.login-box').toggleClass('flipped');
+            return false;
         });
-
     </script>
 
 }
-
-

@@ -1,4 +1,6 @@
-﻿@{
+﻿@model IEnumerable<ProyectoMancariBlue.Models.Obj.Empleado>
+
+@{
     ViewData["Title"] = "Administradores";
 }
 @functions {
@@ -8,20 +10,20 @@
 
     }
 
-}
+ }
+
 <div class="app-title">
     <div>
         <h1><i class="fa fa-th-list" style="margin-right: 10px;"></i>Administración de Usuarios</h1>
         <p>Administradores</p>
         <br>
-        <a asp-action="CrearAdministrador" asp-controller="Empleado" class="btn btn-primary"><i class="fa fa-plus" aria-hidden="true"></i>Crear Administrador</a>
     </div>
     <ul class="app-breadcrumb breadcrumb side">
         <li class="breadcrumb-item"><i class="fa fa-home fa-lg"></i></li>
         <li class="breadcrumb-item">Administradores</li>
     </ul>
 </div>
-<div class="row" style="flex-direction:column">
+<!-- <div class="row" style="flex-direction:column">
     <div class="col-md-14">
         <div class="tile">
             <div class="tile-body">
@@ -123,12 +125,106 @@
             </div>
         </div>
     </div>
-</div>
+</div> -->
+
+@if (Model.Any())
+{
+    <div class="row">
+        <div class="col-md-12">
+            <div class="tile">
+                <div class="tile-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover table-bordered" id="tadministrador">
+                            <thead>
+                                <tr>
+                                    <th>
+                                        Nombre copleto
+                                    </th>
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.Cedula)
+                                    </th>
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.Correo)
+                                    </th>
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.Puesto)
+                                    </th>
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.Estado)
+                                    </th>
+                                    <th>
+                                        Tipo Rol
+                                    </th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (Model != null)
+                                {
+                                    foreach (var item in Model)
+                                    {
+                                        <tr>
+                                            <td>
+                                                @NombreCompleto(item.Nombre, item.Apellidos)
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.Cedula)
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.Correo)
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.Puesto)
+                                            </td>
+                                       
+                                            <td>
+                                                @if (item.Estado)
+                                                {
+
+                                                    <span class="badge badge-success">Activo</span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="badge badge-danger">Inactivo</span>
+
+                                                }
+
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.Rol.Descripcion)
+                                            </td>
+                                            <td>
+                                                @if (Context.Request.Cookies["Id"] != item.Id.ToString())
+                                                {
+                                                    <a class="btn btn-primary" asp-action="EditarAdmin" asp-route-id="@item.Id">Editar</a>
+                             
+                                                }
+
+                                            </td>
+
+
+                                        </tr>
+                                    }
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+else
+{
+    <div>
+        <h3>Lo sentimos no tenemos datos por mostrar</h3>
+    </div>
+}
 
 @section Scripts {
     <script src="~/js/plugins/jquery.datatables.min.js"></script>
     <script src="~/js/plugins/datatables.bootstrap.min.js"></script>
-    <script type="text/javascript">$('#templeados').DataTable();</script>
+    <script type="text/javascript">$('#tadministrador').DataTable();</script>
     <script>
 
         $(document).ready(function () {
@@ -149,8 +245,8 @@
                     if (result.isConfirmed) {
                         // Realizar la llamada AJAX si se confirma la acción
                         $.ajax({
-                            url: '@Url.Action("Index", "Empleado")',
-                            type: 'GET',
+                            url: '@Url.Action("CambiarEstado", "Empleado")',
+                            type: 'POST',
                             success: function (response) {
                                 // Mostrar mensaje de éxito con SweetAlert2
                                 Swal.fire('Éxito', 'El estado ha sido cambiado correctamente.', 'success').then(function () {
