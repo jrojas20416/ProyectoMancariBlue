@@ -1,5 +1,4 @@
-﻿@model ProyectoMancariBlue.Models.Obj
-
+﻿@model ProyectoMancariBlue.Models.Obj.Animal
 @{
     ViewData["Title"] = "EditarAnimal";
 }
@@ -19,59 +18,59 @@
     <div class="tile">
         <h3 class="tile-title">EditarAnimal</h3>
         <div class="tile-body">
-            <form asp-action="Index" asp-controller="Animal" method="post" enctype="multipart/form-data">
+            <form asp-action="Edit" asp-controller="Animal" method="post" enctype="multipart/form-data">
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                 <div class="row">
                     <div class="col-md-6">
+                        <input type="hidden" asp-for="Id" />
                         <div class="form-group">
-                            <label class="control-label">Código</label>
-                            <input class="form-control" value="003" disabled />
+                            <label asp-for="Id" class="control-label">Código Animal</label>
+                            <input asp-for="Id" class="form-control" readonly="readonly" />
+                            <span asp-validation-for="Id" class="text-danger"></span>
                         </div>
                         <div class="form-group">
-                            <label class="control-label">Padre</label>
-                            <input class="form-control" value="002" disabled />
+                            <label asp-for="Padre" class="control-label">Código Padre</label>
+                            <input asp-for="Padre" class="form-control" />
+                            <span asp-validation-for="Padre" class="text-danger"></span>
                         </div>
                         <div class="form-group">
-                            <label class="control-label">Madre</label>
-                            <input class="form-control" value="001" disabled />
+                            <label asp-for="Madre" class="control-label">Código Madre</label>
+                            <input asp-for="Madre" class="form-control" />
+                            <span asp-validation-for="Madre" class="text-danger"></span>
                         </div>
                         <div class="form-group">
-                            <label class="control-label">Raza</label>
-                            <select class="form-control">
-                                <option value="">Seleccionar...</option>
-                                <option value="Raza 1">Raza 1</option>
-                                <option value="Raza 2">Raza 2</option>
-                                <option value="Raza 3">Raza 3</option>
-                                <option value="No Definida">No Definida</option>
-                            </select>
-                            <span class="text-danger">Campo requerido</span>
+                            <label asp-for="Raza" class="control-label">Raza</label>
+                            <input asp-for="Raza" class="form-control" />
+                            <span asp-validation-for="Raza" class="text-danger"></span>
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label class="control-label d-block">Género</label>
-                            <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" name="genero" id="genero_hembra" value="hembra" checked disabled>
-                                <label class="form-check-label" for="genero_hembra">Hembra</label>
-                            </div>
-                            <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" name="genero" id="genero_macho" value="macho">
-                                <label class="form-check-label" for="genero_macho">Macho</label>
-                            </div>
+                            <label asp-for="Genero" class="control-label">Género</label>
+                            <input asp-for="Genero" class="form-control" />
+                            <span asp-validation-for="Genero" class="text-danger"></span>
                         </div>
                         <div class="form-group">
-                            <label class="control-label">Partos Registrados</label>
-                            <input class="form-control">
-                            <span class="text-danger">Campo requerido</span>
+                            <label asp-for="PartosRegistrados" class="control-label">Partos Registrados</label>
+                            <input asp-for="PartosRegistrados" class="form-control" />
+                            <span asp-validation-for="PartosRegistrados" class="text-danger"></span>
                         </div>
                         <div class="form-group">
-                            <label class="control-label">Peso(KG)</label>
-                            <input class="form-control" />
-                            <span class="text-danger">Campo requerido</span>
+                            <label asp-for="PesoKG" class="control-label">Peso KG</label>
+                            <input asp-for="PesoKG" class="form-control" />
+                            <span asp-validation-for="PesoKG" class="text-danger"></span>
                         </div>
                         <div class="form-group">
-                            <label class="control-label">Fecha de Nacimiento</label>
-                            <input type="date" class="form-control" value="2024-01-01" disabled />
+                            <label asp-for="FechaNacimiento" class="control-label">Fecha Nacimiento</label>
+                            <input asp-for="FechaNacimiento" class="form-control" />
+                            <span asp-validation-for="FechaNacimiento" class="text-danger"></span>
+                        </div>
+                        <div class="toggle-flip">
+                            <label asp-for="Estado" class="control-label">Estado</label><br>
+                            <label>
+                                <input asp-for="Estado" type="checkbox"><span class="flip-indecator" data-toggle-on="Activo" data-toggle-off="Inactivo"></span>
+                            </label><br>
+                            <span asp-validation-for="Estado" class="text-danger"></span>
                         </div>
                     </div>
                 </div>

@@ -1,4 +1,6 @@
-﻿@{
+﻿@model ProyectoMancariBlue.Models.Obj.Animal
+
+@{
     ViewData["Title"] = "VerAnimal";
 }
 
@@ -17,52 +19,47 @@
 <div class="tile">
     <h3 class="tile-title">Detalle de Animal</h3>
     <div class="tile-body">
-        <form asp-action="Index" asp-controller="Animal" method="post" enctype="multipart/form-data">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="row">
                 <div class="col-md-6">
                     <div class="form-group">
-                        <label class="control-label">Código</label>
-                        <input class="form-control" value="003" disabled />
+                        <label asp-for="Id" class="control-label">Código Animal</label>
+                        <input asp-for="Id" class="form-control" readonly />
                     </div>
                     <div class="form-group">
-                        <label class="control-label">Padre</label>
-                        <input class="form-control" value="002" disabled />
+                        <label asp-for="Padre" class="control-label">Código Padre</label>
+                        <input asp-for="Padre" class="form-control" readonly />
                     </div>
                     <div class="form-group">
-                        <label class="control-label">Madre</label>
-                        <input class="form-control" value="001" disabled />
+                        <label asp-for="Madre" class="control-label">Código Madre</label>
+                        <input asp-for="Madre" class="form-control" readonly />
                     </div>
                     <div class="form-group">
-                        <label class="control-label">Raza</label>
-                            <input class="form-control" value="Raza 1" disabled>
+                        <label asp-for="Raza" class="control-label">Raza</label>
+                        <input asp-for="Raza" class="form-control" readonly />
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="form-group">
-                        <label class="control-label d-block">Género</label>
-                        <div class="form-check form-check-inline">
-                            <input class="form-check-input" type="radio" name="genero" id="genero_hembra" value="hembra" checked disabled>
-                            <label class="form-check-label" for="genero_hembra">Hembra</label>
-                        </div>
-                        <div class="form-check form-check-inline">
-                            <input class="form-check-input" type="radio" name="genero" id="genero_macho" value="macho">
-                            <label class="form-check-label" for="genero_macho">Macho</label>
-                        </div>
+                        <label asp-for="Genero" class="control-label">Género</label>
+                        <input asp-for="Genero" class="form-control" readonly />
                     </div>
                     <div class="form-group">
-                        <label class="control-label">Partos Registrados</label>
-                        <input class="form-control" value="2" disabled>
+                        <label asp-for="PartosRegistrados" class="control-label">Partos Registrados</label>
+                        <input asp-for="PartosRegistrados" class="form-control" readonly />
                     </div>
                     <div class="form-group">
-                        <label class="control-label">Peso(KG)</label>
-                        <input class="form-control" value="72" disabled />
-          
+                        <label asp-for="PesoKG" class="control-label">Peso (KG)</label>
+                        <input asp-for="PesoKG" class="form-control" readonly />
                     </div>
                     <div class="form-group">
-                        <label class="control-label">Fecha de Nacimiento</label>
-                        <input type="date" class="form-control" value="2024-01-01" disabled />
+                        <label asp-for="FechaNacimiento" class="control-label">Fecha Nacimiento</label>
+                        <input asp-for="FechaNacimiento" class="form-control" readonly />
                     </div>
+                    <div class="form-group">
+                        <label asp-for="Estado" class="control-label">Activo</label>
+                        <input asp-for="Estado" type="checkbox" disabled />
+                    </div>
+
                 </div>
             </div>
 
@@ -120,7 +117,6 @@
             <div class="form-group">
                 <a class="btn btn-secondary" href="javascript:history.back();"><i class="fa fa-fw fa-lg fa-times-circle"></i>Regresar</a>
             </div>
-        </form>
     </div>
 </div>
 </div>

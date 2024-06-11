@@ -303,6 +303,21 @@ namespace ProyectoMancariBlue.Controllers
             return RedirectToAction(nameof(GetEmpleados));
         }
 
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> DetailsAdmin(long id)
+        {
+            var usuario = await _empleadoModel.GetEmpleadoById(id);
+            List<Rol> roles = await _rolModel.GetRolAsync();
+            ViewData["Roles"] = roles.Select(roles => new SelectListItem { Text = roles.Descripcion, Value = roles.Id.ToString() }).ToList();
+            if (usuario != null)
+            {
+                return View("VerAdministrador",usuario);
+
+            }
+            return RedirectToAction(nameof(GetAdmins));
+        }
+
+
     }
 }
 

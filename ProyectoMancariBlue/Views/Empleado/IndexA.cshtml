@@ -196,8 +196,9 @@
                                             <td>
                                                 @if (Context.Request.Cookies["Id"] != item.Id.ToString())
                                                 {
-                                                    <a class="btn btn-primary" asp-action="EditarAdmin" asp-route-id="@item.Id">Editar</a>
-                             
+                                                    <a class="btn btn-primary" asp-action="EditarAdmin" asp-route-id="@item.Id">Cambiar Rol</a>
+                                                    <a class="btn btn-info" asp-action="DetailsAdmin" asp-route-id="@item.Id">Ver</a>
+
                                                 }
 
                                             </td>

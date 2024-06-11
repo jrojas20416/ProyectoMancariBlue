@@ -1,4 +1,6 @@
-﻿@{
+﻿@model ProyectoMancariBlue.Models.Obj.Empleado
+
+@{
     ViewData["Title"] = "VerAdministrador";
 }
 
@@ -20,43 +22,39 @@
             <div class="row">
                 <div class="col-md-6">
                     <div class="form-group">
-                        <label class="control-label">Cedula</label>
-                        <input class="form-control" value="1-1492-0416" readonly />
+                        <label asp-for="Cedula" class="control-label">Cédula</label>
+                        <input asp-for="Cedula" class="form-control" readonly />
                     </div>
                     <div class="form-group">
-                        <label class="control-label">Nombre</label>
-                        <input class="form-control" value="Josue" readonly />
+                        <label asp-for="Nombre" class="control-label">Nombre</label>
+                        <input asp-for="Nombre" class="form-control" readonly />
                     </div>
                     <div class="form-group">
-                        <label class="control-label">Apellidos</label>
-                        <input class="form-control" value="Rojas Chaves" readonly />
+                        <label asp-for="Apellidos" class="control-label">Apellidos</label>
+                        <input asp-for="Apellidos" class="form-control" readonly />
                     </div>
                     <div class="form-group">
-                        <label class="control-label">Puesto</label>
-                        <input class="form-control" value="Adminsitrador" readonly />
+                        <label asp-for="Correo" class="control-label">Correo</label>
+                        <input asp-for="Correo" class="form-control" readonly />
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="form-group">
-                        <label class="control-label">Puesto</label>
-                        <input class="form-control" value="Ganadero" readonly />
+                        <label asp-for="Puesto" class="control-label">Puesto</label>
+                        <input asp-for="Puesto" class="form-control" readonly />
                     </div>
                     <div class="form-group">
-                        <label class="control-label">Fecha de Ingreso</label>
-                        <input type="date" class="form-control" value="2024-02-04" readonly />
+                        <label asp-for="FechaIngreso" class="control-label">Fecha de Ingreso</label>
+                        <input asp-for="FechaIngreso" class="form-control" readonly />
                     </div>
                     <div class="form-group">
-                        <label class="control-label">Rol</label>
-                        <input class="form-control" value="Rol 2" readonly />
+                        <label asp-for="@Model.Rol.Descripcion" class="control-label">Rol</label>
+                        <input asp-for="@Model.Rol.Descripcion" class="form-control" readonly />
                     </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-6">
                 </div>
             </div>
             <div class="form-group">
-                <a class="btn btn-secondary" href="javascript:history.back();"><i class="fa fa-fw fa-lg fa-times-circle"></i>Regresar</a>
+                <a asp-action="GetAdmins" class="btn btn-secondary mt-3">Regresar a la Lista</a>
             </div>
         </div>
     </div>
