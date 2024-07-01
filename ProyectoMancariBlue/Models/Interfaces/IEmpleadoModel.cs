@@ -22,7 +22,7 @@ namespace ProyectoMancariBlue.Models.Interfaces
         Task<Empleado> UpdateEmpleado(Empleado useempleador);
         Task<Empleado> UpdateAdmin(Empleado useempleador);
 
-        public string HashPassword(string password);
+        public  string HashPassword(string password);
 
         Task<bool> EmpleadoExists(string cedula, string correo);
 

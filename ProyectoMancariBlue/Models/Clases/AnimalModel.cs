@@ -39,9 +39,9 @@ namespace ProyectoMancariBlue.Models.Clases
             return await _context.Animal.FindAsync(id);
         }
 
-        public async Task<List<Animal>> GetAnimal()
+        public List<Animal> GetAnimal()
         {
-            return await _context.Animal.ToListAsync();
+            return  _context.Animal.ToList();
         }
 
         public async Task<Animal> PostAnimal(Animal animal)
@@ -82,6 +82,13 @@ namespace ProyectoMancariBlue.Models.Clases
 
         {
             return await _context.Animal.Where(m => m.Id != 1 && m.Estado == Status).ToListAsync();
+        }
+
+        public List<Animal> SearchByGender(string gender)
+        {
+            return _context.Animal
+                .Where(a => a.Genero.ToLower() == gender.ToLower())
+                .ToList();
         }
     }
 }

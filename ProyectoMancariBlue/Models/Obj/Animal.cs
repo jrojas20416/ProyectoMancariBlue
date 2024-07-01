@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
+using ProyectoMancariBlue.Models.Enum;
 
 namespace ProyectoMancariBlue.Models.Obj
 {
@@ -10,14 +11,16 @@ namespace ProyectoMancariBlue.Models.Obj
         public long Id { get; set; }
 
         [Required(ErrorMessage = "El campo Padre es requerido")]
-        public int Padre { get; set; }
+        [ForeignKey("PadreAnimal")]
+        public long? Padre { get; set; }
 
         [Required(ErrorMessage = "El campo Madre es requerido")]
-        public int Madre { get; set; }
+        [ForeignKey("MadreAnimal")]
+        public long? Madre { get; set; }
 
         [Required(ErrorMessage = "El campo Raza es requerido")]
         [StringLength(50)]
-        public string Raza { get; set; }
+        public ECattle Raza { get; set; }
 
         [Required(ErrorMessage = "El campo Genero es requerido")]
         public string Genero { get; set; }
@@ -40,8 +43,14 @@ namespace ProyectoMancariBlue.Models.Obj
         }
         private DateTime _fechaNacimiento;
 
-
         [Required(ErrorMessage = "El campo Estado es requerido")]
         public bool Estado { get; set; }
+        [Required(ErrorMessage = "El campo código es requerido")]
+        public string Codigo { get; set; }
+
+       
+        public virtual Animal PadreAnimal { get; set; }
+        public virtual Animal MadreAnimal { get; set; }
+
     }
 }

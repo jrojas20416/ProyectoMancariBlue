@@ -1,4 +1,6 @@
-﻿@model IEnumerable<ProyectoMancariBlue.Models.Obj.Animal>
+﻿@using Newtonsoft.Json;
+@using ProyectoMancariBlue.Models.Enum;
+@model IEnumerable<ProyectoMancariBlue.Models.Obj.DTO.AnimalDTO>
 
 
 @{
@@ -10,7 +12,7 @@
         <h1><i class="fa fa-th-list" style="margin-right: 10px;"></i>Administración de Animales</h1>
         <p>Animales</p>
         <br>
-        <a asp-action="Create" class="btn btn-primary"><i class="fa fa-plus" aria-hidden="true"></i>Crear Animal</a>
+        <a onclick="OpenModal('mdlAddAnimal')" class="btn btn-primary"><i class="fa fa-plus" aria-hidden="true"></i>Crear Animal</a>
     </div>
     <ul class="app-breadcrumb breadcrumb side">
         <li class="breadcrumb-item"><i class="fa fa-home fa-lg"></i></li>
@@ -18,76 +20,92 @@
     </ul>
 </div>
 
-@if (Model.Any())
+@if (Model!=null && Model.Any())
 {
-<div class="row">
-    <div class="col-md-12">
-        <div class="tile">
-            <div class="tile-body">
-                <div class="table-responsive">
-                    <table class="table table-hover table-bordered" id="tanimales">
-                        <thead>
-                            <tr>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="tile">
+                <div class="tile-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover table-bordered" id="tanimales">
+                            <thead>
+                                <tr>
                                     <th>
-                                        @Html.DisplayNameFor(model => model.Id)
+                                        @Html.DisplayNameFor(model => model.Codigo)
                                     </th>
                                     <th>
                                         @Html.DisplayNameFor(model => model.Madre)
                                     </th>
-                                <th>
-                                    @Html.DisplayNameFor(model => model.Padre)
-                                </th>
-                                <th>
-                                    @Html.DisplayNameFor(model => model.Genero)
-                                </th>
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.Padre)
+                                    </th>
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.Genero)
+                                    </th>
                                     <th>
                                         @Html.DisplayNameFor(model => model.PartosRegistrados)
                                     </th>
-                                <th>
-                                    @Html.DisplayNameFor(model => model.PesoKG)
-                                </th>
-                               
-                                <th>
-                                    @Html.DisplayNameFor(model => model.Raza)
-                                </th>
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.PesoKG) 
+                                    </th>
+
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.Raza)
+                                    </th>
                                     <th>
                                         @Html.DisplayNameFor(model => model.FechaNacimiento)
                                     </th>
                                     <th>
                                         @Html.DisplayNameFor(model => model.Estado)
                                     </th>
-                                <th>
-                                    Acciones
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach (var item in Model)
-                            {
-                                <tr>
-                                    <td>
-                                        @Html.DisplayFor(modelItem => item.Id)
-                                    </td>
-                                    <td>
-                                        @Html.DisplayFor(modelItem => item.Madre)
-                                    </td>
-                                    <td>
-                                        @Html.DisplayFor(modelItem => item.Padre)
-                                    </td>
+                                    <th>
+                                        Acciones
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model)
+                                {
+                                    <tr>
                                         <td>
-                                            @Html.DisplayFor(modelItem => item.Genero)
+                                            @Html.DisplayFor(modelItem => item.Codigo)
                                         </td>
                                         <td>
-                                            @Html.DisplayFor(modelItem => item.PartosRegistrados)
+                                            @Html.DisplayFor(modelItem => item.MadreAnimal.Codigo)
                                         </td>
                                         <td>
-                                            @Html.DisplayFor(modelItem => item.PesoKG)
+                                            @Html.DisplayFor(modelItem => item.PadreAnimal.Codigo)
+                                        </td>
+                                        @if (item.Genero.Equals("H"))
+                                        {
+                                            <td>
+                                               Hembra
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.PartosRegistrados)
+                                            </td>
+                                        }
+                                        else
+                                        {
+                                            <td>
+                                                Macho
+                                            </td>
+                                            <td>
+                                              N/A
+                                            </td>
+                                        }
+
+
+                                      
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.PesoKG) KG.
+                                        </td>
+                                       
+                                        <td>
+                                        @item.Raza.GetDisplayName()
                                         </td>
                                         <td>
-                                            @Html.DisplayFor(modelItem => item.Raza)
-                                        </td>
-                                        <td>
-                                            @Html.DisplayFor(modelItem => item.FechaNacimiento)
+                                           @item.FechaNacimiento.ToShortDateString()
                                         </td>
                                         <td>
                                             @if (item.Estado)
@@ -101,9 +119,9 @@
 
                                             }
                                         </td>
-                                    <td>
-                                        <a class="btn btn-primary" asp-action="Edit" asp-route-id="@item.Id">Editar</a> 
-                                        <a class="btn btn-info" asp-action="Details" asp-route-id="@item.Id">Ver</a>
+                                        <td>
+                                            <a class="btn btn-primary" onclick="OpenModalModifyAnimal(this,'mdlModifyAnimal')" data-animal='@JsonConvert.SerializeObject(item)'>Editar</a>
+                                            <a class="btn btn-info" onclick="OpenModalInfoAnimal(this,'mdlInfoAnimal')" data-animal='@JsonConvert.SerializeObject(item)'>Ver</a>
                                             @if (item.Estado)
                                             {
                                                 <a class="btn btn-danger cambiar-estado-btn" href="#" data-id="@item.Id">Desactivar</a>
@@ -113,37 +131,447 @@
                                             {
                                                 <a class="btn btn-success cambiar-estado-btn" href="#" data-id="@item.Id">Activar</a>
                                             }
-                                    </td>
-                                </tr>
-                            }
-                        </tbody>
-                    </table>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
 }
 else
 {
-<div>
-    <h3>Lo sentimos no tenemos datos por mostrar</h3>
-</div>
+    <div>
+        <h3>Lo sentimos no tenemos datos por mostrar</h3>
+    </div>
 }
+
+@*Modal to add Animal*@
+<div class="modal fade" id="mdlAddAnimal">
+    <div class="modal-dialog modal-lg dialogPDF">
+        <div class="modal-content contentPDF">
+            <div class="modal-header" style="background-color: #007C89; color:white; justify-content: center; ">
+                <h5 class="modal-title">Agregar Animal</h5>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="hdfEstado" value="0" />
+                <input type="hidden" id="hdfId" value="0" />
+                <div class="row" style=" padding-left: 1rem;">
+                    <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 pt-4 p-0">
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
+                            <div class="form-group">
+                                <label for="ddlAddAnimalModal">Código</label>
+                                <input type="text" id="txtCodigo" class="form-control" placeholder="Digite el código" autocomplete="off">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 pt-4 p-0">
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
+                            <div class="form-group">
+                                <label for="ddlAddAnimalModal">Selecciona la raza</label>
+                                <input type="text" id="ddlAddAnimalRazaModal" list="AddAnimalRazalList" class="form-control" placeholder="Buscar raza..." autocomplete="off">
+                                <datalist id="AddAnimalRazalList">
+
+                                    @{
+                                        foreach (var value in Enum.GetValues(typeof(ECattle)))
+                                        {
+                                            var cattle = (ECattle)value;
+                                                    <option value="@((int)cattle)">@cattle.GetDisplayName()</option>
+                                        }
+                                    }
+                                </datalist>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 pt-4 p-0">
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
+                            <div class="form-group">
+                                <label for="ddlAddAnimalModal">Selecciona el padre</label>
+                                <input type="text" id="ddlAddAnimalModal" list="AddAnimalList" class="form-control" placeholder="Buscar padre..." autocomplete="off">
+                                <datalist id="AddAnimalList">
+
+                                    @{
+                                        if ((IEnumerable<SelectListItem>)ViewBag.animalList != null)
+                                        {
+                                            foreach (var item in (IEnumerable<SelectListItem>)ViewBag.animalList)
+                                            {
+                                                        <option value="@item.Value">@item.Text</option>
+                                            }
+                                        }
+                                    }
+                                </datalist>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 pt-4 p-0">
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
+                            <div class="form-group">
+                                <label for="ddlAddAnimalModal">Selecciona la madre</label>
+                                <input type="text" id="ddlAddAnimalMothreModal" list="AddAnimalMotherlList" class="form-control" placeholder="Buscar madre..." autocomplete="off">
+                                <datalist id="AddAnimalMotherlList">
+
+                                    @{
+                                        if ((IEnumerable<SelectListItem>)ViewBag.animalMotherList != null)
+                                        {
+                                            foreach (var item in (IEnumerable<SelectListItem>)ViewBag.animalMotherList)
+                                            {
+                                                        <option value="@item.Value">@item.Text</option>
+                                            }
+
+                                        }
+                                    }
+                                </datalist>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 pt-4 p-0">
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
+                            <div class="form-group">
+                                <label>Seleccione el género</label>
+                                <div>
+                                    <input type="radio" id="genderMale" checked="true" name="animalGender" value="M">
+                                    <label for="genderMale">Macho</label>
+                                </div>
+                                <div>
+                                    <input type="radio" id="genderFemale" name="animalGender" value="H">
+                                    <label for="genderFemale">Hembra</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 pt-4 p-0 " id="AnimalEmContainer">
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                            <div class="form-group">
+                                <label for="animalBirths">Cantidad de partos</label>
+                                <input type="number" id="txtanimalBirths" name="animalBirths" class="form-control" placeholder="Ingrese la cantidad de partos" min="1" step="1">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 pt-4 p-0 ">
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                            <div class="form-group">
+                                <label for="animalHeigth">Peso en KG</label>
+                                <input type="number" id="txtanimalHeigth" name="animalHeigth" class="form-control" placeholder="Ingrese el peso en KG" min="1" step="1">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 pt-4 p-0">
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
+                            <div class="mb-3">
+                                <label for="lblDate" class="form-label">Fecha de nacimiento</label>
+                                <input type="date" class="form-control" id="dtDate">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <br />
+            <div class="modal-footer">
+                <button type="button" id="btnAddAnimal" class="btn btn-primary" onclick="NewAnimal()">Aceptar</button>
+                <button type="button" id="btnCloseModalAddAnimal" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@*Modal to modify Animal*@
+<div class="modal fade" id="mdlModifyAnimal">
+    <div class="modal-dialog modal-lg dialogPDF">
+        <div class="modal-content contentPDF">
+            <div class="modal-header" style="background-color: #007C89; color:white; justify-content: center; ">
+                <h5 class="modal-title">Modificar Animal</h5>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="hdfEstadoModify" value="0"/>
+                <input type="hidden" id="hdfIdModify" value="0" />
+                <div class="row" style=" padding-left: 1rem;">
+                    <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 pt-4 p-0">
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
+                            <div class="form-group">
+                                <label for="ddlModifyAnimalModal">Código</label>
+                                <input type="text" id="txtModifyCodigo" class="form-control" placeholder="Digite el código" autocomplete="off">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 pt-4 p-0">
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
+                            <div class="form-group">
+                                <label for="ddlModifyAnimalModal">Selecciona la raza</label>
+                                <input type="text" id="ddlModifyAnimalRazaModal" list="ModifyAnimalRazalList" class="form-control" placeholder="Buscar raza..." autocomplete="off">
+                                <datalist id="ModifyAnimalRazalList">
+
+                                    @{
+                                        foreach (var value in Enum.GetValues(typeof(ECattle)))
+                                        {
+                                            var cattle = (ECattle)value;
+                                                    <option value="@((int)cattle)">@cattle.GetDisplayName()</option>
+                                        }
+                                    }
+                                </datalist>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 pt-4 p-0">
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
+                            <div class="form-group">
+                                <label for="ddlModifyAnimalModal">Selecciona el padre</label>
+                                <input type="text" id="ddlModifyAnimalModal" list="ModifyAnimalList" class="form-control" placeholder="Buscar padre..." autocomplete="off">
+                                <datalist id="ModifyAnimalList">
+
+                                    @{
+                                        if ((IEnumerable<SelectListItem>)ViewBag.animalList != null)
+                                        {
+                                            foreach (var item in (IEnumerable<SelectListItem>)ViewBag.animalList)
+                                            {
+                                                        <option value="@item.Value">@item.Text</option>
+                                            }
+
+                                        }
+                                    }
+                                </datalist>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 pt-4 p-0">
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
+                            <div class="form-group">
+                                <label for="ddlModifyAnimalModal">Selecciona la madre</label>
+                                <input type="text" id="ddlModifyAnimalMothreModal" list="ModifyAnimalMotherlList" class="form-control" placeholder="Buscar madre..." autocomplete="off">
+                                <datalist id="ModifyAnimalMotherlList">
+
+                                    @{
+                                        if ((IEnumerable<SelectListItem>)ViewBag.animalMotherList != null)
+                                        {
+                                            foreach (var item in (IEnumerable<SelectListItem>)ViewBag.animalMotherList)
+                                            {
+                                                        <option value="@item.Value">@item.Text</option>
+                                            }
+
+                                        }
+                                    }
+                                </datalist>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 pt-4 p-0">
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
+                            <div class="form-group">
+                                <label>Seleccione el género</label>
+                                <div>
+                                    <input type="radio" id="genderModifyMale"  name="animalGenderModify" value="M">
+                                    <label for="genderModifyMale">Macho</label>
+                                </div>
+                                <div>
+                                    <input type="radio" id="genderModifyFemale" name="animalGenderModify" value="H">
+                                    <label for="genderModifyFemale">Hembra</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 pt-4 p-0 " id="AnimalModifyEmContainer">
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                            <div class="form-group">
+                                <label for="animalBirths">Cantidad de partos</label>
+                                <input type="number" id="txtanimalModifyBirths" name="animalBirths" class="form-control" placeholder="Ingrese la cantidad de partos" min="1" step="1">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 pt-4 p-0 ">
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                            <div class="form-group">
+                                <label for="animalHeigth">Peso en KG</label>
+                                <input type="number" id="txtanimalModifyHeigth" name="animalHeigth" class="form-control" placeholder="Ingrese el peso en KG" min="1" step="1">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 pt-4 p-0">
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
+                            <div class="mb-3">
+                                <label for="dtDateModify" class="form-label">Fecha de nacimiento</label>
+                                <input type="date" class="form-control" id="dtDateModify">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <br />
+            <div class="modal-footer">
+                <button type="button" id="btnModifyAnimal" class="btn btn-primary" onclick="ModifyAnimal()">Aceptar</button>
+                <button type="button" id="btnCloseModalModifyAnimal" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@*Modal to Information Animal*@
+<div class="modal fade" id="mdlInfoAnimal">
+    <div class="modal-dialog modal-lg dialogPDF">
+        <div class="modal-content contentPDF">
+            <div class="modal-header" style="background-color: #007C89; color:white; justify-content: center; ">
+                <h5 class="modal-title">Información Animal</h5>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="hdfEstadoInfo" value="0" />
+                <input type="hidden" id="hdfIdInfo" value="0" />
+                <div class="row" style=" padding-left: 1rem;">
+                    <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 pt-4 p-0">
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
+                            <div class="form-group">
+                                <label for="ddlInfoAnimalModal">Código</label>
+                                <input type="text" id="txtInfoCodigo" class="form-control" placeholder="Digite el código" autocomplete="off" readonly="true">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 pt-4 p-0">
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
+                            <div class="form-group">
+                                <label for="ddlInfoAnimalModal">Selecciona la raza</label>
+                                <input type="text" id="ddlInfoAnimalRazaModal" list="InfoAnimalRazalList" class="form-control" placeholder="Buscar raza..." autocomplete="off" readonly="true">
+                                <datalist id="InfoAnimalRazalList">
+
+                                    @{
+                                        foreach (var value in Enum.GetValues(typeof(ECattle)))
+                                        {
+                                            var cattle = (ECattle)value;
+                                            <option value="@((int)cattle)">@cattle.GetDisplayName()</option>
+                                        }
+                                    }
+                                </datalist>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 pt-4 p-0">
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
+                            <div class="form-group">
+                                <label for="ddlInfoAnimalModal">Selecciona el padre</label>
+                                <input type="text" id="ddlInfoAnimalModal" list="InfoAnimalList" class="form-control" placeholder="Buscar padre..." autocomplete="off" readonly="true">
+                                <datalist id="InfoAnimalList">
+
+                                    @{
+                                        if ((IEnumerable<SelectListItem>)ViewBag.animalList != null)
+                                        {
+                                            foreach (var item in (IEnumerable<SelectListItem>)ViewBag.animalList)
+                                            {
+                                                <option value="@item.Value">@item.Text</option>
+                                            }
+
+                                        }
+                                    }
+                                </datalist>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 pt-4 p-0">
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
+                            <div class="form-group">
+                                <label for="ddlInfoAnimalModal">Selecciona la madre</label>
+                                <input type="text" id="ddlInfoAnimalMothreModal" list="InfoAnimalMotherlList" class="form-control" placeholder="Buscar madre..." autocomplete="off" readonly="true">
+                                <datalist id="InfoAnimalMotherlList">
+
+                                    @{
+                                        if ((IEnumerable<SelectListItem>)ViewBag.animalMotherList != null)
+                                        {
+                                            foreach (var item in (IEnumerable<SelectListItem>)ViewBag.animalMotherList)
+                                            {
+                                                <option value="@item.Value">@item.Text</option>
+                                            }
+
+                                        }
+                                    }
+                                </datalist>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 pt-4 p-0">
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
+                            <div class="form-group">
+                                <label>Seleccione el género</label>
+                                <div>
+                                    <input type="radio" id="genderInfoMale" name="animalGenderInfo" value="M" readonly>
+                                    <label for="genderInfoMale">Macho</label>
+                                </div>
+                                <div>
+                                    <input type="radio" id="genderInfoFemale" name="animalGenderInfo" value="H" readonly>
+                                    <label for="genderInfoFemale">Hembra</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 pt-4 p-0 " id="AnimalInfoEmContainer">
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                            <div class="form-group">
+                                <label for="animalBirths">Cantidad de partos</label>
+                                <input type="number" id="txtanimalInfoBirths" name="animalBirths" class="form-control" placeholder="Ingrese la cantidad de partos" min="1" step="1" readonly="true">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 pt-4 p-0 ">
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                            <div class="form-group">
+                                <label for="animalHeigth">Peso en KG</label>
+                                <input type="number" id="txtanimalInfoHeigth" name="animalHeigth" class="form-control" placeholder="Ingrese el peso en KG" min="1" step="1" readonly="true">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 pt-4 p-0">
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
+                            <div class="mb-3">
+                                <label for="dtDateInfo" class="form-label">Fecha de nacimiento</label>
+                                <input type="date" class="form-control" id="dtDateInfo" readonly="true">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 pt-4 p-0">
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
+                    <div>
+                                <h3 style="text-align: center;">Este registro no presenta vacunas registradas</h3>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <br />
+            <div class="modal-footer">
+                <button type="button" id="btnCloseModalInfoAnimal" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 @section Scripts {
     <script src="~/js/plugins/jquery.datatables.min.js"></script>
     <script src="~/js/plugins/datatables.bootstrap.min.js"></script>
+    <script src="~/js/animaljs/animaljs.js"></script>
     <script type="text/javascript">$('#tanimals').DataTable();</script>
     <script>
+        var animalList = @Html.Raw(Json.Serialize(Model));
+        var AnimalEmContainer = document.getElementById('AnimalEmContainer');
+        var AnimalModifyEmContainer = document.getElementById('AnimalModifyEmContainer');
+        var AnimalInfoEmContainer = document.getElementById('AnimalInfoEmContainer');
 
+        $('input[name="animalGenderInfo"]').attr("disabled", true);
         $(document).ready(function () {
+
+            var ChagendDate = new Date;
+            $('#dtDate').attr('max', ChagendDate.toISOString().split('T')[0]);
+            $('#dtDate').val(ChagendDate.toISOString().split('T')[0].substring(0, 10));
+
+
             $('.cambiar-estado-btn').click(function (e) {
                 e.preventDefault();
 
                 var id = $(this).data('id');
 
-                // Mostrar confirmación con SweetAlert2
+
                 Swal.fire({
                     title: 'Confirmación',
                     text: '¿Estás seguro de que cambiar el esatdo?',
@@ -153,20 +581,20 @@ else
                     cancelButtonText: 'No'
                 }).then((result) => {
                     if (result.isConfirmed) {
-                        // Realizar la llamada AJAX si se confirma la acción
+
                         $.ajax({
                             url: '@Url.Action("Delete", "Animal")',
                             type: 'POST',
                             data: { id: id },
                             success: function (response) {
-                                // Mostrar mensaje de éxito con SweetAlert2
+
                                 Swal.fire('Éxito', 'Se ha cambiado el estado correctamente.', 'success').then(function () {
-                                    // Recargar la página
+
                                     location.reload();
                                 });
                             },
                             error: function (xhr, status, error) {
-                                // Mostrar mensaje de error con SweetAlert2
+
                                 Swal.fire('Error', 'Error al cambiar el estado.', 'error');
                                 console.error('Error:', error);
                             }
@@ -174,7 +602,216 @@ else
                     }
                 });
             });
+
+
+            $('#tanimales').DataTable({
+                "paging": true,
+                "lengthChange": true,
+                "searching": true,
+                "ordering": true,
+                "responsive": true,
+                "buttons": [
+                    'copy', 'excel', 'pdf', 'print'
+                ],
+                "lengthMenu": [[5, 10, 25, 50, 100], [5, 10, 25, 50, "Todo"]],
+                "language": {
+                    "lengthMenu": "Mostrar _MENU_ registros por página",
+                    "zeroRecords": "No se encontraron registros",
+                    "info": "Mostrando _START_ a _END_ de _TOTAL_ registros",
+                    "infoEmpty": "No hay registros disponibles",
+                    "infoFiltered": "(filtrados de _MAX_ registros en total)",
+                    "search": "Buscar:",
+                    "paginate": {
+                        "first": "Primero",
+                        "last": "Último",
+                        "next": "Siguiente",
+                        "previous": "Anterior"
+                    }
+                }
+            });
+
+
+
+            AnimalEmContainer.style.display = "none";
+
+            InitializerEventDropDownList('ddlAddAnimalModal', 'AddAnimalList');
+            InitializerEventDropDownList('ddlAddAnimalMothreModal', 'AddAnimalMotherlList');
+            InitializerEventDropDownList('ddlAddAnimalRazaModal', 'AddAnimalRazalList');
+
+            InitializerEventDropDownList('ddlModifyAnimalModal', 'ModifyAnimalList');
+            InitializerEventDropDownList('ddlModifyAnimalMothreModal', 'ModifyAnimalMotherlList');
+            InitializerEventDropDownList('ddlModifyAnimalRazaModal', 'ModifyAnimalRazalList');
+
+            InitializerEventDropDownList('ddlInfoAnimalModal', 'InfoAnimalList');
+            InitializerEventDropDownList('ddlInfoAnimalMothreModal', 'InfoAnimalMotherlList');
+            InitializerEventDropDownList('ddlInfoAnimalRazaModal', 'InfoAnimalRazalList');
         });
+        function InitializerEventDropDownList(DropDownInput, dataList) {
+            var typingTimer;
+            var doneTypingInterval = 1000;
+
+            document.getElementById(DropDownInput).addEventListener("input", function () {
+                clearTimeout(typingTimer);
+
+                typingTimer = setTimeout(function () {
+                    var inputValue = document.getElementById(DropDownInput).value.toLowerCase();
+                    var inputObject = document.getElementById(DropDownInput);
+                    var options = document.getElementById(dataList).options;
+
+                    for (var i = 0; i < options.length; i++) {
+                        var option = options[i];
+                        var text = option.textContent.toLowerCase();
+
+                        if (text.indexOf(removeAccents(inputValue)) !== -1) {
+                            option.style.display = "block";
+                        } else {
+                            option.style.display = "none";
+                        }
+                    }
+                    var selectedOption = null;
+                    for (var i = 0; i < options.length; i++) {
+                        if (options[i].value.toLowerCase() === inputObject.value.toLowerCase()) {
+                            selectedOption = options[i];
+
+                            break;
+                        }
+                    }
+                    if (selectedOption) {
+                        inputObject.value = selectedOption.textContent;
+
+                    }
+                    if (GetDropDownValueSelected(DropDownInput, dataList) === null) {
+                        inputObject.value = '';
+                        inputObject.placeholder = "No se encontró el registro digitado";
+
+
+                        typingTimer = setTimeout(function () {
+                            inputObject.placeholder = "Seleccione una opción...";
+                        }, 700)
+                    }
+                    else {
+
+
+                        document.getElementById(DropDownInput).value = GetDropDownTextContentSelected(DropDownInput, dataList);
+                        options[0].selected = true;
+                    }
+                }, doneTypingInterval);
+
+
+            });
+        }
+
+        document.querySelectorAll('input[name="animalGender"]').forEach((elem) => {
+            elem.addEventListener("change", function (event) {
+                var selectedGender = event.target.value;
+
+                if (selectedGender === "M") {
+                    AnimalEmContainer.style.display = "none";
+                } else if (selectedGender === "H") {
+                    AnimalEmContainer.style.display = "block";
+                }
+
+
+
+            });
+        });
+
+        document.querySelectorAll('input[name="animalGenderModify"]').forEach((elem) => {
+            elem.addEventListener("change", function (event) {
+                var selectedGender = event.target.value;
+
+                if (selectedGender === "M") {
+                    AnimalModifyEmContainer.style.display = "none";
+                } else if (selectedGender === "H") {
+                    AnimalModifyEmContainer.style.display = "block";
+                }
+
+
+
+            });
+        });
+
+        document.querySelectorAll('input[name="animalGenderModify"]').forEach((elem) => {
+            elem.addEventListener("change", function (event) {
+                var selectedGender = event.target.value;
+
+                if (selectedGender === "M") {
+                    AnimalInfoEmContainer.style.display = "none";
+                } else if (selectedGender === "H") {
+                    AnimalInfoEmContainer.style.display = "block";
+                }
+
+
+
+            });
+        });
+
+
+        function OpenModalModifyAnimal(button, modal) {
+            var AnimalEmContainerr = document.getElementById('AnimalEmContainer');
+            var animalJson = button.getAttribute("data-animal");
+            var animal = JSON.parse(animalJson);
+            console.log(animal);
+            $("#txtModifyCodigo").val(animal.Codigo);
+            $("#ddlModifyAnimalRazaModal").val(animal.Raza);
+            ActivateInputEvent('ddlModifyAnimalRazaModal');
+            $("#ddlModifyAnimalModal").val(animal.Padre);
+            ActivateInputEvent('ddlModifyAnimalModal');
+            $("#ddlModifyAnimalMothreModal").val(animal.Madre);
+            ActivateInputEvent('ddlModifyAnimalMothreModal');
+            if (animal.Genero==='H') {
+                $('#genderModifyFemale').prop('checked', true);
+                AnimalModifyEmContainer.style.display = "block";
+            }
+            else {
+                $('#genderModifyMale').prop('checked', true);
+                AnimalModifyEmContainer.style.display = "none";
+            }
+
+            $("#dtDateModify").val(animal.FechaNacimiento.substring(0, 10));
+            $("#txtanimalModifyBirths").val(animal.PartosRegistrados);
+            $("#txtanimalModifyHeigth").val(animal.PesoKG);
+            $("#hdfIdModify").val(animal.Id);
+            $("#hdfEstadoModify").val(animal.Estado);
+            $("#txtModifyCodigo").attr("readonly", true);
+
+            OpenModal(modal);
+        }
+        function OpenModalInfoAnimal(button, modal) {
+            var AnimalEmContainerr = document.getElementById('AnimalEmContainer');
+            var animalJson = button.getAttribute("data-animal");
+            var animal = JSON.parse(animalJson);
+            console.log(animal);
+            $("#txtInfoCodigo").val(animal.Codigo);
+            $("#ddlInfoAnimalRazaModal").val(animal.Raza);
+            ActivateInputEvent('ddlInfoAnimalRazaModal');
+            $("#ddlInfoAnimalModal").val(animal.Padre);
+            ActivateInputEvent('ddlInfoAnimalModal');
+            $("#ddlInfoAnimalMothreModal").val(animal.Madre);
+            ActivateInputEvent('ddlInfoAnimalMothreModal');
+            if (animal.Genero === 'H') {
+                $('#genderInfoFemale').prop('checked', true);
+                AnimalInfoEmContainer.style.display = "block";
+            }
+            else {
+                $('#genderInfoMale').prop('checked', true);
+                AnimalInfoEmContainer.style.display = "none";
+            }
+
+            $("#dtDateInfo").val(animal.FechaNacimiento.substring(0, 10));
+            $("#txtanimalInfoBirths").val(animal.PartosRegistrados);
+            $("#txtanimalInfoHeigth").val(animal.PesoKG);
+            $("#hdfIdInfo").val(animal.Id);
+            $("#hdfEstadoInfo").val(animal.Estado);
+            $("#txtInfoCodigo").attr("readonly", true);
+
+            OpenModal(modal);
+        }
+
+        function SeachAnimalByCode(code) {
+            console.log(animalList);
+            return animalList.find(animal => animal.codigo === code);
+        }
 
     </script>
 

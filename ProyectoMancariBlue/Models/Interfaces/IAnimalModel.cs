@@ -4,7 +4,7 @@ namespace ProyectoMancariBlue.Models.Interfaces
 {
     public interface IAnimalModel
     {
-        Task<List<Animal>> GetAnimal();
+        List<Animal> GetAnimal();
 
         Task<Animal> GetAnimalById(long id);
 
@@ -15,5 +15,6 @@ namespace ProyectoMancariBlue.Models.Interfaces
         Task<Animal> PostAnimal(Animal animal);
 
         Task<List<Animal>> GetAnimalStatus(bool Status);
+        List<Animal> SearchByGender(string gender);
     }
 }

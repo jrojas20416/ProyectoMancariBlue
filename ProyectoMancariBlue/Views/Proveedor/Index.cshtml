@@ -1,4 +1,6 @@
-﻿@{
+﻿@using Newtonsoft.Json;
+@model IEnumerable<ProyectoMancariBlue.Models.Obj.DTO.ProveedorDTO>
+@{
     ViewData["Title"] = "Proveedor";
 }
 @functions {
@@ -14,143 +16,275 @@
         <h1><i class="fa fa-th-list" style="margin-right: 10px;"></i>Administración de Proveedores</h1>
         <p>Proveedores</p>
         <br>
-        <a asp-action="CrearProveedor" asp-controller="Proveedor" class="btn btn-primary"><i class="fa fa-plus" aria-hidden="true"></i>Crear Proveedor</a>
+        <a onclick="OpenModal('mdlAddProveedor')" class="btn btn-primary"><i class="fa fa-plus" aria-hidden="true"></i>Crear Proveedor</a>
     </div>
     <ul class="app-breadcrumb breadcrumb side">
         <li class="breadcrumb-item"><i class="fa fa-home fa-lg"></i></li>
         <li class="breadcrumb-item">Proveedores</li>
     </ul>
 </div>
-<div class="row" style="flex-direction:column">
-    <div class="col-md-14">
-        <div class="tile">
-            <div class="tile-body">
-                <div class="table-responsive">
-                    <table class="table table-hover table-bordered" id="tproveedor">
-                        <thead>
-                            <tr>
-                                <th>
-                                    Código
-                                </th>
-                                <th>
-                                    Identificación
-                                </th>
-                                <th>
-                                    Proveedor
-                                </th>
-                                <th>
-                                    Teléfono
-                                </th>
-                                <th>
-                                    Correo
-                                </th>
-                                <th>
-                                    Categoría
-                                </th>
-                                <th>
-                                    Acciones
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>
-                                    001-P
-                                </td>
-                                <td>
-                                   3-12123-123123
-                                </td>
-                                <td>
-                                   Proveedor 1
-                                </td>
-                                <td>
-                                    Telefono 1
-                                </td>
-                                <td>
-                                    correo1@gmail.com
-                                </td>
-                                <td>
-                                    Categoría 1
-                                </td>
-                                <td>
-                                    <a class="btn btn-primary" asp-action="EditarProveedor" asp-controller="Proveedor">Editar</a>
-                                    <a class="btn btn-info" asp-action="VerProveedor" sp-controller="Proveedor">Detalle</a>
-                                    <a class="btn btn-danger cambiar-estado-btn" href="#">Desactivar</a>
 
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    002-P
-                                </td>
-                                <td>
-                                    3-12123-123323
-                                </td>
-                                <td>
-                                    Proveedor 2
-                                </td>
-                                <td>
-                                    Telefono 2
-                                </td>
-                                <td>
-                                    correo2@gmail.com
-                                </td>
-                                <td>
-                                    Categoría 2
-                                </td>
-                                <td>
-                                    <a class="btn btn-primary" asp-action="EditarProveedor" asp-controller="Proveedor">Editar</a>
-                                    <a class="btn btn-info" asp-action="VerProveedor" sp-controller="Proveedor">Detalle</a>
-                                    <a class="btn btn-danger cambiar-estado-btn" href="#">Desactivar</a>
+@if (Model != null && Model.Any())
+{
+    <div class="row" style="flex-direction:column">
+        <div class="col-md-14">
+            <div class="tile">
+                <div class="tile-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover table-bordered" id="tproveedor">
+                            <thead>
+                                <tr>
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.Identificacion)
+                                    </th>
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.Nombre)
+                                    </th>
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.Telefono)
+                                    </th>
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.Correo)
+                                    </th>
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.CategoriaProveedor.Descripcion)
+                                    </th>
+                                    <th>
+                                        Acciones
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model)
+                                {
+                                    <tr>
 
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    003-P
-                                </td>
-                                <td>
-                                    3-12123-123323
-                                </td>
-                                <td>
-                                    Proveedor 3
-                                </td>
-                                <td>
-                                    Telefono 3
-                                </td>
-                                <td>
-                                    correo3@gmail.com
-                                </td>
-                                <td>
-                                    Categoría 3
-                                </td>
-                                <td>
-                                    <a class="btn btn-primary" asp-action="EditarProveedor" asp-controller="Proveedor">Editar</a>
-                                    <a class="btn btn-info" asp-action="VerProveedor" sp-controller="Proveedor">Detalle</a>
-                                    <a class="btn btn-danger cambiar-estado-btn" href="#">Desactivar</a>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.Identificacion)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.Nombre)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.Telefono)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.Correo)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.CategoriaProveedor.Descripcion)
+                                        </td>
+                                        <td>
+                                            <a class="btn btn-primary" onclick="OpenModalModifyProveedor(this,'mdlModifyProveedor',0)" data-proveedor='@JsonConvert.SerializeObject(item)'>Editar</a>
+                                            <a class="btn btn-info" onclick="OpenModalModifyProveedor(this,'mdlModifyProveedor',1)" data-proveedor='@JsonConvert.SerializeObject(item)'>Detalle</a>
+                                            @if (item.Estado)
+                                            {
+                                                <a class="btn btn-danger cambiar-estado-btn" onclick="EnableAndDisableProveedor(this)" data-id="@item.Id">Desactivar</a>
 
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+                                            }
+                                            else
+                                            {
+                                                <a class="btn btn-success cambiar-estado-btn" onclick="EnableAndDisableProveedor(this)" data-id="@item.Id">Activar</a>
+                                            }
+
+                                        </td>
+                                    </tr>
+
+                                }
+
+
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
+            </div>
+        </div>
+    </div>
+}
+
+
+@*Modal to add Proveedor*@
+<div class="modal fade" id="mdlAddProveedor">
+    <div class="modal-dialog modal-lg dialogPDF">
+        <div class="modal-content contentPDF">
+            <div class="modal-header" style="background-color: #007C89; color:white; justify-content: center; ">
+                <h5 class="modal-title">Agregar Proveedor</h5>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="hdfEstado" value="0" />
+                <input type="hidden" id="hdfId" value="0" />
+                <div class="row" style=" padding-left: 1rem;">
+                    <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 pt-4 p-0">
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
+                            <div class="form-group">
+                                <label for="ddlAddProveedorModal">Identificación</label>
+                                <input type="text" id="txtIdentificación" class="form-control" placeholder="Digite la identificación..." autocomplete="off">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 pt-4 p-0">
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
+                            <div class="form-group">
+                                <label for="ddlAddProveedorModal">Selecciona la categoría</label>
+                                <input type="text" id="ddlAddProveedorCategoriaModal" list="AddProveedorCategoriaList" class="form-control" placeholder="Buscar categoría..." autocomplete="off">
+                                <datalist id="AddProveedorCategoriaList">
+
+                                    @{
+                                        if ((IEnumerable<SelectListItem>)ViewBag.CategoriaProveedorListR != null)
+                                        {
+                                            foreach (var item in (IEnumerable<SelectListItem>)ViewBag.CategoriaProveedorListR)
+                                            {
+                                                        <option value="@item.Value">@item.Text</option>
+                                            }
+
+                                        }
+                                    }
+                                </datalist>
+                            </div>
+                        </div>
+                    </div>
+
+
+
+                    <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 pt-4 p-0 ">
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                            <div class="form-group">
+                                <label for="ProveedorNombre">Nombre</label>
+                                <input type="text" id="txtProveedorNombre" oninput="checkInput(this)" name="ProveedorNombre" class="form-control" placeholder="Ingrese el nombre...">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 pt-4 p-0 ">
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                            <div class="form-group">
+                                <label for="ProveedorTelefono">Teléfono</label>
+                                <input type="number" id="txtProveedorTelefono" name="ProveedorTelefono" oninput="checkInputNumber(this)" maxlength="8" class="form-control" placeholder="Ingrese el número de teléfono..." max="8" step="1">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 pt-4 p-0 ">
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                            <div class="form-group">
+                                <label for="ProveedorCorreo">Correo</label>
+                                <input type="text" id="txtProveedorCorreo" name="ProveedorCorreo" class="form-control" placeholder="Digite su correo...">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <br />
+            <div class="modal-footer">
+                <button type="button" id="btnAddProveedor" class="btn btn-primary" onclick="NewProveedor()">Aceptar</button>
+                <button type="button" id="btnCloseModalAddProveedor" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
             </div>
         </div>
     </div>
 </div>
 
+@*Modal to Modify Proveedor*@
+<div class="modal fade" id="mdlModifyProveedor">
+    <div class="modal-dialog modal-lg dialogPDF">
+        <div class="modal-content contentPDF">
+            <div class="modal-header" style="background-color: #007C89; color:white; justify-content: center; ">
+                <h5 class="modal-title" id="titleModifyModal">Modificar Proveedor</h5>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="hdfEstadoModify" value="0" />
+                <input type="hidden" id="hdfIdModify" value="0" />
+                <div class="row" style=" padding-left: 1rem;">
+                    <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 pt-4 p-0">
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
+                            <div class="form-group">
+                                <label for="ddlModifyProveedorModal">Identificación</label>
+                                <input type="text" id="txtIdentificacionModify" readonly class="form-control" placeholder="Digite la identificación..." autocomplete="off">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 pt-4 p-0">
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
+                            <div class="form-group">
+                                <label for="ddlModifyProveedorModal">Selecciona la categoría</label>
+                                <input type="text" id="ddlModifyProveedorCategoriaModal" list="ModifyProveedorCategoriaList" class="form-control" placeholder="Buscar categoría..." autocomplete="off">
+                                <datalist id="ModifyProveedorCategoriaList">
+
+                                    @{
+                                        if ((IEnumerable<SelectListItem>)ViewBag.CategoriaProveedorListR != null)
+                                        {
+                                            foreach (var item in (IEnumerable<SelectListItem>)ViewBag.CategoriaProveedorListR)
+                                            {
+                                                        <option value="@item.Value">@item.Text</option>
+                                            }
+
+                                        }
+                                    }
+                                </datalist>
+                            </div>
+                        </div>
+                    </div>
+
+
+
+                    <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 pt-4 p-0 ">
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                            <div class="form-group">
+                                <label for="ProveedorNombre">Nombre</label>
+                                <input type="text" id="txtProveedorNombreModify" oninput="checkInput(this)" name="ProveedorNombre" class="form-control" placeholder="Ingrese el nombre...">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 pt-4 p-0 ">
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                            <div class="form-group">
+                                <label for="ProveedorTelefono">Teléfono</label>
+                                <input type="number" id="txtProveedorTelefonoModify" name="ProveedorTelefono" oninput="checkInputNumber(this)" maxlength="8" class="form-control" placeholder="Ingrese el número de teléfono..." max="8" step="1">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 pt-4 p-0 ">
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                            <div class="form-group">
+                                <label for="ProveedorCorreo">Correo</label>
+                                <input type="text" id="txtProveedorCorreoModify" name="ProveedorCorreo" class="form-control" placeholder="Digite su correo...">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <br />
+            <div class="modal-footer">
+                <button type="button" id="btnModifyProveedor" class="btn btn-primary" onclick="ModifyProveedor()">Aceptar</button>
+                <button type="button" id="btnCloseModalModifyProveedor" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
 @section Scripts {
     <script src="~/js/plugins/jquery.datatables.min.js"></script>
     <script src="~/js/plugins/datatables.bootstrap.min.js"></script>
+    <script src="~/js/proveedorjs/proveedor.js"></script>
     <script type="text/javascript">$('#tproveedor').DataTable();</script>
     <script>
+        var proveedorList = @Html.Raw(Json.Serialize(Model));
 
         $(document).ready(function () {
             $('.cambiar-estado-btn').click(function (e) {
                 e.preventDefault();
 
                 var id = $(this).data('id');
-
+                var proveedor = { Id: id };
                 // Mostrar confirmación con SweetAlert2
                 Swal.fire({
                     title: 'Confirmación',
@@ -161,27 +295,181 @@
                     cancelButtonText: 'No'
                 }).then((result) => {
                     if (result.isConfirmed) {
-                        // Realizar la llamada AJAX si se confirma la acción
                         $.ajax({
-                            url: '@Url.Action("Index", "Proveedor")',
-                            type: 'GET',
-                            success: function (response) {
-                                // Mostrar mensaje de éxito con SweetAlert2
-                                Swal.fire('Éxito', 'El proveedor ha sido desactivado.', 'success').then(function () {
-                                    // Recargar la página
-                                    location.reload();
+                            url: '/Proveedor/EnableAndDisable',
+                            type: 'POST',
+                            data: proveedor,
+                        }).done(function (response) {
+
+                            if (response.includes("éxito")) {
+                                Swal.fire({
+                                    text: response,
+                                    icon: 'success',
+                                    didClose: () => {
+                                        window.location.href = '/Proveedor/Index';
+                                    }
                                 });
-                            },
-                            error: function (xhr, status, error) {
-                                // Mostrar mensaje de error con SweetAlert2
-                                Swal.fire('Error', 'Ha ocurrido un error al desactivar el proveedor.', 'error');
-                                console.error('Error:', error);
+                            }
+                            else {
+                                Swal.fire('', response, 'warning');
                             }
                         });
                     }
                 });
             });
+
+
+
+            InitializerEventDropDownList('ddlAddProveedorCategoriaModal', 'AddProveedorCategoriaList');
+            InitializerEventDropDownList('ddlModifyProveedorCategoriaModal', 'ModifyProveedorCategoriaList');
         });
+
+
+        function InitializerEventDropDownList(DropDownInput, dataList) {
+            var typingTimer;
+            var doneTypingInterval = 1000;
+
+            document.getElementById(DropDownInput).addEventListener("input", function () {
+                clearTimeout(typingTimer);
+
+                typingTimer = setTimeout(function () {
+                    var inputValue = document.getElementById(DropDownInput).value.toLowerCase();
+                    var inputObject = document.getElementById(DropDownInput);
+                    var options = document.getElementById(dataList).options;
+
+                    for (var i = 0; i < options.length; i++) {
+                        var option = options[i];
+                        var text = option.textContent.toLowerCase();
+
+                        if (text.indexOf(removeAccents(inputValue)) !== -1) {
+                            option.style.display = "block";
+                        } else {
+                            option.style.display = "none";
+                        }
+                    }
+                    var selectedOption = null;
+                    for (var i = 0; i < options.length; i++) {
+                        if (options[i].value.toLowerCase() === inputObject.value.toLowerCase()) {
+                            selectedOption = options[i];
+
+                            break;
+                        }
+                    }
+                    if (selectedOption) {
+                        inputObject.value = selectedOption.textContent;
+
+                    }
+                    if (GetDropDownValueSelected(DropDownInput, dataList) === null) {
+                        inputObject.value = '';
+                        inputObject.placeholder = "No se encontró el registro digitado";
+
+
+                        typingTimer = setTimeout(function () {
+                            inputObject.placeholder = "Seleccione una opción...";
+                        }, 700)
+                    }
+                    else {
+
+
+                        document.getElementById(DropDownInput).value = GetDropDownTextContentSelected(DropDownInput, dataList);
+                        options[0].selected = true;
+                    }
+                }, doneTypingInterval);
+
+
+            });
+        }
+
+        function OpenModalModifyProveedor(button, modal,option) {
+
+            if (option === 0) {
+                var proveedorEmContainerr = document.getElementById('proveedorEmContainer');
+                var proveedorJson = button.getAttribute("data-proveedor");
+                var proveedor = JSON.parse(proveedorJson);
+                console.log(proveedor);
+                $("#txtIdentificacionModify").val(proveedor.Identificacion);
+                $("#ddlModifyProveedorCategoriaModal").val(proveedor.CategoriaProveedor.Id);
+                ActivateInputEvent('ddlModifyProveedorCategoriaModal');
+                $("#txtProveedorNombreModify").val(proveedor.Nombre);
+                $("#txtProveedorTelefonoModify").val(proveedor.Telefono);
+                $("#txtProveedorCorreoModify").val(proveedor.Correo);
+                $("#hdfEstadoModify").val(proveedor.Estado);
+                $("#hdfIdModify").val(proveedor.Id);
+                $('#txtIdentificacionModify').prop('readonly', false);
+                $('#ddlModifyProveedorCategoriaModal').prop('readonly', false);
+                $('#txtProveedorNombreModify').prop('readonly', false);
+                $('#txtProveedorTelefonoModify').prop('readonly', false);
+                $('#txtProveedorCorreoModify').prop('readonly', false);
+                $('#btnModifyProveedor').show();
+                $('#titleModifyModal').text("Modificar proveedor");
+
+                
+                OpenModal(modal);
+
+            }
+            else {
+                var proveedorEmContainerr = document.getElementById('proveedorEmContainer');
+                var proveedorJson = button.getAttribute("data-proveedor");
+                var proveedor = JSON.parse(proveedorJson);
+                console.log(proveedor);
+                $("#txtIdentificacionModify").val(proveedor.Identificacion);
+                $("#ddlModifyProveedorCategoriaModal").val(proveedor.CategoriaProveedor.Id);
+                ActivateInputEvent('ddlModifyProveedorCategoriaModal');
+                $("#txtProveedorNombreModify").val(proveedor.Nombre);
+                $("#txtProveedorTelefonoModify").val(proveedor.Telefono);
+                $("#txtProveedorCorreoModify").val(proveedor.Correo);
+                $("#hdfEstadoModify").val(proveedor.Estado);
+                $("#hdfIdModify").val(proveedor.Id);
+
+                $('#txtIdentificacionModify').prop('readonly', true);
+                $('#ddlModifyProveedorCategoriaModal').prop('readonly', true);
+                $('#txtProveedorNombreModify').prop('readonly', true);
+                $('#txtProveedorTelefonoModify').prop('readonly', true);
+                $('#txtProveedorCorreoModify').prop('readonly', true);
+                $('#btnModifyProveedor').hide();
+                $('#titleModifyModal').text("Información proveedor");
+
+
+                OpenModal(modal);
+            
+            }
+           
+        }
+        function OpenModalInfoproveedor(button, modal) {
+            var proveedorEmContainerr = document.getElementById('proveedorEmContainer');
+            var proveedorJson = button.getAttribute("data-proveedor");
+            var proveedor = JSON.parse(proveedorJson);
+            console.log(proveedor);
+            $("#txtInfoCodigo").val(proveedor.Codigo);
+            $("#ddlInfoproveedorRazaModal").val(proveedor.Raza);
+            ActivateInputEvent('ddlInfoproveedorRazaModal');
+            $("#ddlInfoproveedorModal").val(proveedor.Padre);
+            ActivateInputEvent('ddlInfoproveedorModal');
+            $("#ddlInfoproveedorMothreModal").val(proveedor.Madre);
+            ActivateInputEvent('ddlInfoproveedorMothreModal');
+            if (proveedor.Genero === 'H') {
+                $('#genderInfoFemale').prop('checked', true);
+                proveedorInfoEmContainer.style.display = "block";
+            }
+            else {
+                $('#genderInfoMale').prop('checked', true);
+                proveedorInfoEmContainer.style.display = "none";
+            }
+
+            $("#dtDateInfo").val(proveedor.FechaNacimiento.substring(0, 10));
+            $("#txtproveedorInfoBirths").val(proveedor.PartosRegistrados);
+            $("#txtproveedorInfoHeigth").val(proveedor.PesoKG);
+            $("#hdfIdInfo").val(proveedor.Id);
+            $("#hdfEstadoInfo").val(proveedor.Estado);
+            $("#txtInfoCodigo").attr("readonly", true);
+
+            OpenModal(modal);
+        }
+
+        function SeachSupplierById(Id) {
+            console.log(proveedorList);
+            return proveedorList.find(animal => animal.identificacion === Id);
+        }
 
     </script>
 

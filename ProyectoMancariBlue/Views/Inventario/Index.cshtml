@@ -1,4 +1,7 @@
-﻿@{
+﻿@using Newtonsoft.Json;
+@using ProyectoMancariBlue.Models.Enum;
+@model IEnumerable<ProyectoMancariBlue.Models.Obj.DTO.ProductoDto>
+@{
     ViewData["Title"] = "Inventario";
 }
 
@@ -7,7 +10,7 @@
         <h1><i class="fa fa-th-list" style="margin-right: 10px;"></i>Administración de Inventario</h1>
         <p>Inventario</p>
         <br>
-        <a asp-action="CrearProducto" asp-controller="Inventario" class="btn btn-primary"><i class="fa fa-plus" aria-hidden="true"></i>Agregar Producto</a>
+        <a onclick="OpenModal('mdlAddProducto')" class="btn btn-primary"><i class="fa fa-plus" aria-hidden="true"></i>Agregar Producto</a>
     </div>
     <ul class="app-breadcrumb breadcrumb side">
         <li class="breadcrumb-item"><i class="fa fa-home fa-lg"></i></li>
@@ -23,22 +26,26 @@
                         <thead>
                             <tr>
                                 <th>
-                                    Código
+                                    @Html.DisplayNameFor(model => model.Codigo)
                                 </th>
                                 <th>
-                                   Nombre Producto
+                                    @Html.DisplayNameFor(model => model.Nombre)
                                 </th>
                                 <th>
-                                    Categoría
+                                    @Html.DisplayNameFor(model => model.Descripcion)
                                 </th>
                                 <th>
-                                    Descripción
+                                    @Html.DisplayNameFor(model => model.CategoriaProducto.Descripcion)
+                                </th>
+
+                                <th>
+                                    @Html.DisplayNameFor(model => model.Proveedor.Nombre)
                                 </th>
                                 <th>
-                                    Proveedor
+                                    @Html.DisplayNameFor(model => model.Stock)
                                 </th>
                                 <th>
-                                    Stock
+                                    @Html.DisplayNameFor(model => model.Estado)
                                 </th>
                                 <th>
                                     Acciones
@@ -46,84 +53,50 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td>
-                                   VAC001
-                                </td>
-                                <td>
-                                    Vacuna 1
-                                </td>
-                                <td>
-                                    Desparasitante
-                                </td>
-                                <td>
-                                    Vacuna para la desparacitación de ganador
-                                </td>
-                                <td>
-                                    Proveedor 1
-                                </td>
-                                <td>
-                                    16
-                                </td>
-                                <td>
-                                    <a class="btn btn-primary" asp-action="EditarProducto" asp-controller="Inventario">Editar</a>
-                                    <a class="btn btn-info" asp-action="VerProducto" sp-controller="Inventario">Detalle</a>
-                                    <a class="btn btn-danger cambiar-estado-btn" href="#">Desactivar</a>
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Codigo)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Nombre)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Descripcion)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.CategoriaProducto.Descripcion)
+                                    </td>
 
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    VAC002
-                                </td>
-                                <td>
-                                    Vacuna 2
-                                </td>
-                                <td>
-                                    Analgésico
-                                </td>
-                                <td>
-                                    Vacuna para el alivio de dolores
-                                </td>
-                                <td>
-                                    Proveedor 2
-                                </td>
-                                <td>
-                                    2
-                                </td>
-                                <td>
-                                    <a class="btn btn-primary" asp-action="EditarProducto" asp-controller="Inventario">Editar</a>
-                                    <a class="btn btn-info" asp-action="VerProducto" sp-controller="Inventario">Detalle</a>
-                                    <a class="btn btn-danger cambiar-estado-btn" href="#">Desactivar</a>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Proveedor.Nombre)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Stock)
+                                    </td>
+                                    <td>
+                                        @if (item.Estado)
+                                        {
 
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    VAC003
-                                </td>
-                                <td>
-                                    Vacuna 3
-                                </td>
-                                <td>
-                                    Suplemento
-                                </td>
-                                <td>
-                                    Vacuna para vitaminica para ganado
-                                </td>
-                                <td>
-                                    Proveedor 3
-                                </td>
-                                <td>
-                                    7
-                                </td>
-                                <td>
-                                    <a class="btn btn-primary" asp-action="EditarProducto" asp-controller="Inventario">Editar</a>
-                                    <a class="btn btn-info" asp-action="VerProducto" sp-controller="Inventario">Detalle</a>
-                                    <a class="btn btn-danger cambiar-estado-btn" href="#">Desactivar</a>
+                                            <span class="badge badge-success">Activo</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge badge-danger">Inactivo</span>
 
-                                </td>
-                            </tr>
+                                        }
+                                    </td>
+                                    <td>
+                                        <a class="btn btn-primary" onclick="OpenModalModifyProducto(this,'mdlModifyProducto',0)" data-producto='@JsonConvert.SerializeObject(item)'>Editar</a>
+                                        <a class="btn btn-info" onclick="OpenModalModifyProducto(this,'mdlModifyProducto',1)" data-producto='@JsonConvert.SerializeObject(item)'>Detalle</a>
+                                        <a class="btn btn-success " onclick="OpenModalStockProducto(this,'mdlStockProducto')" data-producto='@JsonConvert.SerializeObject(item)'>Stock</a>
+
+                                    </td>
+                                </tr>
+
+
+                            }
                         </tbody>
                     </table>
                 </div>
@@ -132,50 +105,482 @@
     </div>
 </div>
 
+@*Modal to add Producto*@
+<div class="modal fade" id="mdlAddProducto">
+    <div class="modal-dialog modal-lg dialogPDF">
+        <div class="modal-content contentPDF">
+            <div class="modal-header" style="background-color: #007C89; color:white; justify-content: center; ">
+                <h5 class="modal-title">Agregar Producto</h5>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="hdfEstado" value="0" />
+                <input type="hidden" id="hdfId" value="0" />
+                <div class="row" style=" padding-left: 1rem;">
+                    <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 pt-4 p-0">
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
+                            <div class="form-group">
+                                <label for="txtCodigo">Codigo</label>
+                                <input type="text" id="txtCodigo" class="form-control" placeholder="Digite el código..." autocomplete="off">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 pt-4 p-0 ">
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                            <div class="form-group">
+                                <label for="ProductoNombre">Nombre</label>
+                                <input type="text" id="txtProductoNombre" oninput="checkInput(this)" name="ProductoNombre" class="form-control" placeholder="Ingrese el nombre...">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 pt-4 p-0 ">
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                            <div class="form-group">
+                                <label for="Descripcion">Descripción</label>
+                                <input type="text" row="2" id="txtDescripcion" name="Descripcion" class="form-control" placeholder="Escriba una descripción...">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 pt-4 p-0">
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
+                            <div class="form-group">
+                                <label for="ddlAddTipoProductoModal">Tipo de producto</label>
+                                <input type="text" id="ddlAddTipoProductoModal" list="AddTipoProductolList" class="form-control" placeholder="Buscar tipo de producto..." autocomplete="off">
+                                <datalist id="AddTipoProductolList">
+                                    @{
+                                        foreach (var value in Enum.GetValues(typeof(EProductType)))
+                                        {
+                                            var productoType = (EProductType)value;
+                                                <option value="@((int)productoType)">@productoType.GetDisplayNameProductType()</option>
+                                        }
+                                    }
+                                </datalist>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 pt-4 p-0">
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
+                            <div class="form-group">
+                                <label for="ddlAddProductoModal">Selecciona la categoría</label>
+                                <input type="text" id="ddlAddProductoCategoriaModal" list="AddProductoCategoriaList" class="form-control" placeholder="Buscar categoría..." autocomplete="off">
+                                <datalist id="AddProductoCategoriaList">
+
+                                    @{
+                                        if ((IEnumerable<SelectListItem>)ViewBag.categoryProductList != null)
+                                        {
+                                            foreach (var item in (IEnumerable<SelectListItem>)ViewBag.categoryProductList)
+                                            {
+                                                    <option value="@item.Value">@item.Text</option>
+                                            }
+
+                                        }
+                                    }
+                                </datalist>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 pt-4 p-0">
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
+                            <div class="form-group">
+                                <label for="ddlAddProductoModal">Proveedor</label>
+                                <input type="text" id="ddlAddProductoProveedorModal" list="AddProductoProveedorList" class="form-control" placeholder="Buscar proveedor..." autocomplete="off">
+                                <datalist id="AddProductoProveedorList">
+
+                                    @{
+                                        if ((IEnumerable<SelectListItem>)ViewBag.productSupplierList != null)
+                                        {
+                                            foreach (var item in (IEnumerable<SelectListItem>)ViewBag.productSupplierList)
+                                            {
+                                                    <option value="@item.Value">@item.Text</option>
+                                            }
+
+                                        }
+                                    }
+                                </datalist>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 pt-4 p-0 ">
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                            <div class="form-group">
+                                <label for="txtCantidad">Cantidad</label>
+                                <input type="number" id="txtCantidad" name="txtCantidad" oninput="checkInputNumber(this)" maxlength="8" class="form-control" placeholder="Digite la cantidad..." step="1">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 pt-4 p-0 ">
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="" id="chkEstado">
+                                <label class="form-check-label" for="chkEstado">
+                                    Estado
+                                </label>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <br />
+            <div class="modal-footer">
+                <button type="button" id="btnAddProducto" class="btn btn-primary" onclick="NewProducto()">Aceptar</button>
+                <button type="button" id="btnCloseModalAddProducto" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+@*Modal to Modify Producto*@
+<div class="modal fade" id="mdlModifyProducto">
+    <div class="modal-dialog modal-lg dialogPDF">
+        <div class="modal-content contentPDF">
+            <div class="modal-header" style="background-color: #007C89; color:white; justify-content: center; ">
+                <h5 class="modal-title" id="titleModifyModal">Modificar Producto</h5>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="hdfEstadoModify" value="0" />
+                <input type="hidden" id="hdfIdModify" value="0" />
+                <input type="hidden" id="hdfIdentificacionProveedorModify" value="0" />
+                <div class="row" style=" padding-left: 1rem;">
+                    <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 pt-4 p-0">
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
+                            <div class="form-group">
+                                <label for="txtModifyCodigo">Codigo</label>
+                                <input type="text" id="txtModifyCodigo" class="form-control" placeholder="Digite el código..." autocomplete="off">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 pt-4 p-0 ">
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                            <div class="form-group">
+                                <label for="txtModifyProductoNombre">Nombre</label>
+                                <input type="text" id="txtModifyProductoNombre" oninput="checkInput(this)" name="txtModifyProductoNombre" class="form-control" placeholder="Ingrese el nombre...">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 pt-4 p-0 ">
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                            <div class="form-group">
+                                <label for="txtModifyDescripcion">Descripción</label>
+                                <input type="text" row="2" id="txtModifyDescripcion" name="txtModifyDescripcion" class="form-control" placeholder="Escriba una descripción...">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 pt-4 p-0">
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
+                            <div class="form-group">
+                                <label for="ddlModifyTipoProductoModal">Tipo de producto</label>
+                                <input type="text" id="ddlModifyTipoProductoModal" list="ModifyTipoProductolList" class="form-control" placeholder="Buscar tipo de producto..." autocomplete="off">
+                                <datalist id="ModifyTipoProductolList">
+                                    @{
+                                        foreach (var value in Enum.GetValues(typeof(EProductType)))
+                                        {
+                                            var productoType = (EProductType)value;
+                                                <option value="@((int)productoType)">@productoType.GetDisplayNameProductType()</option>
+                                        }
+                                    }
+                                </datalist>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 pt-4 p-0">
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
+                            <div class="form-group">
+                                <label for="ddlModifyProductoModal">Selecciona la categoría</label>
+                                <input type="text" id="ddlModifyProductoModal" list="ModifyProductoCategoriaList" class="form-control" placeholder="Buscar categoría..." autocomplete="off">
+                                <datalist id="ModifyProductoCategoriaList">
+
+                                    @{
+                                        if ((IEnumerable<SelectListItem>)ViewBag.categoryProductList != null)
+                                        {
+                                            foreach (var item in (IEnumerable<SelectListItem>)ViewBag.categoryProductList)
+                                            {
+                                                    <option value="@item.Value">@item.Text</option>
+                                            }
+
+                                        }
+                                    }
+                                </datalist>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 pt-4 p-0">
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
+                            <div class="form-group">
+                                <label for="ddlModifyProductoModal">Proveedor</label>
+                                <input type="text" id="ddlModifyProductoProveedorModal" list="ModifyProductoProveedorList" class="form-control" placeholder="Buscar proveedor..." autocomplete="off">
+                                <datalist id="ModifyProductoProveedorList">
+
+                                    @{
+                                        if ((IEnumerable<SelectListItem>)ViewBag.productSupplierList != null)
+                                        {
+                                            foreach (var item in (IEnumerable<SelectListItem>)ViewBag.productSupplierList)
+                                            {
+                                                    <option value="@item.Value">@item.Text</option>
+                                            }
+
+                                        }
+                                    }
+                                </datalist>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 pt-4 p-0 " id="divTxtModifyCantidad">
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                            <div class="form-group">
+                                <label for="txtModifyCantidad">Cantidad</label>
+                                <input type="number" id="txtModifyCantidad" name="txtModifyCantidad" oninput="checkInputNumber(this)" maxlength="8" class="form-control" placeholder="Digite la cantidad..." step="1">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 pt-4 p-0 ">
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="" id="chkModifyEstado">
+                                <label class="form-check-label" for="chkModifyEstado">
+                                    Estado
+                                </label>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <br />
+            <div class="modal-footer">
+                <button type="button" id="btnModifyProducto" class="btn btn-primary" onclick="ModifyProducto()">Aceptar</button>
+                <button type="button" id="btnCloseModalModifyProducto" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@*Modal to Stock*@
+<div class="modal fade" id="mdlStockProducto">
+    <div class="modal-dialog modal-lg dialogPDF">
+        <div class="modal-content contentPDF">
+            <div class="modal-header" style="background-color: #007C89; color:white; justify-content: center; ">
+                <h5 class="modal-title">Gestión de inventario</h5>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="hdfEstado" value="0" />
+                <input type="hidden" id="hdfIdStock" value="0" />
+                <div class="row" style=" padding-left: 1rem;">
+                    <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 pt-4 p-0">
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
+                            <div class="form-group" style="text-align: center;">
+                                <h3>Código del producto</h3>
+                                <h4 id="divCodigoProducto" style="color:red;"></h4>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 pt-4 p-0">
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
+                            <div class="form-group" style="text-align: center;">
+                                <h3>Cantidad actual</h3>
+                                <h4 id="divCantidadActual"  style="color:red;"></h4>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 pt-4 p-0 ">
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                            <div class="form-group">
+                                <label for="txtCantidad">Cantidad</label>
+                                <input type="number" id="txtCantidadStock" name="txtCantidad" oninput="checkInputNumberValidate(this)" class="form-control" placeholder="Digite la cantidad...">
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+            <br />
+            <div class="modal-footer">
+                <button type="button" id="btnStockProducto" class="btn btn-primary" onclick="ModifyStock()">Aceptar</button>
+                <button type="button" id="btnCloseModalStockProducto" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+
+
 @section Scripts {
     <script src="~/js/plugins/jquery.datatables.min.js"></script>
     <script src="~/js/plugins/datatables.bootstrap.min.js"></script>
     <script type="text/javascript">$('#tproductos').DataTable();</script>
+    <script src="~/js/productojs/productojs.js"></script>
     <script>
+        var ProductList = @Html.Raw(Json.Serialize(Model));
 
         $(document).ready(function () {
-            $('.cambiar-estado-btn').click(function (e) {
-                e.preventDefault();
+           
+            InitializerEventDropDownList('ddlAddTipoProductoModal', 'AddTipoProductolList');
+            InitializerEventDropDownList('ddlAddProductoCategoriaModal', 'AddProductoCategoriaList');
+            InitializerEventDropDownList('ddlAddProductoProveedorModal', 'AddProductoProveedorList');
 
-                var id = $(this).data('id');
+            InitializerEventDropDownList('ddlModifyTipoProductoModal', 'ModifyTipoProductolList');
+            InitializerEventDropDownList('ddlModifyProductoModal', 'ModifyProductoCategoriaList');
+            InitializerEventDropDownList('ddlModifyProductoProveedorModal', 'ModifyProductoProveedorList');
 
-                // Mostrar confirmación con SweetAlert2
-                Swal.fire({
-                    title: 'Confirmación',
-                    text: '¿Estás seguro de que deseas cambiar el estado?',
-                    icon: 'question',
-                    showCancelButton: true,
-                    confirmButtonText: 'Sí',
-                    cancelButtonText: 'No'
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        // Realizar la llamada AJAX si se confirma la acción
-                        $.ajax({
-                            url: '@Url.Action("Index", "Inventario")',
-                            type: 'GET',
-                            success: function (response) {
-                                // Mostrar mensaje de éxito con SweetAlert2
-                                Swal.fire('Éxito', 'El estado ha sido cambiado correctamente.', 'success').then(function () {
-                                    // Recargar la página
-                                    location.reload();
-                                });
-                            },
-                            error: function (xhr, status, error) {
-                                // Mostrar mensaje de error con SweetAlert2
-                                Swal.fire('Error', 'Ha ocurrido un error al cambiar el estado.', 'error');
-                                console.error('Error:', error);
-                            }
-                        });
-                    }
-                });
-            });
         });
+        function InitializerEventDropDownList(DropDownInput, dataList) {
+            var typingTimer;
+            var doneTypingInterval = 1000;
 
+            document.getElementById(DropDownInput).addEventListener("input", function () {
+                clearTimeout(typingTimer);
+
+                typingTimer = setTimeout(function () {
+                    var inputValue = document.getElementById(DropDownInput).value.toLowerCase();
+                    var inputObject = document.getElementById(DropDownInput);
+                    var options = document.getElementById(dataList).options;
+
+                    for (var i = 0; i < options.length; i++) {
+                        var option = options[i];
+                        var text = option.textContent.toLowerCase();
+
+                        if (text.indexOf(removeAccents(inputValue)) !== -1) {
+                            option.style.display = "block";
+                        } else {
+                            option.style.display = "none";
+                        }
+                    }
+                    var selectedOption = null;
+                    for (var i = 0; i < options.length; i++) {
+                        if (options[i].value.toLowerCase() === inputObject.value.toLowerCase()) {
+                            selectedOption = options[i];
+
+                            break;
+                        }
+                    }
+                    if (selectedOption) {
+                        inputObject.value = selectedOption.textContent;
+
+                    }
+                    if (GetDropDownValueSelected(DropDownInput, dataList) === null) {
+                        inputObject.value = '';
+                        inputObject.placeholder = "No se encontró el registro digitado";
+
+
+                        typingTimer = setTimeout(function () {
+                            inputObject.placeholder = "Seleccione una opción...";
+                        }, 700)
+                    }
+                    else {
+
+
+                        document.getElementById(DropDownInput).value = GetDropDownTextContentSelected(DropDownInput, dataList);
+                        options[0].selected = true;
+                    }
+                }, doneTypingInterval);
+
+
+            });
+        }
+        function SeachProductByCode(code) {
+            console.log(ProductList);
+            return ProductList.find(product => product.codigo === code);
+        }
+
+        function OpenModalModifyProducto(button, modal, option) {
+
+            var productoJson = button.getAttribute("data-producto");
+            var producto = JSON.parse(productoJson);
+            console.log(producto);
+            if (option === 0) {
+
+                $("#txtModifyCodigo").val(producto.Codigo);
+                $("#ddlModifyTipoProductoModal").val(producto.IdTipoProducto);
+                ActivateInputEvent('ddlModifyTipoProductoModal');
+                $("#ddlModifyProductoModal").val(producto.CategoriaProducto.Id);
+                ActivateInputEvent('ddlModifyProductoModal');
+                $("#ddlModifyProductoProveedorModal").val(producto.Proveedor.Identificacion);
+                ActivateInputEvent('ddlModifyProductoProveedorModal');
+                $("#txtModifyProductoNombre").val(producto.Nombre);
+                $("#txtModifyDescripcion").val(producto.Descripcion);
+                $("#txtModifyCantidad").val(producto.Stock);
+                $("#chkModifyEstado").prop('checked', producto.Estado);
+                $("#hdfIdModify").val(producto.Id);
+
+
+                $('#txtModifyCodigo').prop('readonly', true);
+                $('#ddlModifyTipoProductoModal').prop('readonly', false);
+                $('#ddlModifyProductoModal').prop('readonly', false);
+                $('#ddlModifyProductoProveedorModal').prop('readonly', false);
+                $('#txtModifyProductoNombre').prop('readonly', false);
+                $('#txtModifyDescripcion').prop('readonly', false);
+                $('#chkModifyEstado').prop('readonly', false);
+                $('#txtModifyCantidad').prop('readonly', false);
+                $('#divTxtModifyCantidad').hide();
+                $('#chkModifyEstado').prop('disabled', false);
+                $('#btnModifyProducto').show();
+                $('#titleModifyModal').text("Modificar producto");
+
+
+            }
+            else {
+
+                $("#txtModifyCodigo").val(producto.Codigo);
+                $("#ddlModifyTipoProductoModal").val(producto.IdTipoProducto);
+                ActivateInputEvent('ddlModifyTipoProductoModal');
+                $("#ddlModifyProductoModal").val(producto.CategoriaProducto.Id);
+                ActivateInputEvent('ddlModifyProductoModal');
+                $("#ddlModifyProductoProveedorModal").val(producto.Proveedor.Identificacion);
+                ActivateInputEvent('ddlModifyProductoProveedorModal');
+                $("#txtModifyProductoNombre").val(producto.Nombre);
+                $("#txtModifyDescripcion").val(producto.Descripcion);
+                $("#txtModifyCantidad").val(producto.Stock);
+                $("#chkModifyEstado").prop('checked', producto.Estado);
+                $("#hdfIdModify").val(producto.Id);
+
+
+
+                $('#txtModifyCodigo').prop('readonly', true);
+                $('#ddlModifyTipoProductoModal').prop('readonly', true);
+                $('#ddlModifyProductoModal').prop('readonly', true);
+                $('#ddlModifyProductoProveedorModal').prop('readonly', true);
+                $('#txtModifyProductoNombre').prop('readonly', true);
+                $('#txtModifyDescripcion').prop('readonly', true);
+                $('#txtModifyCantidad').prop('readonly', true);
+                $('#chkModifyEstado').prop('disabled', true);
+                $('#divTxtModifyCantidad').show();
+                $('#btnModifyProducto').hide();
+                $('#titleModifyModal').text("Información del producto");
+            }
+            OpenModal(modal);
+
+        }
+
+        function OpenModalStockProducto(button, modal) {
+           
+            var productoJson = button.getAttribute("data-producto");
+            var producto = JSON.parse(productoJson);
+            console.log(producto);
+            $('#divCantidadActual').text(producto.Stock);
+            $('#divCodigoProducto').text(producto.Codigo);
+            $("#hdfIdStock").val(producto.Id);
+
+
+
+
+
+            OpenModal(modal);
+
+        }
+
+        function checkInputNumberValidate(input) {
+            var ValorDigitado = parseFloat(input.value);
+            var CantiadActual = parseInt($('#divCantidadActual').text(), 10);
+            if (isNaN(ValorDigitado) || ValorDigitado < 0) {
+                var absoluteValue = Math.abs(ValorDigitado);
+                if (absoluteValue > CantiadActual) {
+                    $('#availableAmountValue').text(absoluteValue);
+                    $("#txtCantidadStock").val(-CantiadActual);
+                }
+            }
+        }
+      
     </script>
 
 }

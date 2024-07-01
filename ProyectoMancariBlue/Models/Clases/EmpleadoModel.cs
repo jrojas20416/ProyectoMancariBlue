@@ -135,7 +135,7 @@ namespace ProyectoMancariBlue.Models.Clases
             return password.ToString();
         }
 
-        public string HashPassword(string password)
+        public  string HashPassword(string password)
         {
             byte[] fixedSalt = new byte[128 / 8];
             //Se utiliza un valor fijo temporalmente
@@ -152,7 +152,7 @@ namespace ProyectoMancariBlue.Models.Clases
 
             return hashed;
         }
-
+       
         public Task<bool> CambiarContrasena(CambiarContrasena empleado)
         {
             bool respuesta = false;
