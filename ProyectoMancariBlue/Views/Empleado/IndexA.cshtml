@@ -1,4 +1,5 @@
-﻿@model IEnumerable<ProyectoMancariBlue.Models.Obj.Empleado>
+﻿@using ProyectoMancariBlue.Models.Enum;
+@model ProyectoMancariBlue.Models.Obj.Request.EmpleadoRequest
 
 @{
     ViewData["Title"] = "Administradores";
@@ -23,111 +24,8 @@
         <li class="breadcrumb-item">Administradores</li>
     </ul>
 </div>
-<!-- <div class="row" style="flex-direction:column">
-    <div class="col-md-14">
-        <div class="tile">
-            <div class="tile-body">
-                <div class="table-responsive">
-                    <table class="table table-hover table-bordered" id="tadministrador">
-                        <thead>
-                            <tr>
-                                <th>
-                                    Cédula
-                                </th>
-                                <th>
-                                    Nombre Completo
-                                </th>
-                                <th>
-                                    Correo
-                                </th>
 
-                                <th>
-                                    Puesto
-                                </th>
-                                <th>
-                                    Fecha de Ingreso
-                                </th>
-                                <th>
-                                    Rol
-                                </th>
-                                <th>
-                                    Estado
-                                </th>
-                                <th>
-                                    Acciones
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>
-                                    1-1492-0416
-                                </td>
-                                <td>
-                                    Josue Rojas Chaves
-                                </td>
-
-                                <td>
-                                    svcrove@outlook.com
-                                </td>
-                                <td>
-                                    Asistente
-                                </td>
-                                <td>
-                                    02/04/2024
-                                </td>
-                                <td>
-                                    Rol 1
-                                </td>
-                                <td>
-                                    <span class="badge badge-success">Activo</span>
-                                </td>
-                                <td>
-                                    <a class="btn btn-primary" asp-action="EditarAdministrador" asp-controller="Empleado">Editar</a>
-                                    <a class="btn btn-info" asp-action="VerAdministrador" sp-controller="Empleado">Detalle</a>
-                                    <a class="btn btn-danger cambiar-estado-btn" href="#">Desactivar</a>
-
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    1-1492-0416
-                                </td>
-                                <td>
-                                   Maria Chaves Mora
-                                </td>
-
-                                <td>
-                                    svcrove@outlook.com
-                                </td>
-                                <td>
-                                    Veterinario
-                                </td>
-                                <td>
-                                    02/04/2024
-                                </td>
-                                <td>
-                                    Rol 2
-                                </td>
-                                <td>
-                                    <span class="badge badge-success">Activo</span>
-                                </td>
-                                <td>
-                                    <a class="btn btn-primary" asp-action="EditarAdministrador" asp-controller="Empleado">Editar</a>
-                                    <a class="btn btn-info" asp-action="VerAdministrador" sp-controller="Empleado">Detalle</a>
-                                    <a class="btn btn-danger cambiar-estado-btn" href="#">Desactivar</a>
-
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-    </div>
-</div> -->
-
-@if (Model.Any())
+@if (Model.Empleado.Any())
 {
     <div class="row">
         <div class="col-md-12">
@@ -138,22 +36,22 @@
                             <thead>
                                 <tr>
                                     <th>
-                                        Nombre copleto
+                                        @Html.DisplayNameFor(model => model.EmpleadoCreate.Nombre)
                                     </th>
                                     <th>
-                                        @Html.DisplayNameFor(model => model.Cedula)
+                                        @Html.DisplayNameFor(model => model.EmpleadoCreate.Cedula)
                                     </th>
                                     <th>
-                                        @Html.DisplayNameFor(model => model.Correo)
+                                        @Html.DisplayNameFor(model => model.EmpleadoCreate.Correo)
                                     </th>
                                     <th>
-                                        @Html.DisplayNameFor(model => model.Puesto)
+                                        @Html.DisplayNameFor(model => model.EmpleadoCreate.Puesto)
                                     </th>
                                     <th>
-                                        @Html.DisplayNameFor(model => model.Estado)
+                                        @Html.DisplayNameFor(model => model.EmpleadoCreate.Estado)
                                     </th>
                                     <th>
-                                        Tipo Rol
+                                        @Html.DisplayNameFor(model => model.EmpleadoCreate.Rol.Descripcion)
                                     </th>
                                     <th>Acciones</th>
                                 </tr>
@@ -161,7 +59,7 @@
                             <tbody>
                                 @if (Model != null)
                                 {
-                                    foreach (var item in Model)
+                                    foreach (var item in Model.Empleado)
                                     {
                                         <tr>
                                             <td>
@@ -221,6 +119,137 @@ else
         <h3>Lo sentimos no tenemos datos por mostrar</h3>
     </div>
 }
+
+
+@*Modal to add Empleado*@
+<div class="modal fade" id="mdlAddEmpleado">
+    <div class="modal-dialog modal-lg dialogPDF">
+        <div class="modal-content contentPDF">
+            <div class="modal-header" style="background-color: #007C89; color:white; justify-content: center; ">
+                <h5 class="modal-title">Agregar Empleado</h5>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="hdfEstado" value="0" />
+                <input type="hidden" id="hdfId" value="0" />
+                <div class="row" style=" padding-left: 1rem;">
+                    <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 pt-4 p-0">
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
+                            <div class="form-group">
+                                <label for="txtCedula">Cédula</label>
+                                <input type="text" id="txtCedula" class="form-control" placeholder="Digite la cédula" autocomplete="off">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 pt-4 p-0">
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
+                            <div class="form-group">
+                                <label for="ddlAddEmpleadoModal">Selecciona la raza</label>
+                                <input type="text" id="ddlAddEmpleadoRazaModal" list="AddEmpleadoRazalList" class="form-control" placeholder="Buscar raza..." autocomplete="off">
+                                <datalist id="AddEmpleadoRazalList">
+
+                                    @{
+                                        foreach (var value in Enum.GetValues(typeof(ECattle)))
+                                        {
+                                            var cattle = (ECattle)value;
+                                            <option value="@((int)cattle)">@cattle.GetDisplayName()</option>
+                                        }
+                                    }
+                                </datalist>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 pt-4 p-0">
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
+                            <div class="form-group">
+                                <label for="ddlAddEmpleadoModal">Selecciona el padre</label>
+                                <input type="text" id="ddlAddEmpleadoModal" list="AddEmpleadoList" class="form-control" placeholder="Buscar padre..." autocomplete="off">
+                                <datalist id="AddEmpleadoList">
+
+                                    @{
+                                        if ((IEnumerable<SelectListItem>)ViewBag.EmpleadoList != null)
+                                        {
+                                            foreach (var item in (IEnumerable<SelectListItem>)ViewBag.EmpleadoList)
+                                            {
+                                                <option value="@item.Value">@item.Text</option>
+                                            }
+                                        }
+                                    }
+                                </datalist>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 pt-4 p-0">
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
+                            <div class="form-group">
+                                <label for="ddlAddEmpleadoModal">Selecciona la madre</label>
+                                <input type="text" id="ddlAddEmpleadoMothreModal" list="AddEmpleadoMotherlList" class="form-control" placeholder="Buscar madre..." autocomplete="off">
+                                <datalist id="AddEmpleadoMotherlList">
+
+                                    @{
+                                        if ((IEnumerable<SelectListItem>)ViewBag.EmpleadoMotherList != null)
+                                        {
+                                            foreach (var item in (IEnumerable<SelectListItem>)ViewBag.EmpleadoMotherList)
+                                            {
+                                                <option value="@item.Value">@item.Text</option>
+                                            }
+
+                                        }
+                                    }
+                                </datalist>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 pt-4 p-0">
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
+                            <div class="form-group">
+                                <label>Seleccione el género</label>
+                                <div>
+                                    <input type="radio" id="genderMale" checked="true" name="EmpleadoGender" value="M">
+                                    <label for="genderMale">Macho</label>
+                                </div>
+                                <div>
+                                    <input type="radio" id="genderFemale" name="EmpleadoGender" value="H">
+                                    <label for="genderFemale">Hembra</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 pt-4 p-0 " id="EmpleadoEmContainer">
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                            <div class="form-group">
+                                <label for="EmpleadoBirths">Cantidad de partos</label>
+                                <input type="number" id="txtEmpleadoBirths" name="EmpleadoBirths" class="form-control" placeholder="Ingrese la cantidad de partos" min="1" step="1">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 pt-4 p-0 ">
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                            <div class="form-group">
+                                <label for="EmpleadoHeigth">Peso en KG</label>
+                                <input type="number" id="txtEmpleadoHeigth" name="EmpleadoHeigth" class="form-control" placeholder="Ingrese el peso en KG" min="1" step="1">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 pt-4 p-0">
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
+                            <div class="mb-3">
+                                <label for="lblDate" class="form-label">Fecha de nacimiento</label>
+                                <input type="date" class="form-control" id="dtDate">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <br />
+            <div class="modal-footer">
+                <button type="button" id="btnAddEmpleado" class="btn btn-primary" onclick="NewEmpleado()">Aceptar</button>
+                <button type="button" id="btnCloseModalAddEmpleado" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 @section Scripts {
     <script src="~/js/plugins/jquery.datatables.min.js"></script>

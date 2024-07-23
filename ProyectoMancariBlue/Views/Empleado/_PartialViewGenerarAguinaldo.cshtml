@@ -1,0 +1,114 @@
+﻿@model List<ProyectoMancariBlue.Models.Obj.DTO.HistoricoPagoDTO>
+
+@functions {
+    public static string FormatearColones(decimal cantidad)
+    {
+        return string.Format(new System.Globalization.CultureInfo("es-CR"), "{0:C}", cantidad);
+    }
+
+   
+}
+
+@if (Model.Any())
+{
+    <div style="display: flex;">
+        <table class="table" style="flex: 1;" id="tbl1Pagos">
+            <thead>
+                <tr>
+                    <th>Mes</th>
+                    <th>Salario Bruto</th>
+                </tr>
+            </thead>
+            <tbody>
+                @{
+                    var pagosOrdenados = Model.OrderBy(p => p.FechaPago).ToList();
+                    int count = pagosOrdenados.Count;
+                    for (int i = 0; i < Math.Min(6, count); i++)
+                    {
+                        <tr>
+                            <td>@pagosOrdenados[i].FechaPago.Value.ToString("MMMM yyyy", new System.Globalization.CultureInfo("es-CR"))</td>
+                            <td>@FormatearColones(pagosOrdenados[i].SalarioBruto.Value)</td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+        <table class="table" style="flex: 1;" id="tbl2Pagos">
+            <thead>
+                <tr>
+                    <th>Mes</th>
+                    <th>Salario Bruto</th>
+                </tr>
+            </thead>
+            <tbody>
+                @{
+                    for (int i = 6; i < count; i++)
+                    {
+                        <tr>
+                            <td>@pagosOrdenados[i].FechaPago.Value.ToString("MMMM yyyy", new System.Globalization.CultureInfo("es-CR"))</td>
+                            <td>@FormatearColones(pagosOrdenados[i].SalarioBruto.Value)</td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+}
+else
+{
+    <div>No se han encontrado registros por mostrar</div>
+}
+
+<script>
+    $('#tbl1Pagos').DataTable({
+        "paging": false,
+        "lengthChange": true,
+        "searching": false,
+        "ordering": false,
+        "responsive": true,
+        "buttons": [
+            'copy', 'excel', 'pdf', 'print'
+        ],
+        "lengthMenu": [[6, 10, 25, 50, 100], [6, 10, 25, 50, "Todo"]],
+        "language": {
+            "lengthMenu": "Mostrar _MENU_ registros por página",
+            "zeroRecords": "No se encontraron registros",
+            "info": "Mostrando _START_ a _END_ de _TOTAL_ registros",
+            "infoEmpty": "No hay registros disponibles",
+            "infoFiltered": "(filtrados de _MAX_ registros en total)",
+            "search": "Buscar:",
+            "paginate": {
+                "first": "Primero",
+                "last": "Último",
+                "next": "Siguiente",
+                "previous": "Anterior"
+            }
+        }
+    });
+
+    $('#tbl2Pagos').DataTable({
+        "paging": false,
+        "lengthChange": true,
+        "searching": false,
+        "ordering": false,
+        "responsive": true,
+        "buttons": [
+            'copy', 'excel', 'pdf', 'print'
+        ],
+        "lengthMenu": [[6, 10, 25, 50, 100], [6, 10, 25, 50, "Todo"]],
+        "language": {
+            "lengthMenu": "Mostrar _MENU_ registros por página",
+            "zeroRecords": "No se encontraron registros",
+            "info": "Mostrando _START_ a _END_ de _TOTAL_ registros",
+            "infoEmpty": "No hay registros disponibles",
+            "infoFiltered": "(filtrados de _MAX_ registros en total)",
+            "search": "Buscar:",
+            "paginate": {
+                "first": "Primero",
+                "last": "Último",
+                "next": "Siguiente",
+                "previous": "Anterior"
+            }
+        }
+    });
+</script>

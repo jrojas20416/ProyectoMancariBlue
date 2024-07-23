@@ -1,0 +1,76 @@
+﻿@model IEnumerable<ProyectoMancariBlue.Models.Obj.DTO.HistoricoPagoDTO>
+@functions{
+   
+        public static string FormatearColones(decimal cantidad)
+        {
+            return string.Format(new System.Globalization.CultureInfo("es-CR"), "{0:C}", cantidad);
+        }
+    
+}
+@if (Model.Any())
+{
+    <table class="table" id="tblPagos">
+        <thead>
+            <tr>
+                <th>Patrono</th>
+                <th>Salario Bruto</th>
+                <th>CCSS (9.67%)</th>
+                <th>LPT (1%)</th>
+                <th>Total Deducciones</th>
+                <th>Salario Neto</th>
+                <th>Fecha de pago</th>
+            </tr>
+        </thead>
+        @foreach (var item in Model)
+        {
+            <tbody>
+                <tr>
+                    <td> @Html.DisplayFor(modelItem => item.Patrono)</td>
+                    <td>@FormatearColones(item.SalarioBruto.Value)</td>
+                    <td>@FormatearColones(item.SalarioBruto.Value)</td>
+                    <td>@FormatearColones(item.SalarioBruto.Value)</td>
+                    <td>@FormatearColones(item.SalarioBruto.Value)</td>
+                    <td>@FormatearColones(item.SalarioBruto.Value)</td>
+                    <td>@item.FechaPago.Value.ToShortDateString()</td>
+                </tr>
+              
+            </tbody>
+        }
+        
+    </table>
+}
+else
+{
+<div>No se han encontrado registros por mostrar</div>    
+
+}
+
+
+<script>
+
+    $('#tblPagos').DataTable({
+        "paging": true,
+        "lengthChange": true,
+        "searching": true,
+        "ordering": true,
+        "responsive": true,
+        "buttons": [
+            'copy', 'excel', 'pdf', 'print'
+        ],
+        "lengthMenu": [[3, 5, 10, 25, 50, 100], [5, 10, 25, 50, "Todo"]],
+        "language": {
+            "lengthMenu": "Mostrar _MENU_ registros por página",
+            "zeroRecords": "No se encontraron registros",
+            "info": "Mostrando _START_ a _END_ de _TOTAL_ registros",
+            "infoEmpty": "No hay registros disponibles",
+            "infoFiltered": "(filtrados de _MAX_ registros en total)",
+            "search": "Buscar:",
+            "paginate": {
+                "first": "Primero",
+                "last": "Último",
+                "next": "Siguiente",
+                "previous": "Anterior"
+            }
+        }
+    });
+</script>

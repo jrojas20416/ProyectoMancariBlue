@@ -96,7 +96,7 @@ namespace ProyectoMancariBlue.Models.Clases
                     <body>
                         <div class=""container"">
                             <h1>Restablecimiento de contraseña</h1>
-                            <p>Estimado/a " + respuesta.Nombre + " " + respuesta.Apellidos + @",</p>
+                            <p>Estimado/a " + respuesta.Nombre   + @",</p>
                             <p>Su contraseña ha sido restablecida exitosamente. A continuación, encontrará los detalles de su nueva contraseña:</p>
                             <p class=""password"">" + C + @"</p>              
                         </div>
@@ -194,7 +194,6 @@ namespace ProyectoMancariBlue.Models.Clases
                              Id = u.Id,
                              Cedula = u.Cedula,
                              Nombre = u.Nombre,
-                             Apellidos = u.Apellidos,
                              Correo = u.Correo,
                              Edad = u.Edad,
                              Telefono = u.Telefono,
@@ -218,16 +217,27 @@ namespace ProyectoMancariBlue.Models.Clases
 
         public async Task<Empleado> CreateEmpleado(Empleado empleado)
         {
-            empleado.Contrasena = HashPassword(empleado.Contrasena);
-            var empl = await _context.Empleado.AddAsync(empleado);
-            await _context.SaveChangesAsync();
-
-            if (empl.Entity != null)
+            try
             {
-                return empl.Entity;
-            }
+                string password = EmpleadoModel.GeneratePassword();
+                await EnviarContrasenna(empleado, password);
+                empleado.Contrasena = HashPassword(password);
+                var empl = await _context.Empleado.AddAsync(empleado);
+                await _context.SaveChangesAsync();
 
-            return null;
+                if (empl.Entity != null)
+                {
+                    return empl.Entity;
+                }
+
+                return null;
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+           
         }
 
         public async Task<Empleado> DeleteEmpleadoID(long id)
@@ -266,10 +276,7 @@ namespace ProyectoMancariBlue.Models.Clases
                 {
                     empleadoExistente.Nombre = empleado.Nombre;
                 }
-                if (empleado.Apellidos != null)
-                {
-                    empleadoExistente.Apellidos = empleado.Apellidos;
-                }
+              
                 if (!string.IsNullOrEmpty(empleado.Correo))
                 {
                     empleadoExistente.Correo = empleado.Correo;
@@ -335,10 +342,7 @@ namespace ProyectoMancariBlue.Models.Clases
                 {
                     usuarioExistente.Nombre = user.Nombre;
                 }
-                if (user.Apellidos != null)
-                {
-                    usuarioExistente.Apellidos = user.Apellidos;
-                }
+             
                 if (!string.IsNullOrEmpty(user.Correo))
                 {
                     usuarioExistente.Correo = user.Correo;
@@ -370,6 +374,230 @@ namespace ProyectoMancariBlue.Models.Clases
             return await _context.Empleado.
                 Include(rol => rol.Rol) // Carga los datos del Usuario relacionado
     .ToListAsync();
+        }
+
+
+        public async Task<IEnumerable<Empleado>> GetAllAsync()
+        {
+            return await _context.Empleado
+                .Include(e => e.Provincia)
+                .Include(e => e.Canton)
+                .Include(e => e.Distrito)
+                .Include(e => e.Rol)
+                .ToListAsync();
+        }
+
+        public async Task<Empleado> GetByIdAsync(long id)
+        {
+            return await _context.Empleado
+                .Include(e => e.Provincia)
+                .Include(e => e.Canton)
+                .Include(e => e.Distrito)
+                .Include(e => e.Rol)
+                .FirstOrDefaultAsync(e => e.Id == id);
+        }
+
+        public async Task<Empleado> AddAsync(Empleado empleado)
+        {
+            _context.Empleado.Add(empleado);
+            await _context.SaveChangesAsync();
+            return empleado;
+        }
+
+        public async Task<Empleado> UpdateAsync(Empleado empleado)
+        {
+            try
+            {
+              
+                var existingEntity = _context.Empleado.Local.FirstOrDefault(e => e.Id == empleado.Id);
+                if (existingEntity != null)
+                {
+                    _context.Entry(existingEntity).State = EntityState.Detached;
+                }
+
+                _context.Empleado.Update(empleado);
+                await _context.SaveChangesAsync();
+                return empleado;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+        public async Task<bool> DeleteAsync(long id)
+        {
+            var empleado = await _context.Empleado.FindAsync(id);
+            if (empleado == null)
+            {
+                return false;
+            }
+
+            _context.Empleado.Remove(empleado);
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
+        public async Task<Empleado> GetByCedulaAsync(string cedula)
+        {
+            return await _context.Empleado.FirstOrDefaultAsync(e => e.Cedula == cedula);
+        }
+
+        public async Task<Empleado> GetByCorreoAsync(string correo)
+        {
+            return await _context.Empleado.FirstOrDefaultAsync(e => e.Correo == correo);
+        }
+
+        public async Task<Empleado> GetByLoginAsync(string cedula, string contrasena)
+        {
+            return await _context.Empleado.FirstOrDefaultAsync(e => e.Cedula == cedula && e.Contrasena == contrasena);
+        }
+        public Task<Empleado> EnviarContrasenna(Empleado empleado)
+        {
+            var respuesta = _context.Empleado.FirstOrDefault(u => u.Correo == empleado.Correo && u.Cedula == empleado.Cedula);
+
+            if (respuesta != null)
+            {
+                var correo = new Correo();
+                String C = empleado.Contrasena;
+                correo.To = respuesta.Correo;
+                correo.Subject = "Creación de usuario";
+                var body = @"
+                    <html>
+                    <head>
+                        <style>
+                            body {
+                                font-family: Arial, sans-serif;
+                                background-color: #f2f2f2;
+                                padding: 20px;
+                            }
+                            .container {
+                                max-width: 500px;
+                                margin: 0 auto;
+                                background-color: #ffffff;
+                                border-radius: 10px;
+                                padding: 40px;
+                                box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+                            }
+                            h1 {
+                                color: #212529;
+                                font-size: 24px;
+                                text-align: center;
+                                margin-top: 0;
+                            }
+                            p {
+                                font-size: 16px;
+                                color: #333333;
+                                margin-top: 20px;
+                            }
+                            .password {
+                                font-size: 32px;
+                                color: #212529;
+                                text-align: center;
+                                margin-top: 20px;
+                            }
+                
+                            
+                        </style>
+                    </head>
+                    <body>
+                        <div class=""container"">
+                            <h1>Creación de usuario</h1>
+                            <p>Estimado/a " + respuesta.Nombre + @",</p>
+                            <p>Se ha creado el usuario. A continuación, encontrará los detalles de su nueva contraseña:</p>
+                            <p class=""password"">" + C + @"</p>              
+                        </div>
+                    </body>
+                    </html>";
+                String Ncontrseña = HashPassword(C);
+                correo.Body = body;
+                _emailService.SendEmail(correo);
+                respuesta.Contrasena = Ncontrseña;
+                respuesta.RContrasena = true;
+                _context.SaveChanges();
+
+                return Task.FromResult(respuesta);
+
+            }
+            else
+            {
+                return null;
+            }
+
+
+        }
+        public Task<Empleado> EnviarContrasenna(Empleado empleado, string password)
+        {
+            var respuesta = empleado;
+
+            if (respuesta != null)
+            {
+                var correo = new Correo();
+                //String C = empleado.Contrasena;
+                correo.To = respuesta.Correo;
+                correo.Subject = "Creación de usuario";
+                var body = @"
+                    <html>
+                    <head>
+                        <style>
+                            body {
+                                font-family: Arial, sans-serif;
+                                background-color: #f2f2f2;
+                                padding: 20px;
+                            }
+                            .container {
+                                max-width: 500px;
+                                margin: 0 auto;
+                                background-color: #ffffff;
+                                border-radius: 10px;
+                                padding: 40px;
+                                box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+                            }
+                            h1 {
+                                color: #212529;
+                                font-size: 24px;
+                                text-align: center;
+                                margin-top: 0;
+                            }
+                            p {
+                                font-size: 16px;
+                                color: #333333;
+                                margin-top: 20px;
+                            }
+                            .password {
+                                font-size: 32px;
+                                color: #212529;
+                                text-align: center;
+                                margin-top: 20px;
+                            }
+                
+                            
+                        </style>
+                    </head>
+                    <body>
+                        <div class=""container"">
+                            <h1>Creación de usuario</h1>
+                            <p>Estimado/a " + respuesta.Nombre + @",</p>
+                            <p>Se ha creado el usuario. A continuación, encontrará los detalles de su nueva contraseña:</p>
+                            <p class=""password"">" + password + @"</p>              
+                        </div>
+                    </body>
+                    </html>";
+                string Ncontrseña = password;
+                correo.Body = body;
+                _emailService.SendEmail(correo);
+                respuesta.Contrasena = Ncontrseña;
+                respuesta.RContrasena = true;
+                _context.SaveChanges();
+
+                return Task.FromResult(respuesta);
+
+            }
+            else
+            {
+                return null;
+            }
+
+
         }
     }
 }

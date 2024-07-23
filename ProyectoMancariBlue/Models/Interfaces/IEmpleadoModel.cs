@@ -28,5 +28,14 @@ namespace ProyectoMancariBlue.Models.Interfaces
 
         Task<List<Empleado>> GetEmpleadoRol();
         Task<List<Empleado>> GetEmpleados();
+
+        Task<IEnumerable<Empleado>> GetAllAsync();
+        Task<Empleado> GetByIdAsync(long id);
+        Task<Empleado> AddAsync(Empleado empleado);
+        Task<Empleado> UpdateAsync(Empleado empleado);
+        Task<bool> DeleteAsync(long id);
+        Task<Empleado> GetByCedulaAsync(string cedula);
+        Task<Empleado> GetByCorreoAsync(string correo);
+        Task<Empleado> GetByLoginAsync(string cedula, string contrasena);
     }
 }

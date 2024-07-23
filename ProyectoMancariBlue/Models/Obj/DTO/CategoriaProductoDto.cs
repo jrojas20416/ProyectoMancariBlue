@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using Newtonsoft.Json;
+using System.ComponentModel;
 
 namespace ProyectoMancariBlue.Models.Obj.DTO
 {
@@ -7,6 +8,7 @@ namespace ProyectoMancariBlue.Models.Obj.DTO
         public int Id { get; set; }
         [DisplayName("Categoría")]
         public string Descripcion { get; set; }
+        [JsonIgnore]
 
         public ICollection<ProductoDto> Productos { get; set; }
     }

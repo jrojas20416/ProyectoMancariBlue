@@ -19,14 +19,19 @@ builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+//builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+//    .AddCookie(option =>
+//    {
+//        option.LoginPath = "/Empleado/Index";
+//        option.AccessDeniedPath = "/Empleado/AccessDenied"; // Cambia la ruta para el acceso denegado por rol
+//        option.ExpireTimeSpan = TimeSpan.FromMinutes(60);
+//    });
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-    .AddCookie(option =>
+    .AddCookie(options =>
     {
-        option.LoginPath = "/Empleado/Index";
-        option.AccessDeniedPath = "/Empleado/AccessDenied"; // Cambia la ruta para el acceso denegado por rol
-        option.ExpireTimeSpan = TimeSpan.FromMinutes(60);
+        options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+        options.Cookie.SameSite = SameSiteMode.Strict;
     });
-
 builder.Services.AddDbContext<MancariBlueContext>(opciones =>
 opciones.UseSqlServer(builder.Configuration.GetConnectionString("MancariBlueContext")));
 
@@ -38,6 +43,13 @@ builder.Services.AddScoped<ICategoriaProveedor, CategoriaProveedorModel>();
 builder.Services.AddScoped<IProveedor, ProveedorModel>();
 builder.Services.AddScoped<IProducto, ProductoModel>();
 builder.Services.AddScoped<ICategoriaProducto, CategoriaProductoModel>();
+builder.Services.AddScoped<IRegistroVacuna, RegistroVacunaModel>();
+builder.Services.AddScoped<IProvinciaModel, ProvinciaModel>();
+builder.Services.AddScoped<ICantonModel, CantonModel>();
+builder.Services.AddScoped<IDistritoModel, DistritoModel>();
+builder.Services.AddScoped<IVacacionModel, VacacionModel>();
+builder.Services.AddScoped<IHistoricoPagoModel, HistoricoPagoModel>();
+builder.Services.AddScoped<ILiquidacionModel, LiquidacionModel>();
 builder.Services.AddHttpContextAccessor();
 
 var app = builder.Build();

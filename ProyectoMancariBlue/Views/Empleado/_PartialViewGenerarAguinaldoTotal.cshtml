@@ -1,0 +1,54 @@
+﻿@model List<ProyectoMancariBlue.Models.Obj.DTO.HistoricoPagoDTO>
+
+@functions{
+
+   
+  public class TotalAguinaldo
+    {
+        public decimal TotalSalario { get; set; } 
+        public decimal Aguinaldo { get; set; }
+
+    }
+    public static TotalAguinaldo TotalSalarioYAguinaldo(List<ProyectoMancariBlue.Models.Obj.DTO.HistoricoPagoDTO> lista)
+    {
+        TotalAguinaldo total = new TotalAguinaldo();
+        total = new TotalAguinaldo();
+        total.TotalSalario = lista.Sum(x => x.SalarioBruto.Value);
+        total.Aguinaldo = total.TotalSalario / 12;
+        return total;
+    }
+    public static string FormatearColones(decimal cantidad)
+    {
+        return string.Format(new System.Globalization.CultureInfo("es-CR"), "{0:C}", cantidad);
+    }
+
+    }
+
+@if (Model.Any())
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Total Salarios</th>
+                <th>Total Aguinaldo</th>
+            </tr>
+        </thead>
+        <tbody>
+            @{
+                TotalAguinaldo totalA = TotalSalarioYAguinaldo(Model);
+
+                <tr>
+                    <td>@FormatearColones(totalA.TotalSalario)</td>
+                    <td>@FormatearColones(totalA.Aguinaldo)</td>
+                </tr>
+            }
+           
+        </tbody>
+    </table>
+
+}
+else
+{
+
+    <div>No hay cálculos por mostrarr</div>
+}

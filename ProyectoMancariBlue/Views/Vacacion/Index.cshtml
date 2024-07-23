@@ -1,4 +1,6 @@
-﻿@{
+﻿@model ProyectoMancariBlue.Models.Obj.Request.VacacionRequest;
+@using Newtonsoft.Json;
+@{
     ViewData["Title"] = "Vacaciones";
 }
 @functions {
@@ -6,6 +8,11 @@
     {
         return n + " " + a;
 
+    }
+    string ExtraerFechaFormato(DateTime date)
+    {
+
+        return date.ToShortDateString();
     }
 
 }
@@ -16,137 +23,492 @@
         <h1><i class="fa fa-th-list" style="margin-right: 10px;"></i>Administración de Vacaciones</h1>
         <p>Vacaciones</p>
         <br>
-        <a asp-action="CrearVacacion" asp-controller="Vacacion" class="btn btn-primary"><i class="fa fa-plus" aria-hidden="true"></i>Crear Vacaciones</a>
+        <a onclick="OpenModal('mdlAddVacacion')" class="btn btn-primary"><i class="fa fa-plus" aria-hidden="true"></i>Crear Vacaciones</a>
     </div>
     <ul class="app-breadcrumb breadcrumb side">
         <li class="breadcrumb-item"><i class="fa fa-home fa-lg"></i></li>
         <li class="breadcrumb-item">Vacaciones</li>
     </ul>
 </div>
-    <div class="row" style="flex-direction:column" >
-        <div class="col-md-14">
-            <div class="tile">
-                <div class="tile-body">
-                    <div class="table-responsive">
+<div class="row" style="flex-direction:column">
+    <div class="col-md-14">
+        <div class="tile">
+            <div class="tile-body">
+                <div class="table-responsive">
+                    @if (Model.VacacionLista != null && Model.VacacionLista.Count() > 0)
+                    {
                         <table class="table table-hover table-bordered" id="tvacaciones">
                             <thead>
                                 <tr>
-                                <th>
-                                   Cédula del Empleado
-                                </th>
-                                    <th>
-                                        Nombre Completo
-                                    </th>
-                                    <th>
-                                        Fecha de Inicio
-                                    </th>
-                                <th>
-                                    Fecha Final
-                                </th>
-                                <th>
-                                    Estado Vacaciones
-                                </th>
-                                    <th>
-                                       Acciones
-                                    </th>
+                                    <th>Cédula del Empleado</th>
+                                    <th>Nombre</th>
+                                    <th>Fecha Inicio</th>
+                                    <th>Fecha Final</th>
+                                    <th>Días Solicitados</th>
+                                    <th>Acciones</th>
                                 </tr>
                             </thead>
                             <tbody>
+
+                                @foreach (var vacacion in Model.VacacionLista)
+                                {
                                     <tr>
+                                        <td>@vacacion.Empleado.Cedula</td>
+                                        <td>@vacacion.Empleado.Nombre</td>
+
+                                        <td>@ExtraerFechaFormato(vacacion.FechaInicio.Value)</td>
+                                        <td>@ExtraerFechaFormato(vacacion.FechaFinal.Value)</td>
+                                        <td>@vacacion.DiasSolicitados</td>
                                         <td>
-                                            1-1492-0416
-                                        </td>
-                                        <td>
-                                            Josue Rojas Chaves
-                                        </td>
-                                        <td>
-                                            02/04/2024
-                                        </td>
-                                <td>
-                                    19/04/2024
-                                </td>
-                                <td>
-                                    <span class="badge badge-warning">En Proceso</span>
-                                </td>
-                                        <td>
-                                    <a class="btn btn-primary" asp-action="EditarVacacion" asp-controller="Vacacion">Editar</a>
-                                    <a class="btn btn-info" asp-action="VerVacacion" sp-controller="Vacacion">Detalle Vacaciones</a>
-                                                <a class="btn btn-danger cambiar-estado-btn" href="#">Eliminar</a>
-                                            
+                                            @* <a class="btn btn-sm btn-warning" onclick="OpenModalModifyRegistroVacacion(this,'mdlModifyVacacion',0)" data-registro='@JsonConvert.SerializeObject(vacacion)'>Editar</a> *@
+                                            <a class="btn btn-danger cambiar-estado-btn" data-id='@vacacion.Id'>Eliminar</a>
                                         </td>
                                     </tr>
-                            <tr>
-                                <td>
-                                    1-1492-0416
-                                </td>
-                                <td>
-                                    Josue Rojas Chaves
-                                </td>
-                                <td>
-                                    10/03/2024
-                                </td>
-                                <td>
-                                    13/03/2024
-                                </td>
-                                <td>
-                                    <span class="badge badge-success">Finalizadas</span>
-                                </td>
-                                <td>
-                                    <a class="btn btn-info" asp-action="VerVacacion" sp-controller="Vacacion">Detalle Vacaciones</a>
-                                </td>
-                            </tr>
+                                }
+
+
+
+
                             </tbody>
+
                         </table>
-                    </div>
+                    }
+                    else
+                    {
+                        <h3>No se han encontrado registros</h3>
+                    }
+
                 </div>
             </div>
         </div>
     </div>
+</div>
+@*Modal to add Vacacion*@
+<div class="modal fade" id="mdlAddVacacion">
+    <div class="modal-dialog modal-lg dialogPDF">
+        <div class="modal-content contentPDF">
+            <div class="modal-header" style="background-color: #007C89; color:white; justify-content: center; ">
+                <h5 class="modal-title">Agregar Vacacion</h5>
+            </div>
+            <form asp-controller="Vacacion" asp-action="CrearVacacion" method="post">
+                <input type="hidden" name="DiasSolicitados" id="DiasSolicitadosModify" asp-for="VacacionCreate.DiasSolicitados" />
+                <div class="modal-body">
+                    <input type="hidden" id="hdfEstado" value="0" />
+                    <input type="hidden" id="hdfId" value="0" />
+                    <div class="row" style=" padding-left: 1rem;">
+                        <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 pt-4 p-0">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
+                                <div class="mb-3">
+                                    <label for="lblDate" class="form-label">Inicio del permiso</label>
+                                    <input type="date" class="form-control" name="FechaInicio" id="dtStartDate" asp-for="VacacionCreate.FechaInicio">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 pt-4 p-0">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
+                                <div class="mb-3">
+                                    <label for="lblDate" class="form-label">Fin del permiso</label>
+                                    <input type="date" class="form-control" name="FechaFinal" id="dtEndDate" asp-for="VacacionCreate.FechaFinal">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 pt-4 p-0">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
+                                <div class="form-group">
+                                    <label for="ddlAddVacacionModal">Seleccione el empleado</label>
+                                    <input type="text" id="ddlAddVacacionEmpleadoModal" list="AddVacacionEmpleadolList" class="form-control" placeholder="Buscar empleado..." autocomplete="off">
+                                    <input type="hidden" name="IdEmpleado" id="IdVacacionCreate" asp-for=" VacacionCreate.IdEmpleado" />
+
+                                    <datalist id="AddVacacionEmpleadolList">
+
+                                        @{
+                                            foreach (var item in Model.EmpleadoLista)
+                                            {
+
+                                                <option value="@item.Cedula" data-id="@item.Id">@item.Nombre</option>
+                                            }
+                                        }
+                                    </datalist>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 pt-4 p-0">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
+
+                                <div class="mb-3">
+                                    <label for="lblDescription" class="form-label">Observación:</label>
+                                    <textarea class="form-control" id="txtDescription" disabled="disabled" cols="40" rows="8"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <br />
+                <div class="modal-footer">
+                    <button type="submit" id="btnAddVacacion" class="btn btn-primary">Aceptar</button>
+                    <button type="button" id="btnCloseModalAddVacacion" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@*Modal to Modify Vacacion*@
+<div class="modal fade" id="mdlModifyVacacion">
+    <div class="modal-dialog modal-lg dialogPDF">
+        <div class="modal-content contentPDF">
+            <div class="modal-header" style="background-color: #007C89; color:white; justify-content: center; ">
+                <h5 class="modal-title">Agregar Vacacion</h5>
+            </div>
+            <form asp-controller="Vacacion" asp-action="ModificarVacacion" method="post">
+                <input type="hidden" name="DiasSolicitados" id="DiasSolicitadosModify" asp-for="VacacionModify.DiasSolicitados" />
+                <div class="modal-body">
+                    <input type="hidden" id="hdfEstado" value="0" />
+                    <input type="hidden" id="hdfId" value="0" />
+                    <div class="row" style=" padding-left: 1rem;">
+                        <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 pt-4 p-0">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
+                                <div class="mb-3">
+                                    <label for="lblDate" class="form-label">Inicio del permiso</label>
+                                    <input type="date" class="form-control" name="FechaInicio" id="dtStartDateModify" asp-for="VacacionModify.FechaInicio">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 pt-4 p-0">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
+                                <div class="mb-3">
+                                    <label for="lblDate" class="form-label">Fin del permiso</label>
+                                    <input type="date" class="form-control" name="FechaFinal" id="dtEndDateModify" asp-for="VacacionModify.FechaFinal">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 pt-4 p-0">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
+                                <div class="form-group">
+                                    <label for="ddlModifyVacacionModal">Seleccione el empleado</label>
+                                    <input type="text" id="ddlModifyVacacionEmpleadoModal" list="ModifyVacacionEmpleadolList" class="form-control" placeholder="Buscar empleado..." autocomplete="off">
+                                    <input type="hidden" name="IdEmpleado" id="IdVacacionModify" asp-for=" VacacionModify.IdEmpleado" />
+                                    <datalist id="ModifyVacacionEmpleadolList">
+                                        @{
+                                            foreach (var item in Model.EmpleadoLista)
+                                            {
+
+                                                <option value="@item.Cedula" data-id="@item.Id">@item.Nombre</option>
+                                            }
+                                        }
+                                    </datalist>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 pt-4 p-0">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
+
+                                <div class="mb-3">
+                                    <label for="lblDescription" class="form-label">Observación:</label>
+                                    <textarea class="form-control" id="txtDescription" disabled="disabled" cols="40" rows="8"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <br />
+                <div class="modal-footer">
+                    <button type="submit" id="btnModifyVacacion" class="btn btn-primary">Aceptar</button>
+                    <button type="button" id="btnCloseModalModifyVacacion" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 
 @section Scripts {
     <script src="~/js/plugins/jquery.datatables.min.js"></script>
     <script src="~/js/plugins/datatables.bootstrap.min.js"></script>
     <script type="text/javascript">$('#tvacaciones').DataTable();</script>
+
     <script>
 
         $(document).ready(function () {
             $('.cambiar-estado-btn').click(function (e) {
                 e.preventDefault();
-
                 var id = $(this).data('id');
 
-                // Mostrar confirmación con SweetAlert2
-                Swal.fire({
-                    title: 'Confirmación',
-                    text: '¿Estás seguro de que deseas eliminar las vacaciones?',
-                    icon: 'question',
-                    showCancelButton: true,
-                    confirmButtonText: 'Sí',
-                    cancelButtonText: 'No'
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        // Realizar la llamada AJAX si se confirma la acción
-                        $.ajax({
-                            url: '@Url.Action("Index", "Vacacion")',
-                            type: 'GET',
-                            data: { id: id },
-                            success: function (response) {
-                                // Mostrar mensaje de éxito con SweetAlert2
-                                Swal.fire('Éxito', 'Vacaciones Eliminadas Correctamente.', 'success').then(function () {
-                                    // Recargar la página
-                                    location.reload();
-                                });
-                            },
-                            error: function (xhr, status, error) {
-                                // Mostrar mensaje de error con SweetAlert2
-                                Swal.fire('Error', 'Ha ocurrido un error al eliminar las vacaciones.', 'error');
-                                console.error('Error:', error);
-                            }
-                        });
+
+                $.ajax({
+                    url: '@Url.Action("ValidarEliminacion", "Vacacion")',
+                    type: 'GET',
+                    data: { id: id },
+                    success: function (response) {
+                        if (response.success) {
+                            Swal.fire({
+                                title: 'Confirmación',
+                                text: '¿Estás seguro de que deseas eliminar este registro?',
+                                icon: 'question',
+                                showCancelButton: true,
+                                confirmButtonText: 'Sí',
+                                cancelButtonText: 'No'
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                   
+                                    $.ajax({
+                                        url: '@Url.Action("Delete", "Vacacion")',
+                                        type: 'GET',
+                                        data: { id: id },
+                                        success: function (response) {
+                                          
+                                            Swal.fire('Éxito', response.message, 'success').then(function () {
+                                                
+                                                location.reload();
+                                            });
+                                        },
+                                        error: function (xhr, status, error) {
+                                            
+                                            Swal.fire('Error', 'Ha ocurrido un error al eliminar las vacaciones.', 'error');
+                                            console.error('Error:', error);
+                                        }
+                                    });
+                                }
+                            });
+                        }
+                        else {
+                            Swal.fire('Error', response.message, 'error');
+                            console.error('Error:', error);
+                        }
+
+
+                    },
+                    error: function (xhr, status, error) {
+                        // Mostrar mensaje de error con SweetAlert2
+                        Swal.fire('Error', 'Ha ocurrido un error al eliminar las vacaciones.', 'error');
+                        console.error('Error:', error);
                     }
                 });
+
+
+
+
+
             });
+            $('form').on('submit', function (e) {
+                showSpinner();
+
+                e.preventDefault();
+
+                var form = $(this);
+                var url = form.attr('action');
+
+
+                setTimeout(function () {
+                    $.ajax({
+                        type: 'POST',
+                        url: url,
+                        data: form.serialize(),
+                        success: function (response) {
+                            if (response.success) {
+                                Swal.fire({
+                                    title: 'Éxito',
+                                    text: response.message,
+                                    icon: 'success'
+                                }).then(() => {
+                                    window.location.href = '@Url.Action("Index", "Vacacion")';
+                                });
+                            } else {
+                                Swal.fire({
+                                    title: 'Error',
+                                    text: response.message,
+                                    icon: 'error'
+                                });
+                            }
+                        },
+                        error: function () {
+                            Swal.fire({
+                                title: 'Error',
+                                text: 'Ocurrió un error inesperado.',
+                                icon: 'error'
+                            });
+                        }
+                    });
+
+                    hideSpinner();
+                }, 1000);
+            });
+
+
+
+            $('#dtStartDate').on('change', function () {
+                var originalCheckIn = $(this).data('lastValue');
+                var newCheckIn = $(this).val();
+                var checkOutVal = $('#dtEndDate').val();
+
+                if (new Date(newCheckIn) >= new Date(checkOutVal)) {
+                    if (originalCheckIn) {
+                        $(this).val(originalCheckIn);
+                    }
+                } else {
+                    $(this).data('lastValue', newCheckIn);
+                    var Days = tmpDays(newCheckIn, checkOutVal);
+
+
+                }
+                checkFieldsAndSubmit();
+            }).data('lastValue', $('#dtStartDate').val());
+
+            $('#dtEndDate').on('change', function () {
+                var originalCheckOut = $(this).data('lastValue');
+                var newCheckOut = $(this).val();
+                var checkInVal = $('#dtStartDate').val();
+
+                if (new Date(newCheckOut) <= new Date(checkInVal)) {
+                    if (originalCheckOut) {
+                        $(this).val(originalCheckOut);
+                    }
+                } else {
+                    $(this).data('lastValue', newCheckOut);
+                    var Days = tmpDays(checkInVal, newCheckOut);
+
+                }
+                checkFieldsAndSubmit();
+            }).data('lastValue', $('#dtEndDate').val());
+
+
+            $('#dtStartDate, #dtEndDate, #ddlAddVacacionEmpleadoModal').on('input change', checkFieldsAndSubmit);
+
+
+            InitializerEventDropDownList('ddlAddVacacionEmpleadoModal', 'AddVacacionEmpleadolList', 'IdVacacionCreate');
         });
+
+        function tmpDays(P_CHECKIN, P_CHECKOUT) {
+
+            const tmpP_CHECKIN = new Date(P_CHECKIN);
+            const tmpP_CHECKOUT = new Date(P_CHECKOUT);
+
+
+            const diferenciaMs = tmpP_CHECKOUT - tmpP_CHECKIN;
+
+
+            const diferenciaDias = Math.floor(diferenciaMs / (1000 * 60 * 60 * 24));
+
+            return diferenciaDias;
+        }
+
+
+        function InitializerEventDropDownList(DropDownInput, dataList, HDF) {
+            var typingTimer;
+            var doneTypingInterval = 1000;
+
+            document.getElementById(DropDownInput).addEventListener("input", function () {
+                clearTimeout(typingTimer);
+
+                typingTimer = setTimeout(function () {
+                    var inputValue = document.getElementById(DropDownInput).value.toLowerCase();
+                    var inputObject = document.getElementById(DropDownInput);
+                    var options = document.getElementById(dataList).options;
+
+                    for (var i = 0; i < options.length; i++) {
+                        var option = options[i];
+                        var text = option.textContent.toLowerCase();
+
+                        if (text.indexOf(removeAccents(inputValue)) !== -1) {
+                            option.style.display = "block";
+                        } else {
+                            option.style.display = "none";
+                        }
+                    }
+                    var selectedOption = null;
+                    for (var i = 0; i < options.length; i++) {
+                        if (options[i].value.toLowerCase() === inputObject.value.toLowerCase()) {
+                            selectedOption = options[i];
+
+                            break;
+                        }
+                    }
+                    if (selectedOption) {
+                        inputObject.value = selectedOption.textContent;
+                        document.getElementById(HDF).value = selectedOption.getAttribute('data-id');
+
+
+
+                    }
+                    else {
+                        document.getElementById(HDF).value = '';
+                    }
+                    if (GetDropDownValueSelected(DropDownInput, dataList) === null) {
+                        inputObject.value = '';
+                        inputObject.placeholder = "No se encontró el registro digitado";
+                        $('#txtDescription').val('');
+
+                        typingTimer = setTimeout(function () {
+                            inputObject.placeholder = "Seleccione una opción...";
+                        }, 700)
+                    }
+                    else {
+
+
+                        document.getElementById(DropDownInput).value = GetDropDownTextContentSelected(DropDownInput, dataList);
+                        options[0].selected = true;
+                    }
+                }, doneTypingInterval);
+
+
+            });
+        }
+        function checkFieldsAndSubmit() {
+            const inicioPermiso = $('#dtStartDate').val();
+            const finPermiso = $('#dtEndDate').val();
+            const empleado = $('#ddlAddVacacionEmpleadoModal').val();
+            var empleadoId = 0;
+            var empleados = @Html.Raw(JsonConvert.SerializeObject(Model.EmpleadoLista));
+
+            if ($('#ddlAddVacacionEmpleadoModal').val() != '') {
+                var empleadoFound = buscarEmpleado(empleados, empleado)
+                empleadoId = empleadoFound.Id;
+                console.log(empleadoFound);
+            }
+
+
+            if (inicioPermiso && finPermiso && empleado && empleadoId) {
+
+                $.ajax({
+                    url: 'Vacacion/ObtenerEmpleado',
+                    method: 'GET',
+                    data: { Id: empleadoId, StartDate: inicioPermiso, EndDate: finPermiso }
+                    ,
+                    success: function (response) {
+
+                        console.log(response.data)
+                        $('#txtDescription').val(response.data);
+                        $('#DiasSolicitadosModify').val(tmpDays(inicioPermiso, finPermiso));
+
+                    },
+                    error: function (error) {
+
+                        alert('Ocurrió un error al agregar la vacación');
+                    }
+                });
+            }
+        }
+        function buscarEmpleadoPorCedula(empleadoLista, cedula) {
+            return empleadoLista.find(function (empleado) {
+                return empleado.Cedula === cedula;
+            });
+        }
+        function buscarEmpleadoPorNombre(empleadoList, nombre) {
+            return empleadoList.find(function (empleado) {
+                return empleado.Nombre === nombre;
+            });
+        }
+        function buscarEmpleado(empleadoList, CedulaOrNombre) {
+            var empleado = buscarEmpleadoPorCedula(empleadoList, CedulaOrNombre);
+            if (!empleado) {
+                empleado = buscarEmpleadoPorNombre(empleadoList, CedulaOrNombre);
+            }
+            return empleado;
+        }
+        
+
+          
+
+        
 
     </script>
 

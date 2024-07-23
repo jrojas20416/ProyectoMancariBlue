@@ -17,13 +17,15 @@ namespace ProyectoMancariBlue.Models.Obj
         [StringLength(50)]
         public string Nombre { get; set; }
 
-        [Required(ErrorMessage = "El campo Apellidos es requerido")]
-        [StringLength(50)]
-        public string Apellidos { get; set; }
+  
 
         [Required(ErrorMessage = "El campo Correo es requerido")]
         [StringLength(50)]
         public string Correo { get; set; }
+        [Required(ErrorMessage = "El campo Nacionalidad es requerido")]
+        [StringLength(50)]
+        public string Nacionalidad { get; set; }
+
 
         [Required(ErrorMessage = "El campo Edad es requerido")]
         public int Edad { get; set; }
@@ -32,16 +34,15 @@ namespace ProyectoMancariBlue.Models.Obj
         public int Telefono { get; set; }
 
         [Required(ErrorMessage = "El campo Provincia es requerido")]
-        [StringLength(50)]
-        public string Provincia { get; set; }
-
+        [ForeignKey("Provincia")]
+        public int ProvinciaId { get; set; }
         [Required(ErrorMessage = "El campo Cantón es requerido")]
-        [StringLength(50)]
-        public string Canton { get; set; }
+        [ForeignKey("Canton")]
+        public int CantonId { get; set; }
 
         [Required(ErrorMessage = "El campo Distrito es requerido")]
-        [StringLength(50)]
-        public string Distrito { get; set; }
+        [ForeignKey("Distrito")]
+        public int DistritoId { get; set; }
 
         [Required(ErrorMessage = "El campo Puesto es requerido")]
         [StringLength(50)]
@@ -72,8 +73,19 @@ namespace ProyectoMancariBlue.Models.Obj
         [Required(ErrorMessage = "Se debe seleccionar un Rol")]
         public long? IdRol { get; set; }
         public Rol Rol { get; set; }
+
+        public virtual Provincia Provincia { get; set; }
+        public virtual Canton Canton { get; set; }
+        public virtual Distrito Distrito { get; set; }  
         [Required(ErrorMessage = "El campo Estado es requerido")]
         public bool Estado { get; set; }
+        [Column("Dias_Disponibles")] 
+        
+        public int DiasDisponibles { get; set; }
+
+        public ICollection<HistoricoPago> HistoricoPagos { get; set; }
+
+        public ICollection<RegistroLiquidacion> Liquidaciones { get; set; }
     }
 
       

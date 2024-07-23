@@ -1,4 +1,7 @@
-﻿@{
+﻿@using Newtonsoft.Json;
+@using ProyectoMancariBlue.Models.Obj.DTO;
+@model ProyectoMancariBlue.Models.Obj.Request.VacunaRequest
+@{
     ViewData["Title"] = "Vacunas";
 }
 
@@ -7,105 +10,260 @@
         <h1><i class="fa fa-th-list" style="margin-right: 10px;"></i>Administración de Vacunas</h1>
         <p>Vacunas</p>
         <br>
-        <a asp-action="CrearVacuna" asp-controller="Vacuna" class="btn btn-primary"><i class="fa fa-plus" aria-hidden="true"></i>Agregar Vacunas</a>
+        <a onclick="OpenModal('mdlAddRegistroVacuna')" class="btn btn-primary"><i class="fa fa-plus" aria-hidden="true"></i>Agregar Vacunas</a>
     </div>
     <ul class="app-breadcrumb breadcrumb side">
         <li class="breadcrumb-item"><i class="fa fa-home fa-lg"></i></li>
         <li class="breadcrumb-item">Vacunas</li>
     </ul>
 </div>
-    <div class="row" style="flex-direction:column" >
-        <div class="col-md-14">
-            <div class="tile">
-                <div class="tile-body">
-                    <div class="table-responsive">
+<div class="row" style="flex-direction:column">
+    <div class="col-md-14">
+        <div class="tile">
+            <div class="tile-body">
+                <div class="table-responsive">
+
+                    @if (Model != null && Model.ListaRegistroVacunaView.Any())
+                    {
                         <table class="table table-hover table-bordered" id="tvacunas">
                             <thead>
                                 <tr>
-                                <th>
-                                   Código Vacuna
-                                </th>
                                     <th>
-                                       Código Animal
+                                        @Html.DisplayNameFor(model => model.RegistroVacuna.AnimalObj.Codigo)
                                     </th>
                                     <th>
-                                        Fecha Aplicación
+                                        @Html.DisplayNameFor(model => model.RegistroVacuna.ProductoObj.Codigo)
                                     </th>
-                                <th>
-                                    Vacuna
-                                </th>
-                                <th>
-                                    Categoría Vacuna
-                                </th>
-                                <th>
-                                    Próxima Vacuna
-                                </th>
+                                   
                                     <th>
-                                       Acciones
+                                        @Html.DisplayNameFor(model => model.RegistroVacuna.ProductoObj.Nombre)
+                                    </th>
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.RegistroVacuna.ProductoObj.CategoriaProducto.Descripcion)
+                                    </th>
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.RegistroVacuna.FechaAplicacion)
+                                    </th>
+                                    <th>
+                                        Acciones
                                     </th>
                                 </tr>
                             </thead>
                             <tbody>
+                                @foreach (var item in Model.ListaRegistroVacunaView)
+                                {
                                     <tr>
                                         <td>
-                                           1234
+                                            @Html.DisplayFor(modelItem => item.AnimalObj.Codigo)
+                                        </td>
+
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.ProductoObj.Codigo)
                                         </td>
                                         <td>
-                                          0001
+                                            @Html.DisplayFor(modelItem => item.ProductoObj.Nombre)
                                         </td>
                                         <td>
-                                       15/01/2024
+                                            @Html.DisplayFor(modelItem => item.ProductoObj.CategoriaProducto.Descripcion)
                                         </td>
-                                <td>
-                                   Vacuna 1
-                                </td>
-                                <td>
-                                    Desparacitante
-                                </td>
-                                <td>
-                                    15/03/2024
-                                </td>
                                         <td>
-                                    <a class="btn btn-primary" asp-action="EditarVacuna" asp-controller="Vacuna">Editar</a>
-                                    <a class="btn btn-info" asp-action="VerVacuna" sp-controller="Vacuna">Detalle Vacuna</a>
-                                                <a class="btn btn-danger cambiar-estado-btn" href="#">Eliminar</a>
+                                            @if (item.FechaAplicacion.HasValue)
+                                            {
+                                                @item.FechaAplicacion.Value.ToShortDateString()
+                                            }
+                                            else
+                                            {
+                                                <text>No hay fecha</text>
+                                            }
+                                        </td>
+
+                                      
+                                        <td>
                                             
+                                            <a class="btn btn-primary" onclick="OpenModalModifyRegistroVacuna(this,'mdlModifyRegistroVacuna',0)" data-registro='@JsonConvert.SerializeObject(item)'>Editar</a>
+                                            <a class="btn btn-info" onclick="OpenModalModifyRegistroVacuna(this,'mdlModifyRegistroVacuna',1)" data-registro='@JsonConvert.SerializeObject(item)'>Detalle Vacuna</a>
+                                            <a class="btn btn-danger cambiar-estado-btn" data-id='@item.Id' >Eliminar</a>
+
                                         </td>
                                     </tr>
-                            <tr>
-                                <td>
-                                   5678
-                                </td>
-                                <td>
-                                   0003
-                                </td>
-                                <td>
-                                   20/01/2024
-                                </td>
-                                <td>
-                                    Vacuna 3
-                                </td>
-                                <td>
-                                Analgésico
-                                </td>
-
-                                <td>
-                                 20/03/2024
-                                </td>
-                                <td>
-                                    <a class="btn btn-primary" asp-action="EditarVacuna" asp-controller="Vacuna">Editar</a>
-                                    <a class="btn btn-info" asp-action="VerVacuna" sp-controller="Vacuna">Detalle Vacuna</a>
-                                    <a class="btn btn-danger cambiar-estado-btn" href="#">Eliminar</a>
-
-                                </td>
-                            </tr>
+                                }
                             </tbody>
                         </table>
-                    </div>
+                    }
+                    else
+                    {
+                        
+                    <div>No se ha encontrado registros para mostrar</div>
+
+}
                 </div>
             </div>
         </div>
     </div>
+</div>
+
+
+
+@*Modal to add RegistroVacuna*@
+<div class="modal fade" id="mdlAddRegistroVacuna">
+    <div class="modal-dialog modal-lg dialogPDF">
+       
+            <div class="modal-content contentPDF">
+            <div class="modal-header" style="background-color: #007C89; color:white; justify-content: center; ">
+                <h5 class="modal-title">Agregar RegistroVacuna</h5>
+            </div>
+            <form asp-controller="Vacuna" asp-action="CrearRegistroVacuna" method="post">
+            <div class="modal-body">
+                
+                    <input type="hidden" id="hdfEstado" value="0" />
+                <input type="hidden" id="hdfId" value="0" />
+                <div class="row" style=" padding-left: 1rem;">
+                 
+                    <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 pt-4 p-0">
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
+                            <div class="form-group">
+                                <label for="ddlAddAnimalModal">Selecciona el animal</label>
+                                <input type="text" id="ddlAddAnimalModal" list="AddAnimalList" class="form-control" placeholder="Buscar animal..." autocomplete="off">
+                                    <input type="hidden" name="IdAnimal" id="IdAnimal" asp-for="RegistroVacuna.IdAnimal" />
+                                <datalist id="AddAnimalList">
+
+                                    @{
+                                        if (Model!=null&&Model.ListaAnimalView != null)
+                                        {
+                                            foreach (var item in (IEnumerable<AnimalDTO>)Model.ListaAnimalView)
+                                                                        {
+                                                    <option value="@item.Id" data-id="@item.Id">@item.Codigo</option>
+                                            }
+                                        }
+                                    }
+                                </datalist>
+                            </div>
+                        </div>
+                    </div>
+                        <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 pt-4 p-0">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
+                                <div class="form-group">
+                                    <label for="ddlAddProductoModal">Selecciona el Producto</label>
+                                    <input type="text" id="ddlAddProductoModal" list="AddProductoList" class="form-control" placeholder="Buscar Producto..." autocomplete="off">
+                                    <input type="hidden" name="IdProducto" id="IdProducto" asp-for="RegistroVacuna.IdProducto" />
+                                    <datalist id="AddProductoList">
+
+                                        @{
+                                            if (Model != null && Model.ListaProductoView != null)
+                                            {
+                                                foreach (var item in (IEnumerable<ProductoDto>)Model.ListaProductoView)
+                                                {
+                                                    <option value="@item.Codigo" data-id="@item.Id">@item.Nombre</option>
+                                                }
+                                            }
+                                        }
+                                    </datalist>
+                                </div>
+                            </div>
+                        </div>
+                    <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 pt-4 p-0">
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
+                                <div class="form-group">
+                                    <label asp-for="RegistroVacuna.FechaAplicacion" class="control-label">Fecha de Aplicación</label>
+                                    <input asp-for="RegistroVacuna.FechaAplicacion" name="FechaAplicacion" class="form-control" type="date" />
+                                    <span asp-validation-for="RegistroVacuna.FechaAplicacion" class="text-danger"></span>
+                                </div>
+                            </div>
+                    </div>
+                </div>
+                
+            </div>
+            <br />
+            <div class="modal-footer">
+                <button type="submit" id="btnAddRegistroVacuna" class="btn btn-primary" >Aceptar</button>
+                <button type="button" id="btnCloseModalAddRegistroVacuna" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
+            </div>
+            </form>
+        </div>
+        
+    </div>
+</div>
+
+
+@*Modal to Modify RegistroVacuna*@
+<div class="modal fade" id="mdlModifyRegistroVacuna">
+    <div class="modal-dialog modal-lg dialogPDF">
+
+        <div class="modal-content contentPDF">
+            <div class="modal-header" style="background-color: #007C89; color:white; justify-content: center; ">
+                <h5 class="modal-title">Agregar RegistroVacuna</h5>
+            </div>
+            <form asp-controller="Vacuna" asp-action="EditarVacuna" method="post">
+                <div class="modal-body">
+
+                    <input type="hidden" name="Id" id="IdRegistroModify" asp-for="RegistroVacunaModifyModal.Id" />
+                    <div class="row" style=" padding-left: 1rem;">
+
+                        <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 pt-4 p-0">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
+                                <div class="form-group">
+                                    <label for="ddlModifyAnimalModal">Selecciona el animal</label>
+                                    <input type="text" id="ddlModifyAnimalModal" list="ModifyAnimalList" class="form-control" placeholder="Buscar animal..." autocomplete="off">
+                                    <input type="hidden" name="IdAnimal" id="IdAnimalModify" asp-for="RegistroVacunaModifyModal.IdAnimal" />
+                                    <datalist id="ModifyAnimalList">
+
+                                        @{
+                                            if (Model != null && Model.ListaAnimalView != null)
+                                            {
+                                                foreach (var item in (IEnumerable<AnimalDTO>)Model.ListaAnimalView)
+                                                {
+                                                    <option value="@item.Id" data-id="@item.Id">@item.Codigo</option>
+                                                }
+                                            }
+                                        }
+                                    </datalist>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 pt-4 p-0">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
+                                <div class="form-group">
+                                    <label for="ddlModifyProductoModal">Selecciona el Producto</label>
+                                    <input type="text" id="ddlModifyProductoModal" list="ModifyProductoList" class="form-control" placeholder="Buscar Producto..." autocomplete="off">
+                                    <input type="hidden" name="IdProducto" id="IdProductoModify" asp-for="RegistroVacunaModifyModal.IdProducto" />
+                                    <datalist id="ModifyProductoList">
+
+                                        @{
+                                            if (Model != null && Model.ListaProductoView != null)
+                                            {
+                                                foreach (var item in (IEnumerable<ProductoDto>)Model.ListaProductoView)
+                                                {
+                                                    <option value="@item.Codigo" data-id="@item.Id">@item.Nombre</option>
+                                                }
+                                            }
+                                        }
+                                    </datalist>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 pt-4 p-0">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
+                                <div class="form-group">
+                                    <label asp-for="RegistroVacunaModifyModal.FechaAplicacion" class="control-label">Fecha de Aplicación</label>
+                                    <input asp-for="RegistroVacunaModifyModal.FechaAplicacion" id="txtFechaAplicacion" name="FechaAplicacion" class="form-control" type="date" />
+                                    <span asp-validation-for="RegistroVacunaModifyModal.FechaAplicacion" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <br />
+                <div class="modal-footer">
+                    <button type="submit" id="btnModifyRegister"  class="btn btn-primary">Aceptar</button>
+                    <button type="button" id="btnCloseModalModifyRegistroVacuna" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
+                </div>
+            </form>
+        </div>
+
+    </div>
+</div>
+ 
 
 @section Scripts {
     <script src="~/js/plugins/jquery.datatables.min.js"></script>
@@ -114,43 +272,212 @@
     <script>
 
         $(document).ready(function () {
-            $('.cambiar-estado-btn').click(function (e) {
-                e.preventDefault();
+
+            $('.cambiar-estado-btn').click(function (event) {
+
+                event.preventDefault(); 
 
                 var id = $(this).data('id');
 
-                // Mostrar confirmación con SweetAlert2
                 Swal.fire({
-                    title: 'Confirmación',
-                    text: '¿Estás seguro de que deseas eliminar la Vacuna?',
-                    icon: 'question',
+                    title: '¿Estás seguro?',
+                    text: "¡No podrás revertir esto!",
+                    icon: 'warning',
                     showCancelButton: true,
-                    confirmButtonText: 'Sí',
-                    cancelButtonText: 'No'
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Sí, eliminarlo',
+                    cancelButtonText: 'Cancelar'
                 }).then((result) => {
                     if (result.isConfirmed) {
-                        // Realizar la llamada AJAX si se confirma la acción
                         $.ajax({
-                            url: '@Url.Action("Index", "Vacuna")',
-                            type: 'GET',
-                            data: { id: id },
-                            success: function (response) {
-                                // Mostrar mensaje de éxito con SweetAlert2
-                                Swal.fire('Éxito', 'Vacuna Eliminada Correctamente.', 'success').then(function () {
-                                    // Recargar la página
-                                    location.reload();
-                                });
-                            },
-                            error: function (xhr, status, error) {
-                                // Mostrar mensaje de error con SweetAlert2
-                                Swal.fire('Error', 'Ha ocurrido un error al eliminar la Vacuna.', 'error');
-                                console.error('Error:', error);
+                            url: '/Vacuna/EliminarRegistro/' + id,
+                            type: 'DELETE',
+                            success: function (result) {
+                                if (result.success) {
+                                    Swal.fire({
+                                        title: 'Éxito',
+                                        text: result.message,
+                                        icon: 'success'
+                                    }).then(() => {
+
+                                        window.location.href = '@Url.Action("Index", "Vacuna")';
+                                    });
+                                } else {
+                                    Swal.fire({
+                                        title: 'Error',
+                                        text: result.errors,
+                                        icon: 'error'
+                                    });
+                                }
                             }
                         });
                     }
                 });
             });
+
+
+            $('form').on('submit', function (e) {
+                showSpinner();
+                e.preventDefault(); 
+
+                var form = $(this);
+                var url = form.attr('action');
+
+                $.ajax({
+                    type: 'POST',
+                    url: url,
+                    data: form.serialize(),
+                    success: function (response) {
+                        if (response.success) {
+                            Swal.fire({
+                                title: 'Éxito',
+                                text: response.message,
+                                icon: 'success'
+                            }).then(() => {
+                              
+                                window.location.href = '@Url.Action("Index", "Vacuna")';
+                            });
+                        } else {
+                            Swal.fire({
+                                title: 'Error',
+                                text:  response.errors,
+                                icon: 'error'
+                            });
+                        }
+                    },
+                    error: function () {
+                        Swal.fire({
+                            title: 'Error',
+                            text: 'Ocurrió un error inesperado.',
+                            icon: 'error'
+                        });
+                    }
+                });
+
+                hideSpinner();
+            });
+
+
+            InitializerEventDropDownList('ddlAddAnimalModal', 'AddAnimalList', 'IdAnimal');
+            InitializerEventDropDownList('ddlAddProductoModal', 'AddProductoList', 'IdProducto');
+            InitializerEventDropDownList('ddlModifyProductoModal', 'ModifyProductoList', 'IdProductoModify');
+            InitializerEventDropDownList('ddlModifyAnimalModal', 'ModifyAnimalList', 'IdAnimalModify');
         });
+
+        function InitializerEventDropDownList(DropDownInput, dataList, HDF) {
+            var typingTimer;
+            var doneTypingInterval = 1000;
+
+            document.getElementById(DropDownInput).addEventListener("input", function () {
+                clearTimeout(typingTimer);
+
+                typingTimer = setTimeout(function () {
+                    var inputValue = document.getElementById(DropDownInput).value.toLowerCase();
+                    var inputObject = document.getElementById(DropDownInput);
+                    var options = document.getElementById(dataList).options;
+
+                    for (var i = 0; i < options.length; i++) {
+                        var option = options[i];
+                        var text = option.textContent.toLowerCase();
+
+                        if (text.indexOf(removeAccents(inputValue)) !== -1) {
+                            option.style.display = "block";
+                        } else {
+                            option.style.display = "none";
+                        }
+                    }
+                    var selectedOption = null;
+                    for (var i = 0; i < options.length; i++) {
+                        if (options[i].value.toLowerCase() === inputObject.value.toLowerCase()) {
+                            selectedOption = options[i];
+
+                            break;
+                        }
+                    }
+                    if (selectedOption) {
+                        inputObject.value = selectedOption.textContent;
+                        document.getElementById(HDF).value = selectedOption.getAttribute('data-id');
+                  
+
+
+                    }
+                    else {
+                        document.getElementById(HDF).value = ''; 
+                    }
+                    if (GetDropDownValueSelected(DropDownInput, dataList) === null) {
+                        inputObject.value = '';
+                        inputObject.placeholder = "No se encontró el registro digitado";
+
+
+                        typingTimer = setTimeout(function () {
+                            inputObject.placeholder = "Seleccione una opción...";
+                        }, 700)
+                    }
+                    else {
+
+
+                        document.getElementById(DropDownInput).value = GetDropDownTextContentSelected(DropDownInput, dataList);
+                        options[0].selected = true;
+                    }
+                }, doneTypingInterval);
+
+
+            });
+        }
+        function OpenModalModifyRegistroVacuna(button, modal, option) {
+
+            var RegistroVacunaJson = button.getAttribute("data-registro");
+            var registro = JSON.parse(RegistroVacunaJson);
+            console.log(registro);
+            if (option === 0) {
+
+                var fechaAplicacion = new Date(registro.FechaAplicacion);
+                var formattedDate = fechaAplicacion.toISOString().split('T')[0];
+                $("#ddlModifyAnimalModal").val(registro.IdAnimal);
+                ActivateInputEvent('ddlModifyAnimalModal');
+                $("#ddlModifyProductoModal").val(registro.ProductoObj.Codigo);
+                ActivateInputEvent('ddlModifyProductoModal');
+                $("#txtFechaAplicacion").val(formattedDate);
+                $("#IdAnimalModify").val(registro.IdAnimal);
+                $("#IdProductoModify").val(registro.IdProducto);
+                $("#IdRegistroModify").val(registro.Id);
+                $('#btnModifyRegister').show();
+                console.log( $("#IdRegistroModify").val())
+                
+
+                OpenModal(modal);
+
+            }
+            else {
+                var fechaAplicacion = new Date(registro.FechaAplicacion);
+                var formattedDate = fechaAplicacion.toISOString().split('T')[0];
+                $("#ddlModifyAnimalModal").val(registro.IdAnimal);
+                ActivateInputEvent('ddlModifyAnimalModal');
+                $("#ddlModifyProductoModal").val(registro.ProductoObj.Codigo);
+                ActivateInputEvent('ddlModifyProductoModal');
+                $("#txtFechaAplicacion").val(formattedDate);
+                $("#IdAnimalModify").val(registro.IdAnimal);
+                $("#IdProductoModify").val(registro.IdProducto);
+                $("#IdRegistroModify").val(registro.Id);
+             
+
+                console.log($("#IdRegistroModify").val())
+
+
+                OpenModal(modal);
+
+                $('#ddlModifyAnimalModal').prop('readonly', true);
+                $('#ddlModifyProductoModal').prop('readonly', true);
+                $('#txtFechaAplicacion').prop('readonly', true);
+                $('#btnModifyRegister').hide();
+
+
+                OpenModal(modal);
+
+            }
+
+        }
 
     </script>
 

@@ -41,6 +41,23 @@ namespace ProyectoMancariBlue.Models.Enum
                             .GetCustomAttribute<DisplayAttribute>()?
                             .GetDescription();
         }
+        public static string? GetDisplayNameReason(this EReasonDeparture enumValue)
+        {
+            return enumValue.GetType()
+                            .GetMember(enumValue.ToString())
+                            .First()
+                            .GetCustomAttribute<DisplayAttribute>()?
+                            .GetName();
+        }
+
+        public static string? GetDescriptionReason(this EReasonDeparture enumValue)
+        {
+            return enumValue.GetType()
+                            .GetMember(enumValue.ToString())
+                            .First()
+                            .GetCustomAttribute<DisplayAttribute>()?
+                            .GetDescription();
+        }
 
     }
 }

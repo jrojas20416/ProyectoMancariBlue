@@ -93,6 +93,7 @@
                                 }
 
 
+
                             </tbody>
                         </table>
                     </div>
@@ -101,7 +102,88 @@
         </div>
     </div>
 }
+else
+{
 
+    <div>No se ha encontrado registros para mostrar</div>
+
+}
+
+@*Modal to add Proveedor*@
+<div class="modal fade" id="mdlAddProveedor">
+    <div class="modal-dialog modal-lg dialogPDF">
+        <div class="modal-content contentPDF">
+            <div class="modal-header" style="background-color: #007C89; color:white; justify-content: center; ">
+                <h5 class="modal-title">Agregar Proveedor</h5>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="hdfEstado" value="0" />
+                <input type="hidden" id="hdfId" value="0" />
+                <div class="row" style=" padding-left: 1rem;">
+                    <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 pt-4 p-0">
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
+                            <div class="form-group">
+                                <label for="ddlAddProveedorModal">Identificación</label>
+                                <input type="text" id="txtIdentificación" class="form-control" placeholder="Digite la identificación..." autocomplete="off">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 pt-4 p-0">
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
+                            <div class="form-group">
+                                <label for="ddlAddProveedorModal">Selecciona la categoría</label>
+                                <input type="text" id="ddlAddProveedorCategoriaModal" list="AddProveedorCategoriaList" class="form-control" placeholder="Buscar categoría..." autocomplete="off">
+                                <datalist id="AddProveedorCategoriaList">
+
+                                    @{
+                                        if ((IEnumerable<SelectListItem>)ViewBag.CategoriaProveedorListR != null)
+                                        {
+                                            foreach (var item in (IEnumerable<SelectListItem>)ViewBag.CategoriaProveedorListR)
+                                            {
+                                                <option value="@item.Value">@item.Text</option>
+                                            }
+                                        }
+                                    }
+                                </datalist>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 pt-4 p-0 ">
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                            <div class="form-group">
+                                <label for="ProveedorNombre">Nombre</label>
+                                <input type="text" id="txtProveedorNombre" oninput="checkInput(this)" name="ProveedorNombre" class="form-control" placeholder="Ingrese el nombre...">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 pt-4 p-0 ">
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                            <div class="form-group">
+                                <label for="ProveedorTelefono">Teléfono</label>
+                                <input type="number" id="txtProveedorTelefono" name="ProveedorTelefono" oninput="checkInputNumber(this)" maxlength="8" class="form-control" placeholder="Ingrese el número de teléfono..." max="8" step="1">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 pt-4 p-0 ">
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                            <div class="form-group">
+                                <label for="ProveedorCorreo">Correo</label>
+                                <input type="text" id="txtProveedorCorreo" name="ProveedorCorreo" class="form-control" placeholder="Digite su correo...">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <br />
+            <div class="modal-footer">
+                <button type="button" id="btnAddProveedor" class="btn btn-primary" onclick="NewProveedor()">Aceptar</button>
+                <button type="button" id="btnCloseModalAddProveedor" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 @*Modal to add Proveedor*@
 <div class="modal fade" id="mdlAddProveedor">
@@ -144,9 +226,6 @@
                             </div>
                         </div>
                     </div>
-
-
-
                     <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 pt-4 p-0 ">
                         <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                             <div class="form-group">
@@ -172,7 +251,6 @@
                         </div>
                     </div>
                 </div>
-
             </div>
             <br />
             <div class="modal-footer">
@@ -202,7 +280,6 @@
                             </div>
                         </div>
                     </div>
-
                     <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 pt-4 p-0">
                         <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
                             <div class="form-group">
@@ -224,9 +301,6 @@
                             </div>
                         </div>
                     </div>
-
-
-
                     <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 pt-4 p-0 ">
                         <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                             <div class="form-group">
@@ -285,7 +359,6 @@
 
                 var id = $(this).data('id');
                 var proveedor = { Id: id };
-                // Mostrar confirmación con SweetAlert2
                 Swal.fire({
                     title: 'Confirmación',
                     text: '¿Está seguro de que desea desactivar el proveedor?',

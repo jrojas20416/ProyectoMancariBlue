@@ -1,4 +1,7 @@
-﻿
+﻿@using Newtonsoft.Json;
+@using ProyectoMancariBlue.Models.Enum;
+@using ProyectoMancariBlue.Models.Obj.DTO;
+@model ProyectoMancariBlue.Models.Obj.Request.EmpleadoRequest
 @{
     ViewData["Title"] = "Empleados";
 
@@ -9,146 +12,109 @@
         return n + " " + a;
 
     }
+    string FormatearMoneda(decimal valor)
+    {
+        return string.Format(new System.Globalization.CultureInfo("es-CR"), "{0:C}", valor);
 
+    }
 }
 <div class="app-title">
     <div>
         <h1><i class="fa fa-th-list" style="margin-right: 10px;"></i>Administración de Empleados</h1>
         <p>Empleados</p>
         <br>
-        <a asp-action="CrearEmpleado" asp-controller="Empleado" class="btn btn-primary"><i class="fa fa-plus" aria-hidden="true"></i>Crear Empleado</a>
+        <a onclick="OpenModal('mdlAddEmpleado')" class="btn btn-primary"><i class="fa fa-plus" aria-hidden="true"></i>Crear Empleado</a>
     </div>
     <ul class="app-breadcrumb breadcrumb side">
         <li class="breadcrumb-item"><i class="fa fa-home fa-lg"></i></li>
         <li class="breadcrumb-item">Empleados</li>
     </ul>
 </div>
-<div class="row" style="flex-direction:column">
-        <div class="col-md-14">
+@if (Model.Empleado.Any())
+{
+    <div class="row">
+        <div class="col-md-12">
             <div class="tile">
                 <div class="tile-body">
                     <div class="table-responsive">
-                        <table class="table table-hover table-bordered" id="templeados">
+                        <table class="table table-hover table-bordered" id="tadministrador">
                             <thead>
                                 <tr>
-                                <th>
-                                   Cédula
-                                </th>
                                     <th>
-                                        Nombre Completo
+                                        @Html.DisplayNameFor(model => model.EmpleadoCreate.Cedula)
                                     </th>
                                     <th>
-                                        Correo
-                                    </th>
-
-                                    <th>
-                                        Puesto
+                                        @Html.DisplayNameFor(model => model.EmpleadoCreate.Nombre)
                                     </th>
                                     <th>
-                                        Fecha de Ingreso
+                                        @Html.DisplayNameFor(model => model.EmpleadoCreate.Correo)
                                     </th>
-                                <th >
-                                    Vacaciones
-                                </th>
-                                <th>
-                                    Estado
-                                </th>
                                     <th>
-                                       Acciones
+                                        @Html.DisplayNameFor(model => model.EmpleadoCreate.Puesto)
                                     </th>
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.EmpleadoCreate.Salario)
+                                    </th>
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.EmpleadoCreate.Estado)
+                                    </th>
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.EmpleadoCreate.Rol.Descripcion)
+                                    </th>
+                                    <th>Acciones</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                    <tr>
-                                        <td>
-                                            1-1492-0416
-                                        </td>
-                                        <td>
-                                            Josue Rojas Chaves
-                                        </td>
+                                @if (Model != null)
+                                {
+                                    foreach (var item in Model.Empleado)
+                                    {
+                                        <tr>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.Cedula)
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.Nombre)
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.Correo)
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.Puesto)
+                                            </td>
+                                            <td>
+                                                @FormatearMoneda(Convert.ToDecimal(item.Salario))
+                                            </td>
+                                            <td>
+                                                @if (item.Estado)
+                                                {
 
-                                        <td>
-                                           svcrove@outlook.com
-                                        </td>
-                                        <td>
-                                            Ganaero
-                                        </td>
-                                <td>
-                                    02/04/2024
-                                </td>
-                                <td style="text-align:center">
-                                    <i class="fa fa-exclamation-circle"  aria-hidden="true"></i>
-                                </td>
-                                <td>
-                                    <span class="badge badge-success">Activo</span>
-                                </td>
-                                        <td>
-                                    <a class="btn btn-primary" asp-action="EditarEmpleado" asp-controller="Empleado">Editar</a>
-                                    <a class="btn btn-info" asp-action="VerEmpleado" sp-controller="Empleado">Detalle</a>
-                                                <a class="btn btn-danger cambiar-estado-btn" href="#">Desactivar</a>
-                                            
-                                        </td>
-                                    </tr>
-                            <tr>
-                                <td>
-                                    1-1492-0416
-                                </td>
-                                <td>
-                                    Manuel Barrantes Garcia
-                                </td>
+                                                    <span class="badge badge-success">Activo</span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="badge badge-danger">Inactivo</span>
 
-                                <td>
-                                    manu@outlook.com
-                                </td>
-                                <td>
-                                    Asistente
-                                </td>
-                                <td>
-                                    02/04/2024
-                                </td>
-                                <td style="text-align:center">
-                                    <i class="fa fa-check-circle" aria-hidden="true"></i>
-                                </td>
-                                <td>
-                                    <span class="badge badge-danger">Inactivo</span>
-                                </td>
-                                <td>
-                                    <a class="btn btn-primary" asp-action="EditarEmpleado" asp-controller="Empleado">Editar</a>
-                                    <a class="btn btn-info" asp-action="VerEmpleado" sp-controller="Empleado">Detalle</a>
-                                    <a class="btn btn-success cambiar-estado-btn" href="#">Activar</a>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    1-1492-0416
-                                </td>
-                                <td>
-                                    Ariana Montero Salazar
-                                </td>
+                                                }
 
-                                <td>
-                                    armosa@outlook.com
-                                </td>
-                                <td>
-                                    Veterinario
-                                </td>
-                                <td>
-                                    02/04/2024
-                                </td>
-                                <td style="text-align:center">
-                                    <i class="fa fa-check-circle" aria-hidden="true"></i>
-                                </td>
-                                <td >
-                                    <span class="badge badge-success">Activo</span>
-                                </td>
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.Rol.Descripcion)
+                                            </td>
+                                            <td>
+                                                @if (Context.Request.Cookies["Id"] != item.Id.ToString())
+                                                {
+                                                    <a class="btn btn-primary" onclick="OpenModalModifyRegistroEmpleado(this,'mdlModifyEmpleado',0)" data-registro='@JsonConvert.SerializeObject(item)'>Modificar empleado</a>
+                                                    <a class="btn btn-info" onclick="OpenModalModifyRegistroEmpleado(this,'mdlModifyEmpleado',1)" data-registro='@JsonConvert.SerializeObject(item)'>Ver</a>
 
-                                <td>
-                                    <a class="btn btn-primary" asp-action="EditarEmpleados" asp-controller="Empleados">Editar</a>
-                                    <a class="btn btn-info" asp-action="VerEmpleados" sp-controller="Empleados">Detalle</a>
-                                    <a class="btn btn-danger cambiar-estado-btn" href="#">Desactivar</a>
+                                                }
 
-                                </td>
-                            </tr>
+                                            </td>
+
+
+                                        </tr>
+                                    }
+                                }
                             </tbody>
                         </table>
                     </div>
@@ -156,6 +122,399 @@
             </div>
         </div>
     </div>
+}
+else
+{
+    <div>
+        <h3>Lo sentimos no tenemos datos por mostrar</h3>
+    </div>
+}
+
+
+
+@*Modal to add Empleado*@
+<div class="modal fade" id="mdlAddEmpleado">
+    <div class="modal-dialog modal-lg dialogPDF">
+        <div class="modal-content contentPDF">
+            <div class="modal-header" style="background-color: #007C89; color:white; justify-content: center; ">
+                <h5 class="modal-title">Agregar Empleado</h5>
+            </div>
+            <form asp-controller="Empleado" asp-action="CrearEmpleadoModal" method="post">
+
+                <div class="modal-body">
+                    <input type="hidden" id="hdfEstado" value="0" />
+                    <input type="hidden" id="hdfId" value="0" />
+                    <div class="row" style=" padding-left: 1rem;">
+                        <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 pt-4 p-0">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
+                                <div class="form-group">
+                                    <label asp-for="EmpleadoCreate.Cedula" class="control-label">Identificación</label>
+                                    <input asp-for="EmpleadoCreate.Cedula" name="Cedula" class="form-control" type="text" placeholder="Escriba la identificación" />
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 pt-4 p-0">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
+                                <div class="form-group">
+                                    <label for="ddlAddProvinciaModal">Seleccione la provincia</label>
+                                    <input type="text" id="ddlAddProvinciaModal" list="AddProvincialList" class="form-control" placeholder="Buscar provincia..." autocomplete="off">
+                                    <input type="hidden" name="ProvinciaId" id="IdProvinciaCreate" asp-for=" EmpleadoCreate.ProvinciaId" />
+
+                                    <datalist id="AddProvincialList">
+
+                                        @{
+                                            foreach (var item in Model.ListaProvincia)
+                                            {
+
+                                                <option value="@item.ProvinciaID" data-id="@item.ProvinciaID">@item.Nombre</option>
+                                            }
+                                        }
+                                    </datalist>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 pt-4 p-0 " id="EmpleadoEmContainer">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                <div class="form-group">
+                                    <label for="EmpleadoNombre">Nombre</label>
+                                    <input type="text" id="txtEmpleadoNombre" oninput="checkInput(this)" name="Nombre" class="form-control" asp-for="EmpleadoCreate.Nombre" placeholder="Escriba el nombre">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 pt-4 p-0">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
+                                <div class="form-group">
+                                    <label for="ddlAddCantonModal">Seleccione el cantón</label>
+                                    <input type="text" id="ddlAddCantonModal" list="AddCantonList" class="form-control" placeholder="Buscar cantón..." autocomplete="off">
+                                    <input type="hidden" name="CantonId" id="IdCantonCreate" asp-for=" EmpleadoCreate.CantonId" />
+
+                                    <datalist id="AddCantonList">
+
+                                        @{
+                                            if (Model.ListaCanton != null)
+                                            {
+                                                foreach (var item in Model.ListaCanton)
+                                                {
+                                                    <option value="@item.CantonID" data-id="@item.CantonID">@item.Nombre</option>
+                                                }
+                                            }
+                                        }
+                                    </datalist>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 pt-4 p-0 ">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                <div class="form-group">
+                                    <label for="EmpleadoNacionalidad">Nacionalidad</label>
+                                    <input type="text" id="txtEmpleadoNacionalidad" name="Nacionalidad" class="form-control" asp-for="EmpleadoCreate.Nacionalidad" placeholder="Escriba la nacionalidad">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 pt-4 p-0">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
+                                <div class="form-group">
+                                    <label for="ddlAddDistritoModal">Seleccione el Distrito</label>
+                                    <input type="text" id="ddlAddDistritoModal" list="AddDistritoList" class="form-control" placeholder="Buscar Distrito..." autocomplete="off">
+                                    <input type="hidden" name="DistritoId" id="IdDistritoCreate" asp-for=" EmpleadoCreate.DistritoId" />
+
+                                    <datalist id="AddDistritoList">
+
+                                        @{
+                                            if (Model.ListaDistrito != null)
+                                            {
+                                                foreach (var item in Model.ListaDistrito)
+                                                {
+                                                    <option value="@item.DistritoID" data-id="@item.DistritoID">@item.Nombre</option>
+                                                }
+                                            }
+                                        }
+                                    </datalist>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 pt-4 p-0 ">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                <div class="form-group">
+                                    <label for="EmpleadoCorreo">Correo</label>
+                                    <input type="text" id="txtEmpleadoCorreo" name="Correo" class="form-control" asp-for="EmpleadoCreate.Correo" placeholder="Escriba el correo">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 pt-4 p-0 ">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                <div class="form-group">
+                                    <label for="EmpleadoNacionalidad">Puesto</label>
+                                    <input type="text" id="txtEmpleadoPuesto" name="Puesto" class="form-control" asp-for="EmpleadoCreate.Puesto" placeholder="Escriba el puesto">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 pt-4 p-0 ">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                <div class="form-group">
+                                    <label for="EmpleadoEdad">Edad</label>
+                                    <input type="number" min="1" id="txtEmpleadoEdad" name="Edad" class="form-control" asp-for="EmpleadoCreate.Edad" placeholder="Digite la edad">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 pt-4 p-0">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
+                                <div class="mb-3">
+                                    <label for="lblDate" class="form-label">Fecha de ingreso</label>
+                                    <input type="date" class="form-control" name="FechaIngreso" id="dtDate" asp-for="EmpleadoCreate.FechaIngreso">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 pt-4 p-0 ">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                <div class="form-group">
+                                    <label for="EmpleadoSalario">Salario</label>
+                                    <input type="number" min="1" id="txtEmpleadoSalario" name="Salario" class="form-control" asp-for="EmpleadoCreate.Salario" placeholder="Digite el salario">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 pt-4 p-0 ">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                <div class="form-group">
+                                    <label for="EmpleadoTelefono">Teléfono</label>
+                                    <input type="number" min="1" id="txtEmpleadoTelefono" name="Telefono" class="form-control" asp-for="EmpleadoCreate.Telefono" placeholder="Digite el Teléfono">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 pt-4 p-0">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
+                                <div class="form-group">
+                                    <label for="ddlAddRolModal">Seleccione el rol</label>
+                                    <input type="text" id="ddlAddRolModal" list="AddRolList" class="form-control" placeholder="Buscar Rol..." autocomplete="off">
+                                    <input type="hidden" name="IdRol" id="IdRolEmpleadoAdd" asp-for="EmpleadoCreate.IdRol" />
+
+                                    <datalist id="AddRolList">
+
+                                        @{
+                                            if (Model.ListaRol != null)
+                                            {
+                                                foreach (var item in Model.ListaRol)
+                                                {
+                                                    <option value="@item.Id" data-id="@item.Id">@item.Nombre</option>
+                                                }
+                                            }
+                                        }
+                                    </datalist>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <br />
+                <div class="modal-footer">
+                    <button type="submit" id="btnAddEmpleado" class="btn btn-primary">Aceptar</button>
+                    <button type="button" id="btnCloseModalAddEmpleado" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@*Modal to modify Empleado*@
+<div class="modal fade" id="mdlModifyEmpleado">
+    <div class="modal-dialog modal-lg dialogPDF">
+        <div class="modal-content contentPDF">
+            <div class="modal-header" style="background-color: #007C89; color:white; justify-content: center; ">
+                <h5 class="modal-title" id="lblTitle">Modificar empleado</h5>
+            </div>
+            <form asp-controller="Empleado" asp-action="ModificarEmpleadoModal" method="post">
+                <input type="hidden" name="Id" id="IdEmpleadoModify" asp-for="EmpleadoModify.Id" />
+                <input type="hidden" name="Contrasena" id="ContrasenaEmpleadoModify" asp-for="EmpleadoModify.Contrasena" />
+                <input type="hidden" name="DiasDisponibles" id="DiasDisponiblesEmpleadoModify" asp-for="EmpleadoModify.DiasDisponibles" />
+               
+
+                <div class="modal-body">
+                    <input type="hidden" id="hdfEstado" value="0" />
+                    <input type="hidden" id="hdfId" value="0" />
+                    <div class="row" style=" padding-left: 1rem;">
+                        <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 pt-4 p-0">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
+                                <div class="form-group">
+                                    <label asp-for="EmpleadoModify.Cedula" class="control-label">Identificación</label>
+                                    <input asp-for="EmpleadoModify.Cedula" id="txtIdentificacion" name="Cedula" class="form-control" type="text" placeholder="Escriba la identificación" />
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 pt-4 p-0">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
+                                <div class="form-group">
+                                    <label for="ddlModifyProvinciaModal">Seleccione la provincia</label>
+                                    <input type="text" id="ddlModifyProvinciaModal" list="ModifyProvincialList" class="form-control" placeholder="Buscar provincia..." autocomplete="off">
+                                    <input type="hidden" name="ProvinciaId" id="IdProvinciaModify" asp-for=" EmpleadoModify.ProvinciaId" />
+
+                                    <datalist id="ModifyProvincialList">
+
+                                        @{
+                                            foreach (var item in Model.ListaProvincia)
+                                            {
+
+                                                <option value="@item.ProvinciaID" data-id="@item.ProvinciaID">@item.Nombre</option>
+                                            }
+                                        }
+                                    </datalist>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 pt-4 p-0 " id="EmpleadoEmContainer">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                <div class="form-group">
+                                    <label for="EmpleadoNombre">Nombre</label>
+                                    <input type="text" id="txtEmpleadoNombreModify" name="Nombre" class="form-control" asp-for="EmpleadoModify.Nombre" placeholder="Escriba el nombre">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 pt-4 p-0">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
+                                <div class="form-group">
+                                    <label for="ddlModifyCantonModal">Seleccione el cantón</label>
+                                    <input type="text" id="ddlModifyCantonModal" list="ModifyCantonList" class="form-control" placeholder="Buscar cantón..." autocomplete="off">
+                                    <input type="hidden" name="CantonId" id="IdCantonModify" asp-for=" EmpleadoModify.CantonId" />
+
+                                    <datalist id="ModifyCantonList">
+
+                                        @{
+                                            if (Model.ListaCanton != null)
+                                            {
+                                                foreach (var item in Model.ListaCanton)
+                                                {
+                                                    <option value="@item.CantonID" data-id="@item.CantonID">@item.Nombre</option>
+                                                }
+                                            }
+                                        }
+                                    </datalist>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 pt-4 p-0 ">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                <div class="form-group">
+                                    <label for="EmpleadoNacionalidad">Nacionalidad</label>
+                                    <input type="text" id="txtEmpleadoNacionalidadModify" name="Nacionalidad" class="form-control" asp-for="EmpleadoModify.Nacionalidad" placeholder="Escriba la nacionalidad">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 pt-4 p-0">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
+                                <div class="form-group">
+                                    <label for="ddlModifyDistritoModal">Seleccione el Distrito</label>
+                                    <input type="text" id="ddlModifyDistritoModal" list="ModifyDistritoList" class="form-control" placeholder="Buscar Distrito..." autocomplete="off">
+                                    <input type="hidden" name="DistritoId" id="IdDistritoModify" asp-for=" EmpleadoModify.DistritoId" />
+
+                                    <datalist id="ModifyDistritoList">
+
+                                        @{
+                                            if (Model.ListaDistrito != null)
+                                            {
+                                                foreach (var item in Model.ListaDistrito)
+                                                {
+                                                    <option value="@item.DistritoID" data-id="@item.DistritoID">@item.Nombre</option>
+                                                }
+                                            }
+                                        }
+                                    </datalist>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 pt-4 p-0 ">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                <div class="form-group">
+                                    <label for="EmpleadoCorreo">Correo</label>
+                                    <input type="text" id="txtEmpleadoCorreoModify" name="Correo" class="form-control" asp-for="EmpleadoModify.Correo" placeholder="Escriba el correo">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 pt-4 p-0 ">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                <div class="form-group">
+                                    <label for="EmpleadoNacionalidad">Puesto</label>
+                                    <input type="text" id="txtEmpleadoPuestoModify" name="Puesto" class="form-control" asp-for="EmpleadoModify.Puesto" placeholder="Escriba el puesto">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 pt-4 p-0 ">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                <div class="form-group">
+                                    <label for="EmpleadoEdad">Edad</label>
+                                    <input type="number" min="1" id="txtEmpleadoEdadModify" name="Edad" class="form-control" asp-for="EmpleadoModify.Edad" placeholder="Digite la edad">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 pt-4 p-0">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
+                                <div class="mb-3">
+                                    <label for="lblDate" class="form-label">Fecha de ingreso</label>
+                                    <input type="date" class="form-control" name="FechaIngreso" id="dtDateModify" asp-for="EmpleadoModify.FechaIngreso">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 pt-4 p-0 ">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                <div class="form-group">
+                                    <label for="EmpleadoSalario">Salario</label>
+                                    <input type="number" min="1" id="txtEmpleadoSalarioModify" name="Salario" class="form-control" asp-for="EmpleadoModify.Salario" placeholder="Digite el salario">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 pt-4 p-0 ">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                <div class="form-group">
+                                    <label for="EmpleadoTelefono">Teléfono</label>
+                                    <input type="number" min="1" id="txtEmpleadoTelefonoModify" name="Telefono" class="form-control" asp-for="EmpleadoModify.Telefono" placeholder="Digite el Teléfono">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 pt-4 p-0">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
+                                <div class="form-group">
+                                    <label for="ddlModifyRolModal">Seleccione el rol</label>
+                                    <input type="text" id="ddlModifyRolModal" list="ModifyRolList" class="form-control" placeholder="Buscar Rol..." autocomplete="off">
+                                    <input type="hidden" name="IdRol" id="IdRolEmpleadoModify" asp-for="EmpleadoModify.IdRol" />
+
+                                    <datalist id="ModifyRolList">
+
+                                        @{
+                                            if (Model.ListaRol != null)
+                                            {
+                                                foreach (var item in Model.ListaRol)
+                                                {
+                                                    <option value="@item.Id" data-id="@item.Id">@item.Nombre</option>
+                                                }
+                                            }
+                                        }
+                                    </datalist>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 pt-4 p-0 ">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                <div class="form-check">
+                                    <input class="form-check-input" name="Estado" asp-for="EmpleadoModify.Estado" type="checkbox" id="chkEstado">
+                                    <label class="form-check-label" for="chkEstado">
+                                        Estado
+                                    </label>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <br />
+                <div class="modal-footer">
+                    <button type="submit" id="btnModifyEmpleado" class="btn btn-primary">Aceptar</button>
+                    <button type="button" id="btnCloseModalModifyEmpleado" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 
 @section Scripts {
     <script src="~/js/plugins/jquery.datatables.min.js"></script>
@@ -199,7 +558,465 @@
                     }
                 });
             });
+
+            $('form').on('submit', function (e) {
+                showSpinner();
+
+                e.preventDefault();
+
+                var form = $(this);
+                var url = form.attr('action');
+
+
+                setTimeout(function () {
+                    $.ajax({
+                        type: 'POST',
+                        url: url,
+                        data: form.serialize(),
+                        success: function (response) {
+                            if (response.success) {
+                                Swal.fire({
+                                    title: 'Éxito',
+                                    text: response.message,
+                                    icon: 'success'
+                                }).then(() => {
+                                    window.location.href = '@Url.Action("GetEmpleados", "Empleado")';
+                                });
+                            } else {
+                                Swal.fire({
+                                    title: 'Error',
+                                    text: response.errors,
+                                    icon: 'error'
+                                });
+                            }
+                        },
+                        error: function () {
+                            Swal.fire({
+                                title: 'Error',
+                                text: 'Ocurrió un error inesperado.',
+                                icon: 'error'
+                            });
+                        }
+                    });
+
+                    hideSpinner();
+                }, 1000);
+            });
+
+
+
+            $('#ddlAddProvinciaModal').on('input', function () {
+                var selectedValue = $(this).val();
+                var option = $('#AddProvincialList option').filter(function () {
+                    return this.value == selectedValue;
+                });
+                var provinciaId = option.data('id');
+                $('#AddCantonList').empty();
+                $('#AddDistritoList').empty();
+                limpiarCampos();
+                if (option.length > 0) {
+
+
+                    $.ajax({
+                        url: '@Url.Action("UpdateCantones", "Empleado")',
+                        type: 'GET',
+                        data: { provinciaId: provinciaId },
+                        success: function (data) {
+
+                            var dataList = document.getElementById('AddCantonList');
+                            console.log(data);
+                            while (dataList.options.length > 0) {
+                                dataList.removeChild(dataList.options[0]);
+                            }
+                            console.log(data.length);
+                            if (data.length > 0) {
+                                for (var i = 0; i < data.length; i++) {
+
+                                    var option = document.createElement("option");
+                                    option.value = data[i].cantonID;
+                                    option.text = data[i].nombre;
+                                    option.dataset.id = data[i].cantonID;
+                                    dataList.appendChild(option);
+                                }
+                            }
+                            else {
+                                Swal.fire('', 'No se encontraron cantones disponibles.', 'error');
+                            }
+                        },
+                        error: function () {
+                            alert('Error al obtener los cantones.');
+                        }
+                    });
+                }
+            });
+
+            $('#ddlAddCantonModal').on('input', function () {
+                var selectedValue = $(this).val();
+                var option = $('#AddCantonList option').filter(function () {
+                    return this.value == selectedValue;
+                });
+                $('#ddlAddDistritoModal').val('');
+                $('#IdDistritoCreate').val('');
+                $('#AddDistritoList').empty();
+                if (option.length > 0) {
+                    var cantonId = option.data('id');
+
+
+
+                    $.ajax({
+                        url: '@Url.Action("UpdateDistrito", "Empleado")',
+                        type: 'GET',
+                        data: { cantonId: cantonId },
+                        success: function (data) {
+
+                            var dataList = document.getElementById('AddDistritoList');
+                            console.log(data);
+                            while (dataList.options.length > 0) {
+                                dataList.removeChild(dataList.options[0]);
+                            }
+                            console.log(data.length);
+                            if (data.length > 0) {
+                                for (var i = 0; i < data.length; i++) {
+
+                                    var option = document.createElement("option");
+                                    option.value = data[i].distritoID;
+                                    option.text = data[i].nombre;
+                                    option.dataset.id = data[i].distritoID;
+                                    dataList.appendChild(option);
+                                }
+                            }
+                            else {
+                                Swal.fire('', 'No hay distritos disponibles para este canton.', 'error');
+                            }
+
+                        },
+                        error: function () {
+                            alert('Error al obtener los cantones.');
+                        }
+                    });
+                }
+            });
+
+            $('#ddlModifyProvinciaModal').on('input', function () {
+                var selectedValue = $(this).val();
+                var option = $('#ModifyProvincialList option').filter(function () {
+                    return this.value == selectedValue;
+                });
+                var provinciaId = option.data('id');
+                $('#ModifyCantonList').empty();
+                $('#ModifyDistritoList').empty();
+                limpiarCampos();
+                if (option.length > 0) {
+
+
+                    $.ajax({
+                        url: '@Url.Action("UpdateCantones", "Empleado")',
+                        type: 'GET',
+                        data: { provinciaId: provinciaId },
+                        success: function (data) {
+
+                            var dataList = document.getElementById('ModifyCantonList');
+                            console.log(data);
+                            while (dataList.options.length > 0) {
+                                dataList.removeChild(dataList.options[0]);
+                            }
+                            console.log(data.length);
+                            if (data.length > 0) {
+                                for (var i = 0; i < data.length; i++) {
+
+                                    var option = document.createElement("option");
+                                    option.value = data[i].cantonID;
+                                    option.text = data[i].nombre;
+                                    option.dataset.id = data[i].cantonID;
+                                    dataList.appendChild(option);
+                                }
+                            }
+                            else {
+                                Swal.fire('', 'No se encontraron cantones disponibles.', 'error');
+                            }
+
+
+
+
+
+
+                        },
+                        error: function () {
+                            alert('Error al obtener los cantones.');
+                        }
+                    });
+                }
+            });
+
+
+            $('#ddlModifyCantonModal').on('input', function () {
+                var selectedValue = $(this).val();
+                var option = $('#ModifyCantonList option').filter(function () {
+                    return this.value == selectedValue;
+                });
+                $('#ddlModifyDistritoModal').val('');
+                $('#IdDistritoModify').val('');
+                $('#ModifyDistritoList').empty();
+
+                var cantonId = $(this).val();
+
+
+
+                $.ajax({
+                    url: '@Url.Action("UpdateDistrito", "Empleado")',
+                    type: 'GET',
+                    data: { cantonId: cantonId },
+                    success: function (data) {
+
+                        var dataList = document.getElementById('ModifyDistritoList');
+                        console.log(data);
+                        while (dataList.options.length > 0) {
+                            dataList.removeChild(dataList.options[0]);
+                        }
+                        console.log(data.length);
+                        if (data.length > 0) {
+                            for (var i = 0; i < data.length; i++) {
+
+                                var option = document.createElement("option");
+                                option.value = data[i].distritoID;
+                                option.text = data[i].nombre;
+                                option.dataset.id = data[i].distritoID;
+                                dataList.appendChild(option);
+                            }
+                        }
+                        else {
+                            Swal.fire('', 'No hay distritos disponibles para este canton.', 'error');
+                        }
+
+                    },
+                    error: function () {
+                        alert('Error al obtener los cantones.');
+                    }
+                });
+
+            });
+
+
+            InitializerEventDropDownList('ddlAddProvinciaModal', 'AddProvincialList', 'IdProvinciaCreate');
+            InitializerEventDropDownList('ddlAddCantonModal', 'AddCantonList', 'IdCantonCreate');
+            InitializerEventDropDownList('ddlAddDistritoModal', 'AddDistritoList', 'IdDistritoCreate');
+            InitializerEventDropDownList('ddlAddRolModal', 'AddRolList', 'IdRolEmpleadoAdd');
+
+
+            InitializerEventDropDownList('ddlModifyProvinciaModal', 'ModifyProvincialList', 'IdProvinciaModify');
+            InitializerEventDropDownList('ddlModifyCantonModal', 'ModifyCantonList', 'IdCantonModify');
+            InitializerEventDropDownList('ddlModifyDistritoModal', 'ModifyDistritoList', 'IdDistritoModify');
+            InitializerEventDropDownList('ddlModifyRolModal', 'ModifyRolList', 'IdRolEmpleadoModify');
         });
+        function InitializerEventDropDownList(DropDownInput, dataList, HDF) {
+            var typingTimer;
+            var doneTypingInterval = 1000;
+
+            document.getElementById(DropDownInput).addEventListener("input", function () {
+                clearTimeout(typingTimer);
+
+                typingTimer = setTimeout(function () {
+                    var inputValue = document.getElementById(DropDownInput).value.toLowerCase();
+                    var inputObject = document.getElementById(DropDownInput);
+                    var options = document.getElementById(dataList).options;
+
+                    for (var i = 0; i < options.length; i++) {
+                        var option = options[i];
+                        var text = option.textContent.toLowerCase();
+
+                        if (text.indexOf(removeAccents(inputValue)) !== -1) {
+                            option.style.display = "block";
+                        } else {
+                            option.style.display = "none";
+                        }
+                    }
+                    var selectedOption = null;
+                    for (var i = 0; i < options.length; i++) {
+                        if (options[i].value.toLowerCase() === inputObject.value.toLowerCase()) {
+                            selectedOption = options[i];
+
+                            break;
+                        }
+                    }
+                    if (selectedOption) {
+                        inputObject.value = selectedOption.textContent;
+                        document.getElementById(HDF).value = selectedOption.getAttribute('data-id');
+
+
+
+                    }
+                    else {
+                        document.getElementById(HDF).value = '';
+                    }
+                    if (GetDropDownValueSelected(DropDownInput, dataList) === null) {
+                        inputObject.value = '';
+                        inputObject.placeholder = "No se encontró el registro digitado";
+
+
+                        typingTimer = setTimeout(function () {
+                            inputObject.placeholder = "Seleccione una opción...";
+                        }, 700)
+                    }
+                    else {
+
+
+                        document.getElementById(DropDownInput).value = GetDropDownTextContentSelected(DropDownInput, dataList);
+                        options[0].selected = true;
+                    }
+                }, doneTypingInterval);
+
+
+            });
+        }
+
+        function limpiarCampos() {
+            $('#ddlAddDistritoModal').val('');
+            $('#IdDistritoCreate').val('');
+            $('#ddlAddCantonModal').val('');
+            $('#IdCantonCreate').val('');
+        }
+
+        function OpenModalModify(Modal) {
+
+
+
+            $.ajax({
+                url: '@Url.Action("UpdateEmployee", "Empleado")',
+                type: 'GET',
+                data: { cantonId: cantonId },
+                success: function (data) {
+
+                    var dataList = document.getElementById('AddDistritoList');
+                    console.log(data);
+                    while (dataList.options.length > 0) {
+                        dataList.removeChild(dataList.options[0]);
+                    }
+                    console.log(data.length);
+                    if (data.length > 0) {
+                        for (var i = 0; i < data.length; i++) {
+
+                            var option = document.createElement("option");
+                            option.value = data[i].distritoID;
+                            option.text = data[i].nombre;
+                            option.dataset.id = data[i].distritoID;
+                            dataList.appendChild(option);
+                        }
+                    }
+                    else {
+                        Swal.fire('', 'No hay distritos disponibles para este canton.', 'error');
+                    }
+
+                },
+                error: function () {
+                    alert('Error al obtener los cantones.');
+                }
+            });
+
+
+        }
+
+
+
+        function OpenModalModifyRegistroEmpleado(button, modal, option) {
+
+            var RegistroJson = button.getAttribute("data-registro");
+            var registro = JSON.parse(RegistroJson);
+            console.log(registro);
+            var FechaIngreso = new Date(registro.FechaIngreso);
+            var formattedDate = FechaIngreso.toISOString().split('T')[0];
+            if (option === 0) {
+
+                $('#txtIdentificacion').val(registro.Cedula);
+                $('#ddlModifyProvinciaModal').val(registro.ProvinciaId);
+                ActivateInputEvent('ddlModifyProvinciaModal');
+                $('#ddlModifyCantonModal').val(registro.CantonId);
+                ActivateInputEvent('ddlModifyCantonModal');
+                $('#txtEmpleadoNombreModify').val(registro.Nombre);
+                $('#txtEmpleadoNacionalidadModify').val(registro.Nacionalidad);
+                $('#txtEmpleadoCorreoModify').val(registro.Correo);
+                $('#txtEmpleadoPuestoModify').val(registro.Puesto);
+                $('#txtEmpleadoEdadModify').val(registro.Edad);
+                $('#dtDateModify').val(formattedDate);
+                $('#txtEmpleadoSalarioModify').val(registro.Salario);
+                $('#ddlModifyDistritoModal').val(registro.DistritoId);
+                ActivateInputEvent('ddlModifyDistritoModal');
+                $('#txtEmpleadoTelefonoModify').val(registro.Telefono);
+                $('#IdEmpleadoModify').val(registro.Id);
+                $('#ContrasenaEmpleadoModify').val(registro.Contrasena);
+                $('#DiasDisponiblesEmpleadoModify').val(registro.DiasDisponibles);
+                $('#EstadoEmpleadoModify').val(registro.Estado);
+                $('#ddlModifyRolModal').val(registro.IdRol);
+                ActivateInputEvent('ddlModifyRolModal');
+                $('#IdRolEmpleadoModify').val(registro.IdRol);
+                $('#btnModifyEmpleado').show();
+                $('#lblTitle').text("Modificar empleado");
+                $("#chkEstado").prop('checked', registro.Estado);
+
+
+                $('#txtIdentificacion').prop('readonly', false);
+                $('#ddlModifyProvinciaModal').prop('readonly', false);
+                $('#ddlModifyCantonModal').prop('readonly', false);
+                $('#txtEmpleadoNombreModify').prop('readonly', false);
+                $('#txtEmpleadoNacionalidadModify').prop('readonly', false);
+                $('#txtEmpleadoCorreoModify').prop('readonly', false);
+                $('#txtEmpleadoPuestoModify').prop('readonly', false);
+                $('#txtEmpleadoEdadModify').prop('readonly', false);
+                $('#dtDateModify').prop('readonly', false);
+                $('#ddlModifyRolModal').prop('readonly', false);
+                $('#txtEmpleadoTelefonoModify').prop('readonly', false);
+                $('#ddlModifyDistritoModal').prop('readonly', false);
+                $('#txtEmpleadoSalarioModify').prop('readonly', false);
+                $("#chkEstado").prop('disabled', false);
+            }
+            else {
+                var FechaIngreso = new Date(registro.FechaIngreso);
+                var formattedDate = FechaIngreso.toISOString().split('T')[0];
+                $('#txtIdentificacion').val(registro.Cedula);
+                $('#ddlModifyProvinciaModal').val(registro.ProvinciaId);
+                ActivateInputEvent('ddlModifyProvinciaModal');
+                $('#ddlModifyCantonModal').val(registro.CantonId);
+                ActivateInputEvent('ddlModifyCantonModal');
+                $('#txtEmpleadoNombreModify').val(registro.Nombre);
+                $('#txtEmpleadoNacionalidadModify').val(registro.Nacionalidad);
+                $('#txtEmpleadoCorreoModify').val(registro.Correo);
+                $('#txtEmpleadoPuestoModify').val(registro.Puesto);
+                $('#txtEmpleadoEdadModify').val(registro.Edad);
+                $('#dtDateModify').val(formattedDate);
+                $('#txtEmpleadoSalarioModify').val(registro.Salario);
+                $('#ddlModifyDistritoModal').val(registro.DistritoId);
+                ActivateInputEvent('ddlModifyDistritoModal');
+                $('#txtEmpleadoTelefonoModify').val(registro.Telefono);
+                $('#IdEmpleadoModify').val(registro.Id);
+                $('#ContrasenaEmpleadoModify').val(registro.Contrasena);
+                $('#DiasDisponiblesEmpleadoModify').val(registro.DiasDisponibles);
+                $('#EstadoEmpleadoModify').val(registro.Estado);
+                $('#ddlModifyRolModal').val(registro.IdRol);
+                ActivateInputEvent('ddlModifyRolModal');
+                $('#IdRolEmpleadoModify').val(registro.IdRol);
+                $("#chkEstado").prop('checked', registro.Estado);
+
+
+                $('#txtIdentificacion').prop('readonly', true);
+                $('#ddlModifyProvinciaModal').prop('readonly', true);
+                $('#ddlModifyCantonModal').prop('readonly', true);
+                $('#txtEmpleadoNombreModify').prop('readonly', true);
+                $('#txtEmpleadoNacionalidadModify').prop('readonly', true);
+                $('#txtEmpleadoCorreoModify').prop('readonly', true);
+                $('#txtEmpleadoPuestoModify').prop('readonly', true);
+                $('#txtEmpleadoEdadModify').prop('readonly', true);
+                $('#dtDateModify').prop('readonly', true);
+                $('#ddlModifyRolModal').prop('readonly', true);
+                $('#txtEmpleadoTelefonoModify').prop('readonly', true);
+                $('#ddlModifyDistritoModal').prop('readonly', true);
+                $('#txtEmpleadoSalarioModify').prop('readonly', true);
+                $('#btnModifyEmpleado').hide();
+                $('#lblTitle').text("Información empleado");
+                $("#chkEstado").prop('disabled', true);
+            }
+
+            OpenModal(modal);
+
+        }
 
     </script>
 

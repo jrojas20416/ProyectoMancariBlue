@@ -3,9 +3,11 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using ProyectoMancariBlue.Models.Clases;
+using ProyectoMancariBlue.Models.Enum;
 using ProyectoMancariBlue.Models.Interfaces;
 using ProyectoMancariBlue.Models.Obj;
 using ProyectoMancariBlue.Models.Obj.DTO;
+using ProyectoMancariBlue.Models.Obj.Request;
 using System.ComponentModel.DataAnnotations;
 using System.Reflection;
 
@@ -16,10 +18,14 @@ namespace ProyectoMancariBlue.Controllers
 
         readonly IAnimalModel _animalModel;
         private readonly IMapper _mapper;
-        public AnimalController(IAnimalModel animalModel, IMapper mapper)
+        private readonly IRegistroVacuna _registroVacuna;
+        private readonly IProducto _producto;
+        public AnimalController(IAnimalModel animalModel, IMapper mapper,IRegistroVacuna registro, IProducto producto)
         {
             _animalModel = animalModel;
             _mapper = mapper;
+            _registroVacuna = registro;
+            _producto = producto;
         }
 
         [Authorize(Roles = "Admin")]
@@ -37,6 +43,32 @@ namespace ProyectoMancariBlue.Controllers
                 FillDropDownListSeachFather();
                 FillDropDownListSeachMother();
                 return View(animalDto);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error al desplegar los animales: {ex}");
+                return View();
+            }
+
+        }
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> IndexG()
+        {
+            try
+            {
+                var Father = _animalModel.SearchByGender("M");
+                var Mothers = _animalModel.SearchByGender("H");
+                if (Father == null || Mothers==null)
+                {
+                    return NotFound();
+                }
+                AnimalRequest request = new AnimalRequest() {
+                    Fathers = _mapper.Map<List<AnimalDTO>>(Father), 
+                    Mothers=_mapper.Map<List<AnimalDTO>>(Mothers)
+                
+                };
+
+                return View(request);
             }
             catch (Exception ex)
             {
@@ -168,7 +200,54 @@ namespace ProyectoMancariBlue.Controllers
 
         }
 
-       
+        [HttpGet]
+        public IActionResult ObtenerVacunas(long idAnimal)
+        {
+            var vacunas = _registroVacuna.GetListByIdAnimal(idAnimal);
+            var animales = _animalModel.GetAnimal();
+            var productos = _producto.GetAllAsync().Result.Where(x => x.IdTipoProducto.Equals(EProductType.VACUNA) && x.Estado == true).ToList();
+
+            if (vacunas == null)
+            {
+                return NotFound();
+            }
+            var VacunasDTO = _mapper.Map<List<RegistroVacunaDTO>>(vacunas);
+
+
+            return PartialView("PartialViewRegistroVacuna", VacunasDTO);
+        }
+       [HttpPost]
+        public async Task<IActionResult> ObtenerCriasPadre(AnimalDTO animal)
+        {
+            try
+            {
+                if (animal.Genero.ToUpper().Equals("M"))
+                {
+                    var Hijos = _animalModel.GetAnimal().Where(x => x.Padre == animal.Id);
+                    if (Hijos == null)
+                    {
+                        return NotFound();
+                    }
+                    return PartialView("PartialViewHijos", _mapper.Map<List<AnimalDTO>>(Hijos));
+                }
+                else {
+
+                    var Hijos = _animalModel.GetAnimal().Where(x => x.Madre == animal.Id);
+                    if (Hijos == null)
+                    {
+                        return NotFound();
+                    }
+                    return PartialView("PartialViewHijos", _mapper.Map<List<AnimalDTO>>(Hijos));
+                }
+               
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error al desplegar los animales: {ex}");
+                return View();
+            }
+
+        }
     }
 
 

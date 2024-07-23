@@ -19,6 +19,7 @@ namespace ProyectoMancariBlue.Models.Obj.DTO
         [DisplayName("Fecha nacimiento")]
         public DateTime FechaNacimiento { get; set; }
         public bool Estado { get; set; }
+        [DisplayName("Código animal")]
         public string Codigo { get; set; }
         public AnimalDTO PadreAnimal { get; set; }
         public AnimalDTO MadreAnimal { get; set; }

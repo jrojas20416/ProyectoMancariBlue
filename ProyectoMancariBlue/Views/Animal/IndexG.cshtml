@@ -1,4 +1,7 @@
-﻿@{
+﻿@using Newtonsoft.Json;
+@using ProyectoMancariBlue.Models.Enum;
+@model ProyectoMancariBlue.Models.Obj.Request.AnimalRequest
+@{
     ViewData["Title"] = "Animales";
 }
 
@@ -13,14 +16,12 @@
         <li class="breadcrumb-item">Animales</li>
     </ul>
 </div>
-<div class="row" style="flex-direction:column">
-    <div class="col-md-14">
+<div class="row">
+    <div class="col-md-12">
         <div class="tile">
-            <h4>Padres</h4>
-             <hr>
             <div class="tile-body">
                 <div class="table-responsive">
-                    <table class="table table-hover table-bordered" id="tanimalesp">
+                    <table class="table table-hover table-bordered" id="tanimales">
                         <thead>
                             <tr>
                                 <th>
@@ -35,55 +36,49 @@
                                 <th>
                                     Raza
                                 </th>
-                                <th>
-                                    Crías
-                                </th>
+
                                 <th>
                                     Acciones
                                 </th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td>
-                                    0002
-                                </td>
-                                <td>
-                                    Macho
-                                </td>
-                                <td>
-                                    71
-                                </td>
-                                <td>
-                                    Raza 2
-                                </td>
-                                <td>
-                                    4
-                                </td>
-                                <td>
-                                    <a class="btn btn-info" asp-action="VerAnimalP" sp-controller="Animal">Ver Crías Registradas</a>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    0020
-                                </td>
-                                <td>
-                                    Macho
-                                </td>
-                                <td>
-                                    102
-                                </td>
-                                <td>
-                                    Raza 6
-                                </td>
-                                <td>
-                                    5
-                                </td>
-                                <td>
-                                    <a class="btn btn-info" asp-action="VerAnimalP" sp-controller="Animal">Ver Crías Registradas</a>
-                                </td>
-                            </tr>
+                            @foreach (var item in Model.Fathers)
+                            {
+                                <tr>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Codigo)
+                                    </td>
+
+                                    @if (item.Genero.Equals("H"))
+                                    {
+                                        <td>
+                                            Hembra
+                                        </td>
+
+                                    }
+                                    else
+                                    {
+                                        <td>
+                                            Macho
+                                        </td>
+
+                                    }
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.PesoKG) KG.
+                                    </td>
+
+                                    <td>
+                                        @item.Raza.GetDisplayName()
+                                    </td>
+
+                                    <td>
+                                        <a class="btn btn-info" onclick="OpenModalInfoAnimalCria(this,'mdlAnimalCria')" data-animal='@JsonConvert.SerializeObject(item)'>Ver Crías Registradas</a>
+                                    </td>
+                                </tr>
+                            }
+
+
                         </tbody>
                     </table>
                 </div>
@@ -92,14 +87,12 @@
     </div>
 </div>
 
-<div class="row" style="flex-direction:column">
-    <div class="col-md-14">
+<div class="row">
+    <div class="col-md-12">
         <div class="tile">
-            <h4>Madres</h4>
-            <hr>
             <div class="tile-body">
                 <div class="table-responsive">
-                    <table class="table table-hover table-bordered" id="tanimalesm">
+                    <table class="table table-hover table-bordered" id="tanimalesmMother">
                         <thead>
                             <tr>
                                 <th>
@@ -114,55 +107,48 @@
                                 <th>
                                     Raza
                                 </th>
-                                <th>
-                                    Crías
-                                </th>
+
                                 <th>
                                     Acciones
                                 </th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td>
-                                    0001
-                                </td>
-                                <td>
-                                    Hembra
-                                </td>
-                                <td>
-                                    86
-                                </td>
-                                <td>
-                                    Raza 1
-                                </td>
-                                <td>
-                                    3
-                                </td>
-                                <td>
-                                    <a class="btn btn-info" asp-action="VerAnimalM" sp-controller="Animal">Ver Crías Registradas</a>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    0004
-                                </td>
-                                <td>
-                                    Hembra
-                                </td>
-                                <td>
-                                    92
-                                </td>
-                                <td>
-                                    Raza 4
-                                </td>
-                                <td>
-                                    9
-                                </td>
-                                <td>
-                                    <a class="btn btn-info" asp-action="VerAnimalM" sp-controller="Animal">Ver Crías Registradas</a>
-                                </td>
-                            </tr>
+                            @foreach (var item in Model.Mothers)
+                            {
+                                <tr>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Codigo)
+                                    </td>
+
+                                    @if (item.Genero.Equals("H"))
+                                    {
+                                        <td>
+                                            Hembra
+                                        </td>
+
+                                    }
+                                    else
+                                    {
+                                        <td>
+                                            Macho
+                                        </td>
+
+                                    }
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.PesoKG) KG.
+                                    </td>
+
+                                    <td>
+                                        @item.Raza.GetDisplayName()
+                                    </td>
+
+                                    <td>
+                                        <a class="btn btn-info" onclick="OpenModalInfoAnimalCria(this,'mdlAnimalCria')" data-animal='@JsonConvert.SerializeObject(item)'>Ver Crías Registradas</a>
+                                    </td>
+                                </tr>
+                            }
+
                         </tbody>
                     </table>
                 </div>
@@ -170,7 +156,27 @@
         </div>
     </div>
 </div>
+@*Modal to show son´s*@
+<div class="modal fade" id="mdlAnimalCria">
+    <div class="modal-dialog modal-lg dialogPDF">
+        <div class="modal-content contentPDF">
+            <div class="modal-header" style="background-color: #007C89; color:white; justify-content: center; ">
+                <h5 class="modal-title">Crias registradas</h5>
+            </div>
 
+            <div class="modal-body">
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 pt-4 p-0">
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 " id="informacionAnimalContainer">
+                    </div>
+                </div>
+            </div>
+            <br />
+            <div class="modal-footer">
+                <button type="button" id="btnCloseModalAddAnimal" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
 @section Scripts {
     <script src="~/js/plugins/jquery.datatables.min.js"></script>
     <script src="~/js/plugins/datatables.bootstrap.min.js"></script>
@@ -183,43 +189,85 @@
     <script>
 
         $(document).ready(function () {
-            $('.cambiar-estado-btn').click(function (e) {
-                e.preventDefault();
 
-                var id = $(this).data('id');
 
-                // Mostrar confirmación con SweetAlert2
-                Swal.fire({
-                    title: 'Confirmación',
-                    text: '¿Estás seguro de que deseas cambiar el estado?',
-                    icon: 'question',
-                    showCancelButton: true,
-                    confirmButtonText: 'Sí',
-                    cancelButtonText: 'No'
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        // Realizar la llamada AJAX si se confirma la acción
-                        $.ajax({
-                            url: '@Url.Action("Index", "Animal")',
-                            type: 'GET',
-                            success: function (response) {
-                                // Mostrar mensaje de éxito con SweetAlert2
-                                Swal.fire('Éxito', 'El estado ha sido cambiado correctamente.', 'success').then(function () {
-                                    // Recargar la página
-                                    location.reload();
-                                });
-                            },
-                            error: function (xhr, status, error) {
-                                // Mostrar mensaje de error con SweetAlert2
-                                Swal.fire('Error', 'Ha ocurrido un error al cambiar el estado.', 'error');
-                                console.error('Error:', error);
-                            }
-                        });
+            $('#tanimales').DataTable({
+                "paging": true,
+                "lengthChange": true,
+                "searching": true,
+                "ordering": true,
+                "responsive": true,
+                "buttons": [
+                    'copy', 'excel', 'pdf', 'print'
+                ],
+                "lengthMenu": [[3, 5, 10, 25, 50, 100], [5, 10, 25, 50, "Todo"]],
+                "language": {
+                    "lengthMenu": "Mostrar _MENU_ registros por página",
+                    "zeroRecords": "No se encontraron registros",
+                    "info": "Mostrando _START_ a _END_ de _TOTAL_ registros",
+                    "infoEmpty": "No hay registros disponibles",
+                    "infoFiltered": "(filtrados de _MAX_ registros en total)",
+                    "search": "Buscar:",
+                    "paginate": {
+                        "first": "Primero",
+                        "last": "Último",
+                        "next": "Siguiente",
+                        "previous": "Anterior"
                     }
-                });
+                }
+            });
+
+            $('#tanimalesmMother').DataTable({
+                "paging": true,
+                "lengthChange": true,
+                "searching": true,
+                "ordering": true,
+                "responsive": true,
+                "buttons": [
+                    'copy', 'excel', 'pdf', 'print'
+                ],
+                "lengthMenu": [[3, 5, 10, 25, 50, 100], [5, 10, 25, 50, "Todo"]],
+                "language": {
+                    "lengthMenu": "Mostrar _MENU_ registros por página",
+                    "zeroRecords": "No se encontraron registros",
+                    "info": "Mostrando _START_ a _END_ de _TOTAL_ registros",
+                    "infoEmpty": "No hay registros disponibles",
+                    "infoFiltered": "(filtrados de _MAX_ registros en total)",
+                    "search": "Buscar:",
+                    "paginate": {
+                        "first": "Primero",
+                        "last": "Último",
+                        "next": "Siguiente",
+                        "previous": "Anterior"
+                    }
+                }
             });
         });
 
+        function OpenModalInfoAnimalCria(button, modal) {
+
+            var animalJson = button.getAttribute("data-animal");
+            var animal = JSON.parse(animalJson);
+            console.log(animal);
+
+
+
+            $.ajax({
+                url: '/Animal/ObtenerCriasPadre',
+                data: { animal: animal },
+                type: 'POST',
+                success: function (data) {
+                    $('#informacionAnimalContainer').html(data);
+                },
+                error: function (error) {
+                    console.log('Error al obtener la información del animal:', error);
+                }
+            });
+
+
+
+            OpenModal(modal);
+        }
     </script>
 
 }
