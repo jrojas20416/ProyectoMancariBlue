@@ -6,6 +6,7 @@ using ProyectoMancariBlue.Models.Clases;
 using ProyectoMancariBlue.Models.Interfaces;
 using ProyectoMancariBlue.Models.Obj;
 using ProyectoMancariBlue.Models.Obj.DTO;
+using static ProyectoMancariBlue.Controllers.EmpleadoController;
 
 namespace ProyectoMancariBlue.Controllers
 {
@@ -28,11 +29,12 @@ namespace ProyectoMancariBlue.Controllers
 
 
 
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin,Bodega")]
         public async Task<IActionResult> Index()
         {
             try
             {
+               
                 var proveedor = _proveedorRepository.GetAll();
                 var Categoria = _categoriaProveedorRepository.GetAll();
                 if (proveedor == null)
@@ -84,7 +86,7 @@ namespace ProyectoMancariBlue.Controllers
 
         }
         [HttpPost]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin,Bodega")]
 
         public async Task<IActionResult> Create(ProveedorDTO proveedor, [FromServices] IWebHostEnvironment hostingEnvironment)
         {
@@ -103,7 +105,7 @@ namespace ProyectoMancariBlue.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin,Bodega")]
 
         public async Task<IActionResult> Edit(ProveedorDTO proveedor, [FromServices] IWebHostEnvironment hostingEnvironment)
         {
@@ -121,7 +123,7 @@ namespace ProyectoMancariBlue.Controllers
             return Json("Error al crear el animal");
         }
         [HttpPost]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin,Bodega")]
 
         public async Task<IActionResult> EnableAndDisable(ProveedorDTO proveedor, [FromServices] IWebHostEnvironment hostingEnvironment)
         {

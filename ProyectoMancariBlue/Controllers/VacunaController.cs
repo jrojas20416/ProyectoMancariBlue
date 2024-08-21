@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -7,6 +8,7 @@ using ProyectoMancariBlue.Models.Interfaces;
 using ProyectoMancariBlue.Models.Obj;
 using ProyectoMancariBlue.Models.Obj.DTO;
 using ProyectoMancariBlue.Models.Obj.Request;
+using static ProyectoMancariBlue.Controllers.EmpleadoController;
 
 namespace ProyectoMancariBlue.Controllers
 {
@@ -27,11 +29,12 @@ namespace ProyectoMancariBlue.Controllers
             
 
         }
+        [Authorize(Roles = "Admin,Veterinario")]
         public async Task<IActionResult> Index()
         {
             var vacunas=_registroVacunaModel.GetList();
             var animales = _animalModel.GetAnimal().Where(x=>x.Estado).ToList();
-            var productos =  _producto.GetAllAsync().Result.Where(x=>x.IdTipoProducto.Equals(EProductType.VACUNA) && x.Estado==true).ToList();
+            var productos =  _producto.GetAllAsync().Result.Where(x=>x.IdTipoProducto.Equals(EProductType.Vacunas) && x.Estado==true).ToList();
             var distritos = await _istritoModel.GetAllAsync();
             if (vacunas == null || animales==null || productos==null) { return NotFound(); }
             var VacunaViewDTO = new VacunaRequest()
@@ -40,7 +43,7 @@ namespace ProyectoMancariBlue.Controllers
                 ListaAnimalView=_mapper.Map<List<AnimalDTO>>(animales),
                 ListaProductoView=_mapper.Map<List<ProductoDto>>(productos)
             };
-            
+           
             return View(VacunaViewDTO);
         }
 
@@ -54,10 +57,13 @@ namespace ProyectoMancariBlue.Controllers
                 var producto = await _producto.GetByIdAsync(model.IdProducto.Value);
                 if (Validar(model, ref errors, producto))
                 {
+                    var animal=await _animalModel.GetAnimalById(model.IdAnimal.Value);
+                    animal.FechaUltimaVacuna = model.FechaAplicacion.Value;
                     var RegistroVacuna = _mapper.Map<RegistroVacuna>(model);
                     await _registroVacunaModel.PostRegistroVacuna(RegistroVacuna);
                     producto.Stock -= 1;
                     _producto.Update(producto);
+                    await _animalModel.PutAnimal(animal);
 
                     return Json(new { success = true, message = "Registro de vacuna creado exitosamente." });
                 }

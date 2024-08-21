@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ProyectoMancariBlue.Models.Interfaces;
 using ProyectoMancariBlue.Models.Obj;
@@ -6,6 +7,7 @@ using ProyectoMancariBlue.Models.Obj.DTO;
 using ProyectoMancariBlue.Models.Obj.Request;
 using System;
 using System.Text;
+using static ProyectoMancariBlue.Controllers.EmpleadoController;
 
 namespace ProyectoMancariBlue.Controllers
 {
@@ -20,12 +22,13 @@ namespace ProyectoMancariBlue.Controllers
             _mapper = mapper;
             _empleadoModel = empleadoModel;
         }
+        [Authorize(Roles = "Admin,Dependiente")]
         public async Task<IActionResult> Index()
         {
             VacacionRequest request = new VacacionRequest();
             request.EmpleadoLista = _mapper.Map<IEnumerable<EmpleadoDTO>>(_empleadoModel.GetAllAsync().Result.Where(x => x.Estado).ToList());
             request.VacacionLista = _mapper.Map<IEnumerable<VacacionDTO>>(await _vacacionModel.GetAllAsync());
-
+           
             return View(request);
         }
 
@@ -78,6 +81,7 @@ namespace ProyectoMancariBlue.Controllers
         {
             return View();
         }
+        [Authorize(Roles = "Admin,Dependiente")]
         public async Task<IActionResult> Delete(int Id)
         {
             try
@@ -152,6 +156,7 @@ namespace ProyectoMancariBlue.Controllers
         {
             try
             {
+               
 
                 var vacacion = await _vacacionModel.GetByIdAsync(Id);
                 TimeSpan DiasTranscurridos = DateTime.Now - vacacion.FechaCreacion;
@@ -163,13 +168,14 @@ namespace ProyectoMancariBlue.Controllers
                 }
                 else
                 {
-                    return Json(new { success = true, message = "Operación validada", Data = vacacion });
+                   //await _vacacionModel.DeleteAsync(Id);
+                    return Json(new { success = true, message = "éxito", Data = vacacion });
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
 
-                return Json(new { success = false, message = "Ha ocurrido un error: " });
+                return Json(new { success = false, message = "Ha ocurrido un error: "+ex.Message+" "+ex.StackTrace });
             }
         }
     }

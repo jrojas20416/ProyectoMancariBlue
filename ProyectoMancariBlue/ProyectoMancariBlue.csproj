@@ -12,6 +12,8 @@
 
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="13.0.1" />
+    <PackageReference Include="BouncyCastle" Version="1.8.9" />
+    <PackageReference Include="BouncyCastle.NetCore" Version="1.8.10" />
     <PackageReference Include="itext7" Version="7.2.3" />
     <PackageReference Include="MailKit" Version="4.6.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.31" />
@@ -25,9 +27,22 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="6.0.16" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="6.0.17" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="NuGet.Packaging" Version="6.10.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EditorConfigFiles Remove="C:\Users\PC\Downloads\ProyectoMancariBlue-master %281%29\ProyectoMancariBlue-master\ProyectoMancariBlue\Models\Obj\.editorconfig" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="C:\Users\PC\Downloads\ProyectoMancariBlue-master (1)\ProyectoMancariBlue-master\ProyectoMancariBlue\Models\Obj\.editorconfig" />
+    <None Include="Views\Reporte\CrearReporte.cshtml" />
+    <None Include="Views\Reporte\EditarReporte.cshtml" />
+    <None Include="Views\Reporte\Index.cshtml" />
+    <None Include="Views\Reporte\VerReporte.cshtml" />
+    <None Include="Views\Reporte\_PartialViewAnimalesReporte.cshtml" />
   </ItemGroup>
 
 </Project>

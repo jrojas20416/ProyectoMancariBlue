@@ -4,6 +4,8 @@
 @model ProyectoMancariBlue.Models.Obj.Request.PrestacionRequest
 @{
     ViewData["Title"] = "Empleados";
+    string layoutName = Context.Request.Cookies["Layout"] ?? "_Layout";
+    Layout = layoutName ?? "_Layout";
 }
 @functions {
     string NombreCompleto(string n, string a)
@@ -71,7 +73,7 @@
                                             @Html.DisplayFor(modelItem => item.Rol.Descripcion)
                                         </td>
                                         <td>
-                                            @formatteDate(item.FechaIngreso.Value);
+                                            @formatteDate(item.FechaIngreso.Value)
                                         </td>
 
                                         <td>
@@ -273,7 +275,7 @@
                                             foreach (var value in Enum.GetValues(typeof(EReasonDeparture)))
                                             {
                                                 var EReasonDeparture = (EReasonDeparture)value;
-                                                <option value="@((int)EReasonDeparture)" data-id="@((int)EReasonDeparture)">@EReasonDeparture.GetDisplayNameReason()</option>
+                                                        <option value="@((int)EReasonDeparture)" data-id="@((int)EReasonDeparture)">@EReasonDeparture.GetDisplayNameReason()</option>
                                             }
                                         }
                                     </datalist>
@@ -331,7 +333,7 @@
     <script>
         $(document).ready(function () {
 
-
+            let isActionInProgress = false;
 
             document.getElementById('downloadPdfBtn').addEventListener('click', function () {
                 var empleadoId = document.getElementById('empleadoId').value;
@@ -351,79 +353,89 @@
                 clearTimeout(debounceTimer);
                 debounceTimer = setTimeout(validateAndExecuteAjax, 500);
             });
-            $('#formLiquidacion').on('submit', function (e) {
-                showSpinner();
+            $('#chkPreaviso').change(function () {
+                validateAndExecuteAjax();
+            });
+        
+           
 
+            $('#formLiquidacion').on('submit', function (e) {
+                if (isActionInProgress) return; 
+
+                isActionInProgress = true; 
+                showSpinner();
                 e.preventDefault();
 
                 var form = $(this);
                 var url = form.attr('action');
 
-                setTimeout(function () {
-                    $.ajax({
-                        type: 'POST',
-                        url: url,
-                        data: form.serialize(),
-                        success: function (response) {
-                            hideSpinner();
-                            if (response.success) {
-                                Swal.fire({
-                                    title: 'Éxito',
-                                    text: response.message,
-                                    icon: 'success'
-                                }).then(() => {
+                $.ajax({
+                    type: 'POST',
+                    url: url,
+                    data: form.serialize(),
+                    success: function (response) {
+                        hideSpinner();
+                        if (response.success) {
+                            Swal.fire({
+                                title: 'Éxito',
+                                text: response.message,
+                                icon: 'success'
+                            }).then(() => {
+                                $.ajax({
+                                    url: '/Empleado/ActualizarEmpleado',
+                                    data: { id: response.idE },
+                                    type: 'GET',
+                                    success: function (data) {
+                                        var linkSource = `data:application/pdf;base64,${response.pdfBase64}`;
+                                        var downloadLink = document.createElement("a");
+                                        var fileName = response.nombrePdf;
 
-                                    var linkSource = `data:application/pdf;base64,${response.pdfBase64}`;
-                                    var downloadLink = document.createElement("a");
-                                    var fileName = response.nombrePdf;
+                                        downloadLink.href = linkSource;
+                                        downloadLink.download = fileName;
+                                        downloadLink.click();
 
-                                    downloadLink.href = linkSource;
-                                    downloadLink.download = fileName;
-                                    downloadLink.click();
-                                    console.log(response.EmpleadoID);
-                                    $.ajax({
-                                        url: '/Empleado/ActualizarEmpleado',
-                                        data: { id: response.idE },
-                                        type: 'GET',
-                                        success: function (data) {
-                                            setTimeout(function () {
-                                                window.location.href = '@Url.Action("IndexPrestacion", "Empleado")';
-                                            }, 1000);
-                                        },
-                                        error: function (error) {
-                                            console.log('Error al obtener la información del empleado:', error);
-                                        }
-                                    });
-
-
+                                        setTimeout(function () {
+                                            empty();
+                                            $('#generarLiquidacionModal').modal('hide');
+                                            isActionInProgress = false; 
+                                        }, 1000);
+                                    },
+                                    error: function (error) {
+                                        console.log('Error al obtener la información del empleado:', error);
+                                        isActionInProgress = false; 
+                                    }
                                 });
-                            } else {
-                                Swal.fire({
-                                    title: 'Error',
-                                    text: response.message,
-                                    icon: 'error'
-                                });
-                            }
-                        },
-                        error: function () {
-                            hideSpinner();
+                            });
+                        } else {
                             Swal.fire({
                                 title: 'Error',
-                                text: 'Ocurrió un error inesperado.',
+                                text: response.message,
                                 icon: 'error'
                             });
+                            isActionInProgress = false;
                         }
-                    });
-                }, 1000);
+                    },
+                    error: function () {
+                        hideSpinner();
+                        Swal.fire({
+                            title: 'Error',
+                            text: 'Ocurrió un error inesperado.',
+                            icon: 'error'
+                        });
+                        isActionInProgress = false; 
+                    }
+                });
             });
-            $('form').on('submit', function (e) {
-                showSpinner();
 
+            $('form').on('submit', function (e) {
+                if (isActionInProgress) return; 
+
+                isActionInProgress = true; 
+                showSpinner();
                 e.preventDefault();
 
                 var form = $(this);
                 var url = form.attr('action');
-
 
                 setTimeout(function () {
                     $.ajax({
@@ -438,6 +450,7 @@
                                     icon: 'success'
                                 }).then(() => {
                                     window.location.href = '@Url.Action("IndexPrestacion", "Empleado")';
+                                    isActionInProgress = false; 
                                 });
                             } else {
                                 Swal.fire({
@@ -445,6 +458,7 @@
                                     text: response.message,
                                     icon: 'error'
                                 });
+                                isActionInProgress = false;
                             }
                         },
                         error: function () {
@@ -453,16 +467,20 @@
                                 text: 'Ocurrió un error inesperado.',
                                 icon: 'error'
                             });
+                            isActionInProgress = false; 
                         }
                     });
+                }, 3000);
 
-                    hideSpinner();
-                }, 1000);
+                hideSpinner();
             });
 
 
-
         });
+
+        function limpiar() { 
+        
+        }
         function OpenModalPlanilla(button, modal, option) {
 
             var RegistroJson = button.getAttribute("data-registro");
@@ -550,6 +568,7 @@
             console.log(registro);
 
             if (option === 0) {
+                empty();
                 var FechaIngreso = new Date(registro.FechaIngreso);
                 var formattedDate = FechaIngreso.toISOString().split('T')[0];
 
@@ -563,11 +582,18 @@
 
             }
 
-
+            
             OpenModal(modal);
-
+           
         }
-
+        function empty() {
+            $('#IdReason').val('');
+            $('#dtDateLiquidacion').val('');
+            $('#ddlLiquidacionModal').val('');
+             $('#hdfEmpleadoObj').val('');
+            $('#chkPreaviso').prop('checked', false);
+            $('#txtDescription').val("");
+        }
         function calcularAniosTranscurridos(fecha) {
             const fechaInicial = new Date(fecha);
             const fechaActual = new Date();

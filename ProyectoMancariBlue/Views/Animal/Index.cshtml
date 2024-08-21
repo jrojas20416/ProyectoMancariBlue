@@ -5,6 +5,39 @@
 
 @{
     ViewData["Title"] = "Index";
+    string layoutName = Context.Request.Cookies["Layout"] ?? "_Layout";
+    Layout = layoutName ?? "_Layout";
+
+    int CalcularDias(DateTime date)
+    {
+        DateTime today = DateTime.Today;
+        TimeSpan difference = today - date;
+        return difference.Days;
+    }
+     int CalcularMeses(DateTime startDate)
+    {
+        DateTime today = DateTime.Today;
+        int yearsDifference = today.Year - startDate.Year;
+        int monthsDifference = today.Month - startDate.Month;
+
+        int totalMonthsDifference = (yearsDifference * 12) + monthsDifference;
+
+        int dayDifference = today.Day - startDate.Day;
+        if (dayDifference < 0)
+        {
+            totalMonthsDifference--;
+        }
+
+        int daysInMonth = DateTime.DaysInMonth(startDate.Year, startDate.Month);
+        double fractionOfMonth = (double)(today.Day - startDate.Day) / daysInMonth;
+
+        if (fractionOfMonth >= 0.5)
+        {
+            totalMonthsDifference++;
+        }
+
+        return totalMonthsDifference;
+    }
 }
 
 <div class="app-title">
@@ -12,7 +45,7 @@
         <h1><i class="fa fa-th-list" style="margin-right: 10px;"></i>Administración de Animales</h1>
         <p>Animales</p>
         <br>
-        <a onclick="OpenModal('mdlAddAnimal')" class="btn btn-primary"><i class="fa fa-plus" aria-hidden="true"></i>Crear Animal</a>
+        <a onclick="OpenModal('mdlAddAnimal')" class="btn btn-primary" style="color:white;"><i class="fa fa-plus" aria-hidden="true"></i>Crear Animal</a>
     </div>
     <ul class="app-breadcrumb breadcrumb side">
         <li class="breadcrumb-item"><i class="fa fa-home fa-lg"></i></li>
@@ -57,6 +90,9 @@
                                     </th>
                                     <th>
                                         @Html.DisplayNameFor(model => model.Estado)
+                                    </th>
+                                    <th>
+                                        Días ultima vacuna
                                     </th>
                                     <th>
                                         Acciones
@@ -119,9 +155,49 @@
 
                                             }
                                         </td>
+
+                                        @if (item.FechaUltimaVacuna != null)
+
+                                        {
+                                            if (CalcularDias(item.FechaUltimaVacuna.Value) < 31)
+                                            {
+
+                                                <td class=" badge-success">
+                                                    @CalcularDias(item.FechaUltimaVacuna.Value) Días
+                                                </td>
+                                            }
+                                            else
+
+                                            {
+                                                if (CalcularMeses(item.FechaUltimaVacuna.Value) >= 3)
+                                                {
+
+                                                    <td class=" badge-danger">
+                                                        @CalcularMeses(item.FechaUltimaVacuna.Value) Meses
+                                                    </td>
+                                                }
+                                                else
+                                                {
+
+                                                    <td class=" badge-success">
+                                                        @CalcularMeses(item.FechaUltimaVacuna.Value) Meses
+                                                    </td>
+                                                }
+                                            }
+
+                                           
+                                        }
+                                        else
+                                        {
+                                            <td>
+                                                No presenta vacuna
+                                            </td>
+                                        }
+
+
                                         <td>
-                                            <a class="btn btn-primary" onclick="OpenModalModifyAnimal(this,'mdlModifyAnimal')" data-animal='@JsonConvert.SerializeObject(item)'>Editar</a>
-                                            <a class="btn btn-info" onclick="OpenModalInfoAnimal(this,'mdlInfoAnimal')" data-animal='@JsonConvert.SerializeObject(item)'>Ver</a>
+                                            <a class="btn btn-primary" onclick="OpenModalModifyAnimal(this,'mdlModifyAnimal')" data-animal='@JsonConvert.SerializeObject(item)' style="color:white;">Editar</a>
+                                            <a class="btn btn-info" onclick="OpenModalInfoAnimal(this,'mdlInfoAnimal')" data-animal='@JsonConvert.SerializeObject(item)' style="color:white;">Ver</a>
                                             @if (item.Estado)
                                             {
                                                 <a class="btn btn-danger cambiar-estado-btn" href="#" data-id="@item.Id">Desactivar</a>
@@ -532,7 +608,6 @@ else
                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 pt-4 p-0">
                         <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
                             <div id="informacionAnimalContainer">
-                              
                             </div>
                         </div>
                     </div>
@@ -632,7 +707,7 @@ else
 
 
 
-       
+
 
 
             AnimalEmContainer.style.display = "none";

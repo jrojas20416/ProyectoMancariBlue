@@ -29,6 +29,8 @@ using iText.Layout.Borders;
 using ProyectoMancariBlue.Models.Enum;
 using System.Text;
 using Newtonsoft.Json;
+using iText.Commons.Actions.Contexts;
+
 
 namespace ProyectoMancariBlue.Controllers
 {
@@ -43,7 +45,7 @@ namespace ProyectoMancariBlue.Controllers
         private readonly IDistritoModel _distritoModel;
         private readonly IHistoricoPagoModel _historicoPagoModel;
         private readonly ILiquidacionModel _liquidacionModel;
-
+        private string layoutName = "_Layout";
 
         public EmpleadoRequest empleadoRequest { get; set; }
 
@@ -60,9 +62,14 @@ namespace ProyectoMancariBlue.Controllers
             _distritoModel = distritoModel;
             _historicoPagoModel = historicoPagoModel;
             _liquidacionModel = liquidacionModel;
-            _liquidacionModel=liquidacionModel;
+            _liquidacionModel = liquidacionModel;
+           
         }
 
+        public static class GlobalVariables
+        {
+          //  public static string MyGlobalVariable { get; set; } = layoutName;
+        }
 
         public IActionResult AccessDenied()
         {
@@ -103,22 +110,30 @@ namespace ProyectoMancariBlue.Controllers
         [HttpPost]
         public async Task<IActionResult> Login(EmpleadoInicio empleado, string? ReturnUrl)
         {
-
             var contrasena = _empleadoModel.HashPassword(empleado.EmpleadoLogin.Contrasena);
             empleado.EmpleadoLogin.Contrasena = contrasena;
-            var respuesta = _empleadoModel.LoginAsync(empleado.EmpleadoLogin);
+            var respuesta = await _empleadoModel.LoginAsync(empleado.EmpleadoLogin);
 
-            if (respuesta.Result != null)
+            if (respuesta != null)
             {
+                // Verificar si UsuarioSistema es false o si IdRol es igual a 2
+                if (!respuesta.UsuarioSistema || respuesta.IdRol== 2)
+                {
+                    TempData["AlertMessage"] = "No posee permisos para acceder al sistema.";
+                    TempData["AlertType"] = "warning";
+                    return RedirectToAction("Index");
+                }
+
                 var cookieOptions = new CookieOptions
                 {
-                    Expires = DateTime.UtcNow.AddHours(1), // Establece la expiración de la cookie
-                    Secure = true, // Establece la cookie como segura si utilizas HTTPS
-                    HttpOnly = true // Evita que el token sea accesible desde JavaScript
+                    Expires = DateTime.UtcNow.AddHours(1),
+                    Secure = true,
+                    HttpOnly = true
                 };
-                Response.Cookies.Append("Id", respuesta.Result.Id.ToString(), cookieOptions);
-                Response.Cookies.Append("Rol", respuesta.Result.Rol.Nombre, cookieOptions);
-                if (respuesta.Result.RContrasena)
+                Response.Cookies.Append("Id", respuesta.Id.ToString(), cookieOptions);
+                Response.Cookies.Append("Rol", respuesta.Rol.Nombre, cookieOptions);
+
+                if (respuesta.RContrasena)
                 {
                     TempData["AlertMessage"] = "Se requiere Cambiar la contraseña";
                     TempData["AlertType"] = "info";
@@ -126,14 +141,15 @@ namespace ProyectoMancariBlue.Controllers
                 }
                 else
                 {
-                    Response.Cookies.Append("NombreCompleto", respuesta.Result.Nombre, cookieOptions);
+                    Response.Cookies.Append("NombreCompleto", respuesta.Nombre, cookieOptions);
+                    Response.Cookies.Append("RolDescription", respuesta.Rol.Descripcion, cookieOptions);
 
                     List<Claim> claims = new List<Claim>()
-                            {
-                                new Claim(ClaimTypes.NameIdentifier, respuesta.Result.Cedula),
-                                new Claim("id", respuesta.Result.Id.ToString()),
-                                new Claim(ClaimTypes.Role, respuesta.Result.Rol.Nombre)
-                            };
+            {
+                new Claim(ClaimTypes.NameIdentifier, respuesta.Cedula),
+                new Claim("id", respuesta.Id.ToString()),
+                new Claim(ClaimTypes.Role, respuesta.Rol.Nombre)
+            };
 
                     ClaimsIdentity claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
                     AuthenticationProperties properties = new AuthenticationProperties()
@@ -141,25 +157,42 @@ namespace ProyectoMancariBlue.Controllers
                         AllowRefresh = true
                     };
 
-                    HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme,
+                    await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme,
                         new ClaimsPrincipal(claimsIdentity), properties);
+
                     TempData["AlertMessage"] = "Inicio de Sesión";
                     TempData["AlertType"] = "success";
+
+                    string layoutName = "_Layout"; // Valor por defecto
+
+                    switch (respuesta.Rol.Id)
+                    {
+                        case 3:
+                            layoutName = "_EmpleadoLayout";
+                            break;
+                        case 4:
+                            layoutName = "_VeterinariaLayout";
+                            break;
+                        case 5:
+                            layoutName = "_BodegueroLayout";
+                            break;
+                        case 6:
+                            layoutName = "_ContadorLayout";
+                            break;
+                    }
+
+                    Response.Cookies.Append("Layout", layoutName, cookieOptions);
+
                     if (!string.IsNullOrEmpty(ReturnUrl) && Url.IsLocalUrl(ReturnUrl))
                     {
                         return Redirect(ReturnUrl);
                     }
 
-                    if (respuesta.Result.Rol.Nombre == "Empl")
-                    {
-
-                        return RedirectToAction("IndexA", "Home");
-                    }
                     return RedirectToAction("Index", "Home");
                 }
-
             }
-            TempData["AlertMessage"] = "Error, Verif|ique las credenciales";
+
+            TempData["AlertMessage"] = "Error, Verifique las credenciales";
             TempData["AlertType"] = "error";
             return RedirectToAction("Index");
         }
@@ -167,20 +200,26 @@ namespace ProyectoMancariBlue.Controllers
         [HttpPost]
         public async Task<IActionResult> RestablecerContrasena(EmpleadoInicio empleado)
         {
-            var respuesta = _empleadoModel.RContrasenaAsync(empleado.RestorePassword);
 
-            if (respuesta.Result != null)
-            {
+            // Realizar la operación de restablecimiento de contraseña
 
-                TempData["AlertMessage"] = "Se restablecio su contraseña, verifique el corrreo";
-                TempData["AlertType"] = "success";
+            var restablecerRespuesta = await _empleadoModel.RContrasenaAsync(empleado.RestorePassword);
+
+         
+                if (restablecerRespuesta != null)
+                {
+                    TempData["AlertMessage"] = "Se restableció su contraseña, verifique el correo.";
+                    TempData["AlertType"] = "success";
+                }
+                else
+                {
+                    TempData["AlertMessage"] = "Error, verifique los datos.";
+                    TempData["AlertType"] = "error";
+                }
+
                 return RedirectToAction("Index");
             }
-            TempData["AlertMessage"] = "Error, verifique los datos";
-            TempData["AlertType"] = "error";
-            return RedirectToAction("Index");
-
-        }
+        
 
         [HttpPost]
         public async Task<IActionResult> CambiarContrasena(CambiarContrasena user)
@@ -200,16 +239,18 @@ namespace ProyectoMancariBlue.Controllers
                 return View("Cambiarontrasena");
             }
         }
-        [Authorize(Roles = "Admin")]
+       [Authorize(Roles = "Admin,Dependiente")]
         [HttpGet]
         public async Task<IActionResult> GetEmpleados()
         {
+            var empleadoNormal = await _empleadoModel.GetAllAsync();
             var empleadosDTO = _mapper.Map<List<EmpleadoDTO>>(await _empleadoModel.GetAllAsync());
             empleadoRequest.Empleado = empleadosDTO;
             empleadoRequest.ListaProvincia = _mapper.Map<IEnumerable<ProvinciaDTO>>(await _provinciaModel.GetAllAsync());
             empleadoRequest.ListaRol = await _rolModel.GetRolAsync();
             // empleadoRequest.ListaCanton = _mapper.Map<IEnumerable<CantonDTO>>(await _cantonModel.GetAllAsync());
             // empleadoRequest.ListaDistrito = _mapper.Map<IEnumerable<DistritoDTO>>(await _distritoModel.GetAllAsync());
+           
             return View(empleadoRequest);
         }
 
@@ -224,14 +265,20 @@ namespace ProyectoMancariBlue.Controllers
             return Json(_mapper.Map<List<DistritoDTO>>(await _distritoModel.GetByCantonIdAsync(cantonId)));
 
         }
-        [Authorize(Roles = "Admin")]
+       [Authorize(Roles = "Admin,Dependiente")]
         [HttpGet]
         public async Task<IActionResult> GetAdmins()
         {
-            var usuarios = await _empleadoModel.GetEmpleados();
-            return View("IndexA", usuarios);
+            var usuarios = _empleadoModel.GetEmpleados().Result.Where(x => x.UsuarioSistema && x.Estado).ToList();
+            var Rol = await _rolModel.GetRolAsync();
+            var EmpleadoRequest = new EmpleadoRequest() {
+                Empleado = _mapper.Map<List<EmpleadoDTO>>(usuarios),
+                ListaRol = _mapper.Map<List<Rol>>(Rol)
+            };
+
+            return View("IndexA", EmpleadoRequest);
         }
-        [Authorize(Roles = "Admin")]
+       [Authorize(Roles = "Admin,Dependiente")]
         [HttpPost]
         public async Task<IActionResult> CambiarEstado(long id)
         {
@@ -244,8 +291,7 @@ namespace ProyectoMancariBlue.Controllers
         }
 
 
-        [Authorize(Roles = "Admin")]
-
+       [Authorize(Roles = "Admin,Dependiente")]
         [HttpGet]
         public async Task<IActionResult> EditarAdmin(long id)
         {
@@ -259,7 +305,7 @@ namespace ProyectoMancariBlue.Controllers
             return View(empleado);
         }
 
-        [Authorize(Roles = "Admin")]
+       [Authorize(Roles = "Admin,Dependiente")]
         [HttpPost]
 
         public async Task<IActionResult> EditarAdmin(Empleado empleado)
@@ -276,7 +322,7 @@ namespace ProyectoMancariBlue.Controllers
             return View(empleado);
         }
 
-        [Authorize(Roles = "Admin")]
+       [Authorize(Roles = "Admin,Dependiente")]
 
         [HttpGet]
         public async Task<IActionResult> CrearEmpleado()
@@ -287,10 +333,10 @@ namespace ProyectoMancariBlue.Controllers
         {
             PrestacionRequest request = new PrestacionRequest();
             request.ListaEmpleados = _mapper.Map<List<EmpleadoDTO>>(await _empleadoModel.GetAllAsync());
-
+           
             return View(request);
         }
-        [Authorize(Roles = "Admin")]
+       [Authorize(Roles = "Admin,Dependiente")]
 
         [HttpPost]
         public async Task<IActionResult> CrearEmpleado(Empleado empleado, [FromServices] IWebHostEnvironment hostingEnvironment)
@@ -324,7 +370,7 @@ namespace ProyectoMancariBlue.Controllers
             }
         }
 
-        [Authorize(Roles = "Admin")]
+       [Authorize(Roles = "Admin,Dependiente")]
         [HttpGet]
         public async Task<IActionResult> EditarEmpleado(long id)
         {
@@ -333,11 +379,11 @@ namespace ProyectoMancariBlue.Controllers
 
             return View(usuario);
         }
-        [Authorize(Roles = "Admin")]
+       [Authorize(Roles = "Admin,Dependiente")]
         [HttpPost]
         public async Task<IActionResult> EditarEmpleado(Empleado empleado)
         {
-            var respuesta = await _empleadoModel.UpdateEmpleado(empleado); // Asegúrate de usar await aquí
+            var respuesta = await _empleadoModel.UpdateEmpleado(empleado); 
             if (respuesta != null)
             {
                 TempData["AlertMessage"] = "Se edito correctamente el empleado";
@@ -349,7 +395,7 @@ namespace ProyectoMancariBlue.Controllers
             return View(empleado.Id);
         }
 
-        [Authorize(Roles = "Admin")]
+       [Authorize(Roles = "Admin,Dependiente")]
         public async Task<IActionResult> VerEmpleado(long id)
         {
             var usuario = await _empleadoModel.GetEmpleadoById(id);
@@ -361,7 +407,7 @@ namespace ProyectoMancariBlue.Controllers
             return RedirectToAction(nameof(GetEmpleados));
         }
 
-        [Authorize(Roles = "Admin")]
+       [Authorize(Roles = "Admin,Dependiente")]
         public async Task<IActionResult> DetailsAdmin(long id)
         {
             var usuario = await _empleadoModel.GetEmpleadoById(id);
@@ -379,6 +425,8 @@ namespace ProyectoMancariBlue.Controllers
         {
             try
             {
+                
+               
                 string errors = "";
                 if (!Validar(empleado, ref errors, false))
                 {
@@ -391,6 +439,7 @@ namespace ProyectoMancariBlue.Controllers
                     errors = "Ya existe un usuario registrado con la identificación: " + empleado.Cedula + " o con el correo: " + empleado.Correo;
                     return Json(new { success = false, errors });
                 }
+                //rol 2 igual a colaborador
                 empleadoE.IdRol = 2;
                 empleadoE.Estado = true;
                 empleadoE.RContrasena = true;
@@ -403,7 +452,7 @@ namespace ProyectoMancariBlue.Controllers
                 }
                 else
                 {
-                    return Json(new { success = true, message = "Ha ocurrido un error al crear el registro." });
+                    return Json(new { success = false, errors = "Ha ocurrido un error al crear el registro." });
                 }
 
             }
@@ -427,7 +476,7 @@ namespace ProyectoMancariBlue.Controllers
                 var empleadoE = _mapper.Map<Empleado>(empleado);
                 var validacion = _empleadoModel.EmpleadoExists(empleado.Cedula, empleado.Correo);
 
-                var respuesta = await _empleadoModel.UpdateAsync(empleadoE);
+                var respuesta = await _empleadoModel.UpdateAsync (empleadoE);
                 if (respuesta != null)
                 {
 
@@ -444,6 +493,64 @@ namespace ProyectoMancariBlue.Controllers
                 TempData["AlertMessage"] = "Verique los datos, error al crear el empleado";
                 TempData["AlertType"] = "error";
                 return View(empleado);
+            }
+        }
+        [HttpPost]
+        public async Task<IActionResult> ModificarEmpleadoModalRol(EmpleadoDTO empleado)
+        {
+            try
+            {
+                var empleadoFound =  await _empleadoModel.GetByIdAsync(empleado.Id.Value);
+                string errors = "";
+                if (!ValidarRol(empleadoFound, ref errors, empleado.IdRol.Value))
+                {
+                    return Json(new { success = false, errors });
+                }
+            
+                var respuesta = await _empleadoModel.UpdateAsync(empleadoFound);
+                if (respuesta != null)
+                {
+
+                    return Json(new { success = true, message = "Registro de usuario modificado exitosamente." });
+                }
+                else
+                {
+                    return Json(new { success = true, message = "Ha ocurrido un error al crear el registro." });
+                }
+
+            }
+            catch
+            {
+                TempData["AlertMessage"] = "Verique los datos, error al crear el empleado";
+                TempData["AlertType"] = "error";
+                return View("");
+            }
+        }
+        [HttpPost]
+        public async Task<IActionResult> GenerarContrasenna(EmpleadoDTO empleado)
+        {
+            try
+            {
+                var empleadoFound = await _empleadoModel.GetByIdAsync(empleado.Id.Value);
+                
+
+                var respuesta = await _empleadoModel.UpdateAsyncRole(empleadoFound);
+                if (respuesta != null)
+                {
+
+                    return Json(new { success = true, message = "Registro de usuario modificado exitosamente." });
+                }
+                else
+                {
+                    return Json(new { success = true, message = "Ha ocurrido un error al crear el registro." });
+                }
+
+            }
+            catch
+            {
+                TempData["AlertMessage"] = "Verique los datos, error al crear el empleado";
+                TempData["AlertType"] = "error";
+                return View("");
             }
         }
 
@@ -519,10 +626,23 @@ namespace ProyectoMancariBlue.Controllers
                 errors = "Debe digitar el número de teléfono";
                 return false;
             }
-            if (empleado.IdRol == null)
+            //if (empleado.IdRol == null)
+            //{
+            //    errors = "Debe seleccionar el rol";
+            //    return false;
+            //}
+            return true;
+        }
+        public bool ValidarRol(Empleado empleado, ref string errors, long nuevorol)
+        {
+
+            if (empleado.IdRol == nuevorol)
             {
-                errors = "Debe seleccionar el rol";
+                errors = "El rol debe ser distinto al actual.";
                 return false;
+            }
+            else {
+                empleado.IdRol = nuevorol;
             }
             return true;
         }
@@ -554,6 +674,7 @@ namespace ProyectoMancariBlue.Controllers
         {
             try
             {
+               
                 var PagosE = _historicoPagoModel.GetPagosByEmpleadoIdAsync(id).Result.Take(3).ToList();
                 var Pagos = _mapper.Map<IEnumerable<HistoricoPagoDTO>>(PagosE);
                 if (Pagos != null)
@@ -592,6 +713,7 @@ namespace ProyectoMancariBlue.Controllers
         {
             try
             {
+               
                 var PagosE = _historicoPagoModel.GetPagosDesdeDiciembre(id).Result.Take(12).ToList();
                 var Pagos = _mapper.Map<IEnumerable<HistoricoPagoDTO>>(PagosE);
                 if (Pagos != null)
@@ -965,6 +1087,8 @@ namespace ProyectoMancariBlue.Controllers
             if (!registro .Estado) { errors = "No es posible generar la liquidación del empleado porque se encuentra inactivo"; return false; }
             return true;
         }
+
+
     }
 }
 

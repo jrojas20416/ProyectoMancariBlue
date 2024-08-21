@@ -1,9 +1,11 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using ProyectoMancariBlue.Models.Interfaces;
 using ProyectoMancariBlue.Models.Obj;
 using ProyectoMancariBlue.Models.Obj.DTO;
+using static ProyectoMancariBlue.Controllers.EmpleadoController;
 
 namespace ProyectoMancariBlue.Controllers
 {
@@ -22,8 +24,10 @@ namespace ProyectoMancariBlue.Controllers
             this._categoriaProducto = categoriaProducto;
             _proveedor = proveedor;
         }
+        [Authorize(Roles = "Admin,Bodega")]
         public async Task<IActionResult> Index()
         {
+           
             var producto = _mapper.Map<List<ProductoDto>>( await _producto.GetAllAsync());
             await FillDropDownListSeachCategoryProduct();
             FillDropDownListSeachProductSupplier();

@@ -1,7 +1,8 @@
 ﻿@model ProyectoMancariBlue.Models.Obj.Home
 @{
     ViewData["Title"] = "Index";
-
+    string layoutName = Context.Request.Cookies["Layout"] ?? "_Layout";
+    Layout = layoutName.ToString() ?? "_Layout";
 }
 
 <div class="app-title">
@@ -50,7 +51,7 @@
             <i class="icon fa fa fa-truck fa-3x"></i>
             <div class="info">
                 <h4>Inventario</h4>
-                <p><b>102</b></p>
+                <p><b>@Model.Inventario</b></p>
             </div>
         </div>
     </div>
@@ -59,7 +60,7 @@
             <i class="icon fa fa-university fa-3x"></i>
             <div class="info">
                 <h4>Transacciones</h4>
-                <p><b>42</b></p>
+                <p><b>@Model.Transaciones</b></p>
             </div>
         </div>
     </div>

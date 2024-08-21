@@ -7,8 +7,8 @@ public class ApplicationProfile : Profile
     public ApplicationProfile()
     {
         CreateMap<Animal, AnimalDTO>()
-            .ForMember(dest => dest.PadreAnimal, opt => opt.MapFrom(src => src.PadreAnimal != null ? new AnimalDTO { Id = src.PadreAnimal.Id, Raza = src.PadreAnimal.Raza, Genero = src.PadreAnimal.Genero, Codigo = src.PadreAnimal.Codigo } : null))
-            .ForMember(dest => dest.MadreAnimal, opt => opt.MapFrom(src => src.MadreAnimal != null ? new AnimalDTO { Id = src.MadreAnimal.Id, Raza = src.MadreAnimal.Raza, Genero = src.MadreAnimal.Genero, Codigo = src.MadreAnimal.Codigo } : null));
+            .ForMember(dest => dest.PadreAnimal, opt => opt.MapFrom(src => src.PadreAnimal != null ? new AnimalDTO { Id = src.PadreAnimal.Id, Raza = src.PadreAnimal.Raza, Genero = src.PadreAnimal.Genero, Codigo = src.PadreAnimal.Codigo, FechaUltimaVacuna=src.FechaUltimaVacuna } : null))
+            .ForMember(dest => dest.MadreAnimal, opt => opt.MapFrom(src => src.MadreAnimal != null ? new AnimalDTO { Id = src.MadreAnimal.Id, Raza = src.MadreAnimal.Raza, Genero = src.MadreAnimal.Genero, Codigo = src.MadreAnimal.Codigo, FechaUltimaVacuna = src.FechaUltimaVacuna } : null));
 
         CreateMap<AnimalDTO, Animal>()
             .ForMember(dest => dest.PadreAnimal, opt => opt.Ignore())
@@ -92,5 +92,93 @@ public class ApplicationProfile : Profile
               Cedula = src.Empleado.Cedula
           } : null))
           .ReverseMap();
+
+
+        CreateMap<Compra, CompraDTO>()
+            .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
+            .ForMember(dest => dest.IdTipoProducto, opt => opt.MapFrom(src => src.IdTipoProducto))
+            .ForMember(dest => dest.IdProveedor, opt => opt.MapFrom(src => src.IdProveedor))
+            .ForMember(dest => dest.IdProducto, opt => opt.MapFrom(src => src.IdProducto))
+            .ForMember(dest => dest.IdAnimal, opt => opt.MapFrom(src => src.IdAnimal))
+            .ForMember(dest => dest.Descripcion, opt => opt.MapFrom(src => src.Descripcion))
+            .ForMember(dest => dest.Importe, opt => opt.MapFrom(src => src.Importe))
+            .ForMember(dest => dest.FechaCompra, opt => opt.MapFrom(src => src.FechaCompra))
+            .ForMember(dest => dest.Proveedor, opt => opt.MapFrom(src => src.Proveedor != null ? new ProveedorDTO
+            {
+                Id = src.Proveedor.Id,
+                Identificacion = src.Proveedor.Identificacion,
+                Nombre = src.Proveedor.Nombre,
+                Telefono = src.Proveedor.Telefono,
+                Correo = src.Proveedor.Correo,
+                IdCategoriaProveedor = src.Proveedor.IdCategoriaProveedor,
+                Estado = src.Proveedor.Estado
+            } : null))
+            .ForMember(dest => dest.Producto, opt => opt.MapFrom(src => src.Producto != null ? new ProductoDto
+            {
+                Id = src.Producto.Id,
+                Codigo = src.Producto.Codigo,
+                Nombre = src.Producto.Nombre,
+                Descripcion = src.Producto.Descripcion,
+                IdTipoProducto = src.Producto.IdTipoProducto,
+                IdCategoriaProducto = src.Producto.IdCategoriaProducto,
+                IdProveedor = src.Producto.IdProveedor,
+                Stock = src.Producto.Stock,
+                Estado = src.Producto.Estado
+            } : null))
+            .ForMember(dest => dest.Animal, opt => opt.MapFrom(src => src.Animal != null ? new AnimalDTO
+            {
+                Id = src.Animal.Id,
+                Raza = src.Animal.Raza,
+                Genero = src.Animal.Genero,
+                Codigo = src.Animal.Codigo,
+                PartosRegistrados = src.Animal.PartosRegistrados,
+                PesoKG = src.Animal.PesoKG,
+                FechaNacimiento = src.Animal.FechaNacimiento,
+                FechaUltimaVacuna = src.Animal.FechaUltimaVacuna,
+                Estado = src.Animal.Estado
+            } : null))
+            .ReverseMap()
+            .ForMember(dest => dest.Proveedor, opt => opt.Ignore())
+            .ForMember(dest => dest.Producto, opt => opt.Ignore())
+            .ForMember(dest => dest.Animal, opt => opt.Ignore());
+
+
+        CreateMap<Venta, VentaDTO>()
+            .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
+            .ForMember(dest => dest.IdAnimal, opt => opt.MapFrom(src => src.IdAnimal))
+            .ForMember(dest => dest.CedulaCliente, opt => opt.MapFrom(src => src.CedulaCliente))
+            .ForMember(dest => dest.NombreCliente, opt => opt.MapFrom(src => src.NombreCliente))
+            .ForMember(dest => dest.Descripcion, opt => opt.MapFrom(src => src.Descripcion))
+            .ForMember(dest => dest.Importe, opt => opt.MapFrom(src => src.Importe))
+            .ForMember(dest => dest.FechaVenta, opt => opt.MapFrom(src => src.FechaVenta))
+              .ForMember(dest => dest.FechaCreacion, opt => opt.MapFrom(src => src.FechaCreacion))
+            .ReverseMap();
+
+        CreateMap<Reporte, ReporteDTO>()
+        .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
+        .ForMember(dest => dest.CodigoCVO, opt => opt.MapFrom(src => src.CodigoCVO))
+        .ForMember(dest => dest.CodigoTransporte, opt => opt.MapFrom(src => src.CodigoTransporte))
+        .ForMember(dest => dest.Transaccion, opt => opt.MapFrom(src => src.Transaccion)) 
+        .ForMember(dest => dest.Identificacion, opt => opt.MapFrom(src => src.Identificacion))
+        .ForMember(dest => dest.NombreCliente, opt => opt.MapFrom(src => src.NombreCliente))
+        .ForMember(dest => dest.FechaCreacion, opt => opt.MapFrom(src => src.FechaCreacion))
+        .ForMember(dest => dest.Venta, opt => opt.MapFrom(src => src.VentaModel != null ? new VentaDTO
+        {
+            Id = src.VentaModel.Id,
+            Descripcion = src.VentaModel.Descripcion,
+            IdAnimal = src.VentaModel.IdAnimal,
+            CedulaCliente = src.VentaModel.CedulaCliente,
+            NombreCliente = src.VentaModel.NombreCliente,
+            FechaVenta = src.VentaModel.FechaVenta
+        } : null))
+        .ReverseMap();
+
+
+        
+        CreateMap<ReporteDTO, Reporte>()
+            .ForMember(dest => dest.Id, opt => opt.Ignore()) 
+            .ForMember(dest => dest.FechaCreacion, opt => opt.Ignore());
     }
+
 }
+

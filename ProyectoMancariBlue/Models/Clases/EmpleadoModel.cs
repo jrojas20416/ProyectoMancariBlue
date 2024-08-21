@@ -49,75 +49,83 @@ namespace ProyectoMancariBlue.Models.Clases
         {
             var respuesta = _context.Empleado.FirstOrDefault(u => u.Correo == empleado.Correo && u.Cedula == empleado.Cedula);
 
-            if (respuesta != null)
+            // Verificar si la respuesta es nula
+            if (respuesta == null)
             {
-                var correo = new Correo();
-                String C = GeneratePassword();
-                correo.To = respuesta.Correo;
-                correo.Subject = "Se ha restablecido su contraseña";
-                var body = @"
-                    <html>
-                    <head>
-                        <style>
-                            body {
-                                font-family: Arial, sans-serif;
-                                background-color: #f2f2f2;
-                                padding: 20px;
-                            }
-                            .container {
-                                max-width: 500px;
-                                margin: 0 auto;
-                                background-color: #ffffff;
-                                border-radius: 10px;
-                                padding: 40px;
-                                box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-                            }
-                            h1 {
-                                color: #212529;
-                                font-size: 24px;
-                                text-align: center;
-                                margin-top: 0;
-                            }
-                            p {
-                                font-size: 16px;
-                                color: #333333;
-                                margin-top: 20px;
-                            }
-                            .password {
-                                font-size: 32px;
-                                color: #212529;
-                                text-align: center;
-                                margin-top: 20px;
-                            }
-                
-                            
-                        </style>
-                    </head>
-                    <body>
-                        <div class=""container"">
-                            <h1>Restablecimiento de contraseña</h1>
-                            <p>Estimado/a " + respuesta.Nombre   + @",</p>
-                            <p>Su contraseña ha sido restablecida exitosamente. A continuación, encontrará los detalles de su nueva contraseña:</p>
-                            <p class=""password"">" + C + @"</p>              
-                        </div>
-                    </body>
-                    </html>";
-                String Ncontrseña = HashPassword(C);
-                correo.Body = body;
-                _emailService.SendEmail(correo);
-                respuesta.Contrasena = Ncontrseña;
-                respuesta.RContrasena = true;
-                _context.SaveChanges();
-
-                return Task.FromResult(respuesta);
-
-            }
-            else
-            {
-                return null;
+                return Task.FromResult<Empleado>(null);
             }
 
+            // Verificar permisos: IdRol = 2 o UsuarioSistema es falso
+            if (respuesta.IdRol == 2 || !respuesta.UsuarioSistema)
+            {
+                // Retornar null para indicar que no tiene permisos para restablecer la contraseña
+                return Task.FromResult<Empleado>(null);
+            }
 
+            // Proceder con el restablecimiento de contraseña
+            var correo = new Correo();
+            string nuevaContrasena = GeneratePassword();
+            correo.To = respuesta.Correo;
+            correo.Subject = "Se ha restablecido su contraseña";
+
+            var body = @"
+        <html>
+        <head>
+            <style>
+                body {
+                    font-family: Arial, sans-serif;
+                    background-color: #f2f2f2;
+                    padding: 20px;
+                }
+                .container {
+                    max-width: 500px;
+                    margin: 0 auto;
+                    background-color: #ffffff;
+                    border-radius: 10px;
+                    padding: 40px;
+                    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+                }
+                h1 {
+                    color: #212529;
+                    font-size: 24px;
+                    text-align: center;
+                    margin-top: 0;
+                }
+                p {
+                    font-size: 16px;
+                    color: #333333;
+                    margin-top: 20px;
+                }
+                .password {
+                    font-size: 32px;
+                    color: #212529;
+                    text-align: center;
+                    margin-top: 20px;
+                }
+            </style>
+        </head>
+        <body>
+            <div class=""container"">
+                <h1>Restablecimiento de contraseña</h1>
+                <p>Estimado/a " + respuesta.Nombre + @",</p>
+                <p>Su contraseña ha sido restablecida exitosamente. A continuación, encontrará los detalles de su nueva contraseña:</p>
+                <p class=""password"">" + nuevaContrasena + @"</p>              
+            </div>
+        </body>
+        </html>";
+
+            string hashedPassword = HashPassword(nuevaContrasena);
+            correo.Body = body;
+
+            // Enviar el correo con la nueva contraseña
+            _emailService.SendEmail(correo);
+
+            // Actualizar la contraseña y marcar que fue restablecida
+            respuesta.Contrasena = hashedPassword;
+            respuesta.RContrasena = true;
+            _context.SaveChanges();
+
+            return Task.FromResult(respuesta);
         }
 
         private static readonly Random random = new Random();
@@ -220,7 +228,7 @@ namespace ProyectoMancariBlue.Models.Clases
             try
             {
                 string password = EmpleadoModel.GeneratePassword();
-                await EnviarContrasenna(empleado, password);
+               // await EnviarContrasenna(empleado, password);
                 empleado.Contrasena = HashPassword(password);
                 var empl = await _context.Empleado.AddAsync(empleado);
                 await _context.SaveChangesAsync();
@@ -376,6 +384,12 @@ namespace ProyectoMancariBlue.Models.Clases
     .ToListAsync();
         }
 
+        public async Task<Empleado> GetEmpleadoByCedulaOrCorreo(string cedula, string correo)
+        {
+            return await _context.Empleado
+                .Include(e => e.Rol) // Incluye los datos relacionados, como el rol
+                .FirstOrDefaultAsync(e => e.Correo == correo || e.Cedula == cedula);
+        }
 
         public async Task<IEnumerable<Empleado>> GetAllAsync()
         {
@@ -420,6 +434,29 @@ namespace ProyectoMancariBlue.Models.Clases
                 return empleado;
             }
             catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public async Task<Empleado> UpdateAsyncRole(Empleado empleado)
+        {
+            try
+            {
+                string password = EmpleadoModel.GeneratePassword();
+                 await EnviarContrasenna(empleado, password);
+                empleado.Contrasena = HashPassword(password);
+                var empl =  _context.Empleado.Update(empleado);
+                await _context.SaveChangesAsync();
+                if (empl.Entity != null)
+                {
+                    return empl.Entity;
+                }
+                _context.Empleado.Update(empleado);
+                await _context.SaveChangesAsync();
+                return empleado;
+            }
+             catch (Exception ex)
             {
                 throw ex;
             }
@@ -527,13 +564,13 @@ namespace ProyectoMancariBlue.Models.Clases
         }
         public Task<Empleado> EnviarContrasenna(Empleado empleado, string password)
         {
-            var respuesta = empleado;
+            
 
-            if (respuesta != null)
+            if (empleado != null)
             {
                 var correo = new Correo();
                 //String C = empleado.Contrasena;
-                correo.To = respuesta.Correo;
+                correo.To = empleado.Correo;
                 correo.Subject = "Creación de usuario";
                 var body = @"
                     <html>
@@ -576,7 +613,7 @@ namespace ProyectoMancariBlue.Models.Clases
                     <body>
                         <div class=""container"">
                             <h1>Creación de usuario</h1>
-                            <p>Estimado/a " + respuesta.Nombre + @",</p>
+                            <p>Estimado/a " + empleado.Nombre + @",</p>
                             <p>Se ha creado el usuario. A continuación, encontrará los detalles de su nueva contraseña:</p>
                             <p class=""password"">" + password + @"</p>              
                         </div>
@@ -585,11 +622,11 @@ namespace ProyectoMancariBlue.Models.Clases
                 string Ncontrseña = password;
                 correo.Body = body;
                 _emailService.SendEmail(correo);
-                respuesta.Contrasena = Ncontrseña;
-                respuesta.RContrasena = true;
-                _context.SaveChanges();
+                empleado.Contrasena = Ncontrseña;
+                empleado.RContrasena = true;
+               _context.SaveChanges();
 
-                return Task.FromResult(respuesta);
+                return Task.FromResult((Empleado)empleado);
 
             }
             else

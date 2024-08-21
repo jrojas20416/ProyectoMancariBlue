@@ -3,6 +3,8 @@
 @model IEnumerable<ProyectoMancariBlue.Models.Obj.DTO.ProductoDto>
 @{
     ViewData["Title"] = "Inventario";
+    string layoutName = Context.Request.Cookies["Layout"] ?? "_Layout";
+    Layout = layoutName ?? "_Layout";
 }
 
 <div class="app-title">
@@ -10,7 +12,7 @@
         <h1><i class="fa fa-th-list" style="margin-right: 10px;"></i>Administración de Inventario</h1>
         <p>Inventario</p>
         <br>
-        <a onclick="OpenModal('mdlAddProducto')" class="btn btn-primary"><i class="fa fa-plus" aria-hidden="true"></i>Agregar Producto</a>
+        <a onclick="OpenModal('mdlAddProducto')" class="btn btn-primary" style="color:white;"><i class="fa fa-plus" aria-hidden="true"></i>Agregar Producto</a>
     </div>
     <ul class="app-breadcrumb breadcrumb side">
         <li class="breadcrumb-item"><i class="fa fa-home fa-lg"></i></li>
@@ -88,9 +90,9 @@
                                         }
                                     </td>
                                     <td>
-                                        <a class="btn btn-primary" onclick="OpenModalModifyProducto(this,'mdlModifyProducto',0)" data-producto='@JsonConvert.SerializeObject(item)'>Editar</a>
-                                        <a class="btn btn-info" onclick="OpenModalModifyProducto(this,'mdlModifyProducto',1)" data-producto='@JsonConvert.SerializeObject(item)'>Detalle</a>
-                                        <a class="btn btn-success " onclick="OpenModalStockProducto(this,'mdlStockProducto')" data-producto='@JsonConvert.SerializeObject(item)'>Stock</a>
+                                        <a class="btn btn-primary" onclick="OpenModalModifyProducto(this,'mdlModifyProducto',0)" data-producto='@JsonConvert.SerializeObject(item)' style="color:white;">Editar</a>
+                                        <a class="btn btn-info" onclick="OpenModalModifyProducto(this,'mdlModifyProducto',1)" data-producto='@JsonConvert.SerializeObject(item)' style="color:white;">Detalle</a>
+                                        <a class="btn btn-success " onclick="OpenModalStockProducto(this,'mdlStockProducto')" data-producto='@JsonConvert.SerializeObject(item)' style="color:white;">Stock</a>
 
                                     </td>
                                 </tr>

@@ -23,6 +23,10 @@ namespace ProyectoMancariBlue.Models
         public DbSet<Vacacion> Vacacion { get; set; }
         public DbSet<HistoricoPago> HistoricoPago { get; set; }
         public DbSet<RegistroLiquidacion> RegistroLiquidacion { get; set; }
+        public DbSet<Compra> Compra { get; set; }
+        public DbSet<Venta> Venta { get; set; }
+        public DbSet<Reporte> Reporte { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
 
@@ -48,9 +52,10 @@ namespace ProyectoMancariBlue.Models
                 u.Property(x => x.FechaIngreso).IsRequired();
                 u.Property(x => x.Salario).IsRequired();
                 u.Property(x => x.RContrasena).IsRequired();
-                u.Property(x => x.Contrasena).IsRequired();
+                u.Property(x => x.Contrasena);
                 u.Property(x => x.Estado).IsRequired();
                 u.Property(x => x.Nacionalidad).IsRequired();
+                u.Property(x => x.UsuarioSistema).IsRequired();
                 u.Property<long?>("IdRol")
               .HasColumnType("bigint");
 
@@ -86,6 +91,7 @@ namespace ProyectoMancariBlue.Models
                 a.Property(x => x.FechaNacimiento).IsRequired();
                 a.Property(x => x.Estado).IsRequired();
                 a.Property(x => x.Codigo).IsRequired();
+                a.Property(x => x.FechaUltimaVacuna).IsRequired(false);
 
                 a.HasOne(animal => animal.PadreAnimal)
                     .WithMany()
@@ -246,6 +252,77 @@ namespace ProyectoMancariBlue.Models
                   .WithMany(e => e.Liquidaciones)
                   .HasForeignKey(x => x.IdEmpleado)
                   .OnDelete(DeleteBehavior.Restrict);
+            });
+
+            modelBuilder.Entity<Compra>(c =>
+            {
+                c.HasKey(x => x.Id);
+                c.Property(x => x.Descripcion).HasMaxLength(500);
+                c.Property(x => x.Importe).HasColumnType("decimal(28,8)");
+                c.Property(x => x.FechaCompra).IsRequired();
+                c.Property(x => x.Cantidad);
+                c.Property(x => x.FechaCreacion);
+
+                c.HasOne(x => x.Proveedor)
+                 .WithMany()
+                 .HasForeignKey(x => x.IdProveedor)
+                 .OnDelete(DeleteBehavior.Restrict);
+
+                c.HasOne(x => x.Producto)
+                 .WithMany()
+                 .HasForeignKey(x => x.IdProducto)
+                 .OnDelete(DeleteBehavior.Restrict);
+
+                c.HasOne(x => x.Animal)
+                 .WithMany()
+                 .HasForeignKey(x => x.IdAnimal)
+                 .OnDelete(DeleteBehavior.Restrict);
+            });
+
+
+            modelBuilder.Entity<Venta>(v =>
+            {
+                v.HasKey(x => x.Id);
+                v.Property(x => x.IdAnimal);
+                v.Property(x => x.CedulaCliente).HasMaxLength(100);
+                v.Property(x => x.NombreCliente).HasMaxLength(100);
+                v.Property(x => x.Importe).HasColumnType("decimal(28,8)");
+                v.Property(x => x.FechaVenta).IsRequired();
+                v.Property(x => x.Descripcion).IsRequired();
+                v.Property(x => x.FechaCreacion).IsRequired();
+
+            });
+
+
+
+            modelBuilder.Entity<Reporte>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+
+                entity.Property(e => e.CodigoCVO)
+                    .IsRequired()
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.CodigoTransporte)
+                    .IsRequired()
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.Transaccion)
+                    .IsRequired();
+
+                entity.Property(e => e.Identificacion)
+                    .IsRequired()
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.NombreCliente)
+                    .IsRequired()
+                    .HasMaxLength(100);
+
+
+                entity.Property(e => e.FechaCreacion)
+                    .IsRequired()
+                    .HasColumnType("datetime")
+                    .HasDefaultValueSql("GETDATE()"); 
             });
         }
 

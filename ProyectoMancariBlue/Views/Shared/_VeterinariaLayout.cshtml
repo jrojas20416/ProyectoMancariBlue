@@ -7,9 +7,8 @@
     <link rel="stylesheet" type="text/css" href="~/css/main.css">
     <link href="~/lib/sweetalert2/sweetalert2.min.css" rel="stylesheet" />
     <!-- Font-icon css-->
-    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"/>
+    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" />
     <link href="~/css/select2.min.css" rel="stylesheet" />
- 
 </head>
 <body class="app sidebar-mini">
 
@@ -64,7 +63,7 @@
     <div class="app-sidebar__overlay" data-toggle="sidebar"></div>
     <aside class="app-sidebar">
         <div class="app-sidebar__user">
-            <br>
+            <div>
                 @if (Context.Request.Cookies.ContainsKey("NombreCompleto"))
                 {
                     var nombreCompleto = Context.Request.Cookies["NombreCompleto"];
@@ -74,7 +73,8 @@
                 {
                     <span>User</span>
                 }
-            <br>
+
+                </br>
                 @if (Context.Request.Cookies.ContainsKey("RolDescription"))
                 {
                     var rol = Context.Request.Cookies["RolDescription"];
@@ -84,23 +84,10 @@
                 {
                     <span>User</span>
                 }
-
-               
             </div>
         </div>
         <ul class="app-menu">
             <li><a class="app-menu__item" asp-action="Index" asp-controller="Home"><i class="app-menu__icon fa fa-tachometer"></i><span class="app-menu__label">Dashboard</span></a></li>
-            <li class="nav-item dropdown" id="dropdownMenu">
-                <a class="app-menu__item dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    <i class="app-menu__icon fa fa-users"></i>
-                    <span class="app-menu__label">Módulo Empleados</span>
-                </a>
-                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                    <a class="dropdown-item" asp-action="GetEmpleados" asp-controller="Empleado">Empleados</a>
-                    <a class="dropdown-item" asp-action="Index" asp-controller="Vacacion">Vacaciones</a>
-                    <a class="dropdown-item" asp-action="IndexPrestacion" asp-controller="Empleado">Prestaciones</a>
-                </div>
-            </li>
             <li class="nav-item dropdown" id="dropdownMenu">
                 <a class="app-menu__item dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     <i class="app-menu__icon fa fa-tags"></i>
@@ -110,51 +97,6 @@
                     <a class="dropdown-item" asp-action="Index" asp-controller="Animal">Animales</a>
                     <a class="dropdown-item" asp-action="Index" asp-controller="Vacuna">Vacunas</a>
                     <a class="dropdown-item" asp-action="IndexG" asp-controller="Animal">Registro Generacional</a>
-                </div>
-            </li>
-            <li class="nav-item dropdown" id="dropdownMenu">
-                <a class="app-menu__item dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    <i class="app-menu__icon fa fa-truck"></i>
-                    <span class="app-menu__label">Módulo Inventario</span>
-                </a>
-                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                    <a class="dropdown-item" asp-action="Index" asp-controller="Inventario">Inventario</a>
-                </div>
-            </li>
-            <li class="nav-item dropdown" id="dropdownMenu">
-                <a class="app-menu__item dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    <i class="app-menu__icon fa fa-credit-card"></i>
-                    <span class="app-menu__label">Módulo Proveedores</span>
-                </a>
-                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                    <a class="dropdown-item" asp-action="Index" asp-controller="Proveedor">Proveedores</a>
-                </div>
-            </li>
-            <li class="nav-item dropdown" id="dropdownMenu">
-                <a class="app-menu__item dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    <i class="app-menu__icon fa fa-university"></i>
-                    <span class="app-menu__label">Módulo Transacciones</span>
-                </a>
-                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                    <a class="dropdown-item" asp-action="Index" asp-controller="Transaccion">Transacciones</a>
-                </div>
-            </li>
-            <li class="nav-item dropdown" id="dropdownMenu">
-                <a class="app-menu__item dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    <i class="app-menu__icon fa fa-th-list"></i>
-                    <span class="app-menu__label">Módulo Reportes</span>
-                </a>
-                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                    <a class="dropdown-item" asp-action="Index" asp-controller="Reporte">Reporetes</a>
-                </div>
-            </li>
-            <li class="nav-item dropdown" id="dropdownMenu">
-                <a class="app-menu__item dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    <i class="app-menu__icon fa fa-user"></i>
-                    <span class="app-menu__label">Módulo Usuarios</span>
-                </a>
-                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                    <a class="dropdown-item" asp-action="GetAdmins" asp-controller="Empleado" asp-route-estado="true">Usuarios</a>
                 </div>
             </li>
 
@@ -171,9 +113,9 @@
         <span class="sr-only">Loading...</span>
     </div>
 
-  
+
     <script src="~/js/jquery-3.3.1.min.js"></script>
-  
+
     <script src="~/js/popper.min.js"></script>
     <script src="~/js/bootstrap.min.js"></script>
     <script src="~/js/plugins/chart.js"></script>
@@ -201,7 +143,7 @@
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
-   
+
     <script type="text/javascript">
 
 

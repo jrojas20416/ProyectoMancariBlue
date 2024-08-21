@@ -1,0 +1,72 @@
+﻿@using ProyectoMancariBlue.Models.Enum;
+@model IEnumerable<ProyectoMancariBlue.Models.Obj.DTO.AnimalDTO>
+@if (Model != null && Model.Any())
+{
+    <div class="table-responsive">
+        <table id="tblHijos" class="table table-striped table-bordered">
+            <thead class="thead-light">
+                <tr>
+                    <th>
+                        Id
+                    </th>
+                    <th>
+                        Codigo
+                    </th>
+                    <th>
+                        Raza
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Id)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Codigo)
+                        </td>
+                        <td>
+                            @item.Raza.GetDisplayName()
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
+else
+{
+    <div>
+        <h3>Este registro no posee hijos asociados.</h3>
+    </div>
+}
+
+<script>
+    $('#tblHijos').DataTable({
+        "paging": true,
+        "lengthChange": true,
+        "searching": true,
+        "ordering": true,
+        "responsive": true,
+        "buttons": [
+            'copy', 'excel', 'pdf', 'print'
+        ],
+        "lengthMenu": [[3, 5, 10, 25, 50, 100], [5, 10, 25, 50, "Todo"]],
+        "language": {
+            "lengthMenu": "Mostrar _MENU_ registros por página",
+            "zeroRecords": "No se encontraron registros",
+            "info": "Mostrando _START_ a _END_ de _TOTAL_ registros",
+            "infoEmpty": "No hay registros disponibles",
+            "infoFiltered": "(filtrados de _MAX_ registros en total)",
+            "search": "Buscar:",
+            "paginate": {
+                "first": "Primero",
+                "last": "Último",
+                "next": "Siguiente",
+                "previous": "Anterior"
+            }
+        }
+    });
+</script>

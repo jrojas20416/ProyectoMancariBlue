@@ -2,6 +2,8 @@
 @model IEnumerable<ProyectoMancariBlue.Models.Obj.DTO.ProveedorDTO>
 @{
     ViewData["Title"] = "Proveedor";
+    string layoutName = Context.Request.Cookies["Layout"] ?? "_Layout";
+    Layout = layoutName ?? "_Layout";
 }
 @functions {
     string NombreCompleto(string n, string a)
@@ -13,10 +15,10 @@
 }
 <div class="app-title">
     <div>
-        <h1><i class="fa fa-th-list" style="margin-right: 10px;"></i>Administración de Proveedores</h1>
+        <h1><i class="fa fa-th-list" style="margin-right: 10px;" ></i>Administración de Proveedores</h1>
         <p>Proveedores</p>
         <br>
-        <a onclick="OpenModal('mdlAddProveedor')" class="btn btn-primary"><i class="fa fa-plus" aria-hidden="true"></i>Crear Proveedor</a>
+        <a onclick="OpenModal('mdlAddProveedor')" class="btn btn-primary" style="color:white;"><i class="fa fa-plus" aria-hidden="true"></i>Crear Proveedor</a>
     </div>
     <ul class="app-breadcrumb breadcrumb side">
         <li class="breadcrumb-item"><i class="fa fa-home fa-lg"></i></li>
@@ -75,16 +77,16 @@
                                             @Html.DisplayFor(modelItem => item.CategoriaProveedor.Descripcion)
                                         </td>
                                         <td>
-                                            <a class="btn btn-primary" onclick="OpenModalModifyProveedor(this,'mdlModifyProveedor',0)" data-proveedor='@JsonConvert.SerializeObject(item)'>Editar</a>
-                                            <a class="btn btn-info" onclick="OpenModalModifyProveedor(this,'mdlModifyProveedor',1)" data-proveedor='@JsonConvert.SerializeObject(item)'>Detalle</a>
+                                            <a class="btn btn-primary" onclick="OpenModalModifyProveedor(this,'mdlModifyProveedor',0)" data-proveedor='@JsonConvert.SerializeObject(item)' style="color:white;">Editar</a>
+                                            <a class="btn btn-info" onclick="OpenModalModifyProveedor(this,'mdlModifyProveedor',1)" data-proveedor='@JsonConvert.SerializeObject(item)' style="color:white;">Detalle</a>
                                             @if (item.Estado)
                                             {
-                                                <a class="btn btn-danger cambiar-estado-btn" onclick="EnableAndDisableProveedor(this)" data-id="@item.Id">Desactivar</a>
+                                                <a class="btn btn-danger cambiar-estado-btn" onclick="EnableAndDisableProveedor(this)" data-id="@item.Id" style="color:white;">Desactivar</a>
 
                                             }
                                             else
                                             {
-                                                <a class="btn btn-success cambiar-estado-btn" onclick="EnableAndDisableProveedor(this)" data-id="@item.Id">Activar</a>
+                                                <a class="btn btn-success cambiar-estado-btn" onclick="EnableAndDisableProveedor(this)" data-id="@item.Id" style="color:white;">Activar</a>
                                             }
 
                                         </td>

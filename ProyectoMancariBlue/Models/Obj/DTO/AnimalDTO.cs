@@ -18,6 +18,7 @@ namespace ProyectoMancariBlue.Models.Obj.DTO
         public int PesoKG { get; set; }
         [DisplayName("Fecha nacimiento")]
         public DateTime FechaNacimiento { get; set; }
+        public DateTime? FechaUltimaVacuna { get; set; }
         public bool Estado { get; set; }
         [DisplayName("Código animal")]
         public string Codigo { get; set; }

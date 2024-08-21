@@ -10,13 +10,14 @@ using ProyectoMancariBlue.Models.Obj.DTO;
 using ProyectoMancariBlue.Models.Obj.Request;
 using System.ComponentModel.DataAnnotations;
 using System.Reflection;
+using static ProyectoMancariBlue.Controllers.EmpleadoController;
 
 namespace ProyectoMancariBlue.Controllers
 {
     public class AnimalController : Controller
     {
 
-        readonly IAnimalModel _animalModel;
+        private readonly IAnimalModel _animalModel;
         private readonly IMapper _mapper;
         private readonly IRegistroVacuna _registroVacuna;
         private readonly IProducto _producto;
@@ -28,11 +29,12 @@ namespace ProyectoMancariBlue.Controllers
             _producto = producto;
         }
 
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin,Veterinario")]
         public async Task<IActionResult> Index()
         {
             try
             {
+               
                 var animal = _animalModel.GetAnimal();
                 if (animal == null)
                 {
@@ -51,11 +53,12 @@ namespace ProyectoMancariBlue.Controllers
             }
 
         }
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin,Veterinario")]
         public async Task<IActionResult> IndexG()
         {
             try
             {
+               
                 var Father = _animalModel.SearchByGender("M");
                 var Mothers = _animalModel.SearchByGender("H");
                 if (Father == null || Mothers==null)
@@ -78,7 +81,7 @@ namespace ProyectoMancariBlue.Controllers
 
         }
 
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin,Veterinario")]
         public async Task<IActionResult> Details(long id)
         {
             try
@@ -93,19 +96,19 @@ namespace ProyectoMancariBlue.Controllers
             }
         }
 
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin,Veterinario")]
         public IActionResult Create()
         {
             return View();
         }
 
         [HttpPost]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin,Veterinario")]
 
         public async Task<IActionResult> Create(AnimalDTO animal, [FromServices] IWebHostEnvironment hostingEnvironment)
         {
 
-            {
+            try{
                 var animalE= _mapper.Map<Animal>(animal);
                 var respuesta = await _animalModel.PostAnimal(animalE);
                 if (respuesta != null)
@@ -117,10 +120,14 @@ namespace ProyectoMancariBlue.Controllers
                 return Json("Error al crear el animal");
 
             }
+            catch (Exception e){
+
+                return Json("Error al crear el animal "+ e.Message);
+            }
 
         }
 
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin,Veterinario")]
         public async Task<IActionResult> Edit(long id)
         {
             try
@@ -139,7 +146,7 @@ namespace ProyectoMancariBlue.Controllers
 
 
         [HttpPost]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin,Veterinario")]
         public async Task<IActionResult> Edit(AnimalDTO animal)
         {
             var animalE=_mapper.Map<Animal>(animal);
@@ -155,7 +162,7 @@ namespace ProyectoMancariBlue.Controllers
             return View(animal);
         }
 
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin,Veterinario")]
         [HttpPost, ActionName("Delete")]
         public async Task<IActionResult> Delete(long id)
         {
@@ -205,7 +212,7 @@ namespace ProyectoMancariBlue.Controllers
         {
             var vacunas = _registroVacuna.GetListByIdAnimal(idAnimal);
             var animales = _animalModel.GetAnimal();
-            var productos = _producto.GetAllAsync().Result.Where(x => x.IdTipoProducto.Equals(EProductType.VACUNA) && x.Estado == true).ToList();
+            var productos = _producto.GetAllAsync().Result.Where(x => x.IdTipoProducto.Equals(EProductType.Vacunas) && x.Estado == true).ToList();
 
             if (vacunas == null)
             {
@@ -213,7 +220,7 @@ namespace ProyectoMancariBlue.Controllers
             }
             var VacunasDTO = _mapper.Map<List<RegistroVacunaDTO>>(vacunas);
 
-
+           
             return PartialView("PartialViewRegistroVacuna", VacunasDTO);
         }
        [HttpPost]
@@ -221,6 +228,7 @@ namespace ProyectoMancariBlue.Controllers
         {
             try
             {
+               
                 if (animal.Genero.ToUpper().Equals("M"))
                 {
                     var Hijos = _animalModel.GetAnimal().Where(x => x.Padre == animal.Id);

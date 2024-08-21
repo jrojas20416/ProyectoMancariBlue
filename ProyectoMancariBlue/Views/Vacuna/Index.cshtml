@@ -3,6 +3,8 @@
 @model ProyectoMancariBlue.Models.Obj.Request.VacunaRequest
 @{
     ViewData["Title"] = "Vacunas";
+    string layoutName = Context.Request.Cookies["Layout"] ?? "_Layout";
+    Layout = layoutName ?? "_Layout";
 }
 
 <div class="app-title">
@@ -10,7 +12,7 @@
         <h1><i class="fa fa-th-list" style="margin-right: 10px;"></i>Administración de Vacunas</h1>
         <p>Vacunas</p>
         <br>
-        <a onclick="OpenModal('mdlAddRegistroVacuna')" class="btn btn-primary"><i class="fa fa-plus" aria-hidden="true"></i>Agregar Vacunas</a>
+        <a onclick="OpenModal('mdlAddRegistroVacuna')" class="btn btn-primary" style="color:white;"><i class="fa fa-plus" aria-hidden="true"></i>Agregar Vacunas</a>
     </div>
     <ul class="app-breadcrumb breadcrumb side">
         <li class="breadcrumb-item"><i class="fa fa-home fa-lg"></i></li>
@@ -79,10 +81,10 @@
 
                                       
                                         <td>
-                                            
-                                            <a class="btn btn-primary" onclick="OpenModalModifyRegistroVacuna(this,'mdlModifyRegistroVacuna',0)" data-registro='@JsonConvert.SerializeObject(item)'>Editar</a>
-                                            <a class="btn btn-info" onclick="OpenModalModifyRegistroVacuna(this,'mdlModifyRegistroVacuna',1)" data-registro='@JsonConvert.SerializeObject(item)'>Detalle Vacuna</a>
-                                            <a class="btn btn-danger cambiar-estado-btn" data-id='@item.Id' >Eliminar</a>
+
+                                            <a class="btn btn-primary" onclick="OpenModalModifyRegistroVacuna(this,'mdlModifyRegistroVacuna',0)" data-registro='@JsonConvert.SerializeObject(item)' style="color:white;">Editar</a>
+                                            <a class="btn btn-info" onclick="OpenModalModifyRegistroVacuna(this,'mdlModifyRegistroVacuna',1)" data-registro='@JsonConvert.SerializeObject(item)' style="color:white;">Detalle Vacuna</a>
+                                            <a class="btn btn-danger cambiar-estado-btn" data-id='@item.Id' style="color:white;">Eliminar</a>
 
                                         </td>
                                     </tr>

@@ -1,9 +1,11 @@
 ﻿
+using MailKit.Security;
 using MimeKit;
 using MimeKit.Text;
 using ProyectoMancariBlue.Models.Interfaces;
 using ProyectoMancariBlue.Models.Obj;
-
+using MailKit.Net.Smtp;
+using MailKit.Security;
 namespace ProyectoMancariBlue.Models.Clases
 {
     public class EmailModel : IEmailService
@@ -18,8 +20,9 @@ namespace ProyectoMancariBlue.Models.Clases
 
         public void SendEmail(Correo request)
         {
-
-            var email = new MimeMessage();
+            try
+            {
+                var email = new MimeMessage();
 
 
             email.From.Add(MailboxAddress.Parse(_config["SmtpSettings:Username"]));
@@ -27,11 +30,18 @@ namespace ProyectoMancariBlue.Models.Clases
             email.Subject = request.Subject;
             email.Body = new TextPart(TextFormat.Html) { Text = request.Body };
 
-            using var smtp = new MailKit.Net.Smtp.SmtpClient();
-            smtp.Connect(_config["SmtpSettings:Server"], int.Parse(_config["SmtpSettings:Port"]), MailKit.Security.SecureSocketOptions.StartTls);
-            smtp.Authenticate(_config["SmtpSettings:Username"], _config["SmtpSettings:Password"]);
-            smtp.Send(email);
-            smtp.Disconnect(true);
+                using var smtp = new SmtpClient();
+                smtp.Connect(_config["SmtpSettings:Server"], int.Parse(_config["SmtpSettings:Port"]), SecureSocketOptions.StartTls);
+                smtp.Authenticate(_config["SmtpSettings:Username"], _config["SmtpSettings:Password"]);
+                smtp.Send(email);
+                smtp.Disconnect(true);
+            }
+            catch (Exception ex)
+            {
+                
+                Console.WriteLine($"Error enviando correo: {ex.Message}");
+                throw; 
+            }
 
         }
     }

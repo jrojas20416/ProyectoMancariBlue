@@ -4,7 +4,8 @@
 @model ProyectoMancariBlue.Models.Obj.Request.EmpleadoRequest
 @{
     ViewData["Title"] = "Empleados";
-
+    string layoutName = Context.Request.Cookies["Layout"] ?? "_Layout";
+    Layout = layoutName.ToString() ?? "_Layout";
 }
 @functions {
     string NombreCompleto(string n, string a)
@@ -23,7 +24,7 @@
         <h1><i class="fa fa-th-list" style="margin-right: 10px;"></i>Administración de Empleados</h1>
         <p>Empleados</p>
         <br>
-        <a onclick="OpenModal('mdlAddEmpleado')" class="btn btn-primary"><i class="fa fa-plus" aria-hidden="true"></i>Crear Empleado</a>
+        <a onclick="OpenModal('mdlAddEmpleado')" class="btn btn-primary" style="color:white;"><i class="fa fa-plus" aria-hidden="true"></i>Crear Empleado</a>
     </div>
     <ul class="app-breadcrumb breadcrumb side">
         <li class="breadcrumb-item"><i class="fa fa-home fa-lg"></i></li>
@@ -104,8 +105,8 @@
                                             <td>
                                                 @if (Context.Request.Cookies["Id"] != item.Id.ToString())
                                                 {
-                                                    <a class="btn btn-primary" onclick="OpenModalModifyRegistroEmpleado(this,'mdlModifyEmpleado',0)" data-registro='@JsonConvert.SerializeObject(item)'>Modificar empleado</a>
-                                                    <a class="btn btn-info" onclick="OpenModalModifyRegistroEmpleado(this,'mdlModifyEmpleado',1)" data-registro='@JsonConvert.SerializeObject(item)'>Ver</a>
+                                                    <a class="btn btn-primary" onclick="OpenModalModifyRegistroEmpleado(this,'mdlModifyEmpleado',0)" data-registro='@JsonConvert.SerializeObject(item)' style="color:white;">Modificar empleado</a>
+                                                    <a class="btn btn-info" onclick="OpenModalModifyRegistroEmpleado(this,'mdlModifyEmpleado',1)" data-registro='@JsonConvert.SerializeObject(item)' style="color:white;">Ver</a>
 
                                                 }
 
@@ -282,7 +283,7 @@ else
                                 </div>
                             </div>
                         </div>
-                        <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 pt-4 p-0">
+                     @*    <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 pt-4 p-0">
                             <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
                                 <div class="form-group">
                                     <label for="ddlAddRolModal">Seleccione el rol</label>
@@ -302,6 +303,17 @@ else
                                         }
                                     </datalist>
                                 </div>
+                            </div>
+                        </div> *@
+                        <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 pt-4 p-0 ">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                <div class="form-check">
+                                    <input class="form-check-input" name="UsuarioSistema" asp-for="EmpleadoCreate.UsuarioSistema" type="checkbox" id="chkSystemUser">
+                                    <label class="form-check-label" for="chkSystemUser">
+                                        ¿Es usuario del sistema?
+                                    </label>
+                                </div>
+
                             </div>
                         </div>
                     </div>
@@ -391,7 +403,7 @@ else
                                     </datalist>
                                 </div>
                             </div>
-                        </div>
+                        </div> 
                         <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 pt-4 p-0 ">
                             <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                                 <div class="form-group">
@@ -470,12 +482,13 @@ else
                                 </div>
                             </div>
                         </div>
-                        <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 pt-4 p-0">
+                        <input type="hidden" name="IdRol" id="IdRolEmpleadoModify" asp-for="EmpleadoModify.IdRol" />
+                  @*       <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 pt-4 p-0">
                             <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
                                 <div class="form-group">
                                     <label for="ddlModifyRolModal">Seleccione el rol</label>
                                     <input type="text" id="ddlModifyRolModal" list="ModifyRolList" class="form-control" placeholder="Buscar Rol..." autocomplete="off">
-                                    <input type="hidden" name="IdRol" id="IdRolEmpleadoModify" asp-for="EmpleadoModify.IdRol" />
+                                  
 
                                     <datalist id="ModifyRolList">
 
@@ -491,13 +504,24 @@ else
                                     </datalist>
                                 </div>
                             </div>
-                        </div>
+                        </div> *@
                         <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 pt-4 p-0 ">
                             <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                                 <div class="form-check">
                                     <input class="form-check-input" name="Estado" asp-for="EmpleadoModify.Estado" type="checkbox" id="chkEstado">
                                     <label class="form-check-label" for="chkEstado">
                                         Estado
+                                    </label>
+                                </div>
+
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 pt-4 p-0 ">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                <div class="form-check">
+                                    <input class="form-check-input" name="UsuarioSistema" asp-for="EmpleadoModify.UsuarioSistema" type="checkbox" id="chkModifySystemUser">
+                                    <label class="form-check-label" for="chkModifySystemUser">
+                                        ¿Es usuario del sistema?
                                     </label>
                                 </div>
 
@@ -705,7 +729,7 @@ else
                 var provinciaId = option.data('id');
                 $('#ModifyCantonList').empty();
                 $('#ModifyDistritoList').empty();
-                limpiarCampos();
+                limpiarCamposModify();
                 if (option.length > 0) {
 
 
@@ -785,7 +809,7 @@ else
                             }
                         }
                         else {
-                            Swal.fire('', 'No hay distritos disponibles para este canton.', 'error');
+                            //Swal.fire('', 'No hay distritos disponibles para este canton.', 'error');
                         }
 
                     },
@@ -797,17 +821,30 @@ else
             });
 
 
-            InitializerEventDropDownList('ddlAddProvinciaModal', 'AddProvincialList', 'IdProvinciaCreate');
-            InitializerEventDropDownList('ddlAddCantonModal', 'AddCantonList', 'IdCantonCreate');
-            InitializerEventDropDownList('ddlAddDistritoModal', 'AddDistritoList', 'IdDistritoCreate');
-            InitializerEventDropDownList('ddlAddRolModal', 'AddRolList', 'IdRolEmpleadoAdd');
+           InitializerEventDropDownList('ddlAddProvinciaModal', 'AddProvincialList', 'IdProvinciaCreate');
+           InitializerEventDropDownList('ddlAddCantonModal', 'AddCantonList', 'IdCantonCreate');
+           InitializerEventDropDownList('ddlAddDistritoModal', 'AddDistritoList', 'IdDistritoCreate');
+          // InitializerEventDropDownList('ddlAddRolModal', 'AddRolList', 'IdRolEmpleadoAdd');
 
 
-            InitializerEventDropDownList('ddlModifyProvinciaModal', 'ModifyProvincialList', 'IdProvinciaModify');
-            InitializerEventDropDownList('ddlModifyCantonModal', 'ModifyCantonList', 'IdCantonModify');
-            InitializerEventDropDownList('ddlModifyDistritoModal', 'ModifyDistritoList', 'IdDistritoModify');
-            InitializerEventDropDownList('ddlModifyRolModal', 'ModifyRolList', 'IdRolEmpleadoModify');
+          InitializerEventDropDownList('ddlModifyProvinciaModal', 'ModifyProvincialList', 'IdProvinciaModify');
+          InitializerEventDropDownList('ddlModifyCantonModal', 'ModifyCantonList', 'IdCantonModify');
+          InitializerEventDropDownList('ddlModifyDistritoModal', 'ModifyDistritoList', 'IdDistritoModify');
+         // InitializerEventDropDownList('ddlModifyRolModal', 'ModifyRolList', 'IdRolEmpleadoModify');
         });
+        
+        function limpiarCampos() {
+            $('#ddlAddDistritoModal').val('');
+            $('#IdDistritoModify').val('');
+            $('#ddlAddCantonModal').val('');
+            $('#IdCantonCreate').val('');
+        }
+        function limpiarCamposModify() {
+            $('#ddlModifyDistritoModal').val('');
+            $('#IdDistritoModify').val('');
+            $('#ddlModifyCantonModal').val('');
+            $('#IdCantonCreate').val('');
+        }
         function InitializerEventDropDownList(DropDownInput, dataList, HDF) {
             var typingTimer;
             var doneTypingInterval = 1000;
@@ -868,14 +905,6 @@ else
 
             });
         }
-
-        function limpiarCampos() {
-            $('#ddlAddDistritoModal').val('');
-            $('#IdDistritoCreate').val('');
-            $('#ddlAddCantonModal').val('');
-            $('#IdCantonCreate').val('');
-        }
-
         function OpenModalModify(Modal) {
 
 
@@ -927,9 +956,9 @@ else
             if (option === 0) {
 
                 $('#txtIdentificacion').val(registro.Cedula);
-                $('#ddlModifyProvinciaModal').val(registro.ProvinciaId);
+               $('#ddlModifyProvinciaModal').val(registro.ProvinciaId);
                 ActivateInputEvent('ddlModifyProvinciaModal');
-                $('#ddlModifyCantonModal').val(registro.CantonId);
+               $('#ddlModifyCantonModal').val(registro.CantonId);
                 ActivateInputEvent('ddlModifyCantonModal');
                 $('#txtEmpleadoNombreModify').val(registro.Nombre);
                 $('#txtEmpleadoNacionalidadModify').val(registro.Nacionalidad);
@@ -945,13 +974,13 @@ else
                 $('#ContrasenaEmpleadoModify').val(registro.Contrasena);
                 $('#DiasDisponiblesEmpleadoModify').val(registro.DiasDisponibles);
                 $('#EstadoEmpleadoModify').val(registro.Estado);
-                $('#ddlModifyRolModal').val(registro.IdRol);
-                ActivateInputEvent('ddlModifyRolModal');
+               // $('#ddlModifyRolModal').val(registro.IdRol);
+               // ActivateInputEvent('ddlModifyRolModal');
                 $('#IdRolEmpleadoModify').val(registro.IdRol);
                 $('#btnModifyEmpleado').show();
                 $('#lblTitle').text("Modificar empleado");
                 $("#chkEstado").prop('checked', registro.Estado);
-
+                $("#chkModifySystemUser").prop('checked', registro.UsuarioSistema);
 
                 $('#txtIdentificacion').prop('readonly', false);
                 $('#ddlModifyProvinciaModal').prop('readonly', false);
@@ -967,6 +996,7 @@ else
                 $('#ddlModifyDistritoModal').prop('readonly', false);
                 $('#txtEmpleadoSalarioModify').prop('readonly', false);
                 $("#chkEstado").prop('disabled', false);
+                $("#chkModifySystemUser").prop('disabled', false);
             }
             else {
                 var FechaIngreso = new Date(registro.FechaIngreso);
@@ -990,11 +1020,11 @@ else
                 $('#ContrasenaEmpleadoModify').val(registro.Contrasena);
                 $('#DiasDisponiblesEmpleadoModify').val(registro.DiasDisponibles);
                 $('#EstadoEmpleadoModify').val(registro.Estado);
-                $('#ddlModifyRolModal').val(registro.IdRol);
-                ActivateInputEvent('ddlModifyRolModal');
+              //  $('#ddlModifyRolModal').val(registro.IdRol);
+             //   ActivateInputEvent('ddlModifyRolModal');
                 $('#IdRolEmpleadoModify').val(registro.IdRol);
                 $("#chkEstado").prop('checked', registro.Estado);
-
+                $("#chkModifySystemUser").prop('checked', registro.UsuarioSistema);
 
                 $('#txtIdentificacion').prop('readonly', true);
                 $('#ddlModifyProvinciaModal').prop('readonly', true);
@@ -1012,6 +1042,7 @@ else
                 $('#btnModifyEmpleado').hide();
                 $('#lblTitle').text("Información empleado");
                 $("#chkEstado").prop('disabled', true);
+                $("#chkModifySystemUser").prop('disabled', true);
             }
 
             OpenModal(modal);

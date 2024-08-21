@@ -2,6 +2,8 @@
 @using Newtonsoft.Json;
 @{
     ViewData["Title"] = "Vacaciones";
+    string layoutName = Context.Request.Cookies["Layout"] ?? "_Layout";
+    Layout = layoutName ?? "_Layout";
 }
 @functions {
     string NombreCompleto(string n, string a)
@@ -23,7 +25,7 @@
         <h1><i class="fa fa-th-list" style="margin-right: 10px;"></i>Administración de Vacaciones</h1>
         <p>Vacaciones</p>
         <br>
-        <a onclick="OpenModal('mdlAddVacacion')" class="btn btn-primary"><i class="fa fa-plus" aria-hidden="true"></i>Crear Vacaciones</a>
+        <a onclick="OpenModal('mdlAddVacacion')" class="btn btn-primary" style="color:white;"><i class="fa fa-plus" aria-hidden="true"></i>Crear Vacaciones</a>
     </div>
     <ul class="app-breadcrumb breadcrumb side">
         <li class="breadcrumb-item"><i class="fa fa-home fa-lg"></i></li>
@@ -61,7 +63,7 @@
                                         <td>@vacacion.DiasSolicitados</td>
                                         <td>
                                             @* <a class="btn btn-sm btn-warning" onclick="OpenModalModifyRegistroVacacion(this,'mdlModifyVacacion',0)" data-registro='@JsonConvert.SerializeObject(vacacion)'>Editar</a> *@
-                                            <a class="btn btn-danger cambiar-estado-btn" data-id='@vacacion.Id'>Eliminar</a>
+                                            <a class="btn btn-danger cambiar-estado-btn" data-id='@vacacion.Id' style="color:white;">Eliminar</a>
                                         </td>
                                     </tr>
                                 }
@@ -125,7 +127,7 @@
                                             foreach (var item in Model.EmpleadoLista)
                                             {
 
-                                                <option value="@item.Cedula" data-id="@item.Id">@item.Nombre</option>
+                                                    <option value="@item.Cedula" data-id="@item.Id">@item.Nombre</option>
                                             }
                                         }
                                     </datalist>
@@ -193,7 +195,7 @@
                                             foreach (var item in Model.EmpleadoLista)
                                             {
 
-                                                <option value="@item.Cedula" data-id="@item.Id">@item.Nombre</option>
+                                                    <option value="@item.Cedula" data-id="@item.Id">@item.Nombre</option>
                                             }
                                         }
                                     </datalist>
@@ -249,30 +251,34 @@
                                 cancelButtonText: 'No'
                             }).then((result) => {
                                 if (result.isConfirmed) {
-                                   
+
                                     $.ajax({
                                         url: '@Url.Action("Delete", "Vacacion")',
                                         type: 'GET',
                                         data: { id: id },
                                         success: function (response) {
-                                          
+
                                             Swal.fire('Éxito', response.message, 'success').then(function () {
-                                                
+
                                                 location.reload();
                                             });
                                         },
                                         error: function (xhr, status, error) {
-                                            
+
                                             Swal.fire('Error', 'Ha ocurrido un error al eliminar las vacaciones.', 'error');
                                             console.error('Error:', error);
                                         }
                                     });
                                 }
+                                else {
+                                    Swal.fire('Error', response.message+" asdasdas", 'error');
+                                
+                                }
                             });
                         }
                         else {
                             Swal.fire('Error', response.message, 'error');
-                            console.error('Error:', error);
+                            console.error('Error:', message);
                         }
 
 
@@ -341,14 +347,12 @@
                 var checkOutVal = $('#dtEndDate').val();
 
                 if (new Date(newCheckIn) >= new Date(checkOutVal)) {
-                    if (originalCheckIn) {
-                        $(this).val(originalCheckIn);
-                    }
+        
+                    var adjustedDate = new Date(new Date(checkOutVal).setDate(new Date(checkOutVal).getDate() - 1));
+                    $(this).val(adjustedDate.toISOString().split('T')[0]);
                 } else {
                     $(this).data('lastValue', newCheckIn);
                     var Days = tmpDays(newCheckIn, checkOutVal);
-
-
                 }
                 checkFieldsAndSubmit();
             }).data('lastValue', $('#dtStartDate').val());
@@ -359,16 +363,16 @@
                 var checkInVal = $('#dtStartDate').val();
 
                 if (new Date(newCheckOut) <= new Date(checkInVal)) {
-                    if (originalCheckOut) {
-                        $(this).val(originalCheckOut);
-                    }
+                  
+                    var adjustedDate = new Date(new Date(checkInVal).setDate(new Date(checkInVal).getDate() + 1));
+                    $(this).val(adjustedDate.toISOString().split('T')[0]);
                 } else {
                     $(this).data('lastValue', newCheckOut);
                     var Days = tmpDays(checkInVal, newCheckOut);
-
                 }
                 checkFieldsAndSubmit();
             }).data('lastValue', $('#dtEndDate').val());
+
 
 
             $('#dtStartDate, #dtEndDate, #ddlAddVacacionEmpleadoModal').on('input change', checkFieldsAndSubmit);

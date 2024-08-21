@@ -16,5 +16,6 @@ namespace ProyectoMancariBlue.Models.Interfaces
 
         Task<List<Animal>> GetAnimalStatus(bool Status);
         List<Animal> SearchByGender(string gender);
+        List<Animal> GetAnimalsByIds(List<long> lista);
     }
 }

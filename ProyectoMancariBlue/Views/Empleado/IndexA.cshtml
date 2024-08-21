@@ -1,8 +1,11 @@
-﻿@using ProyectoMancariBlue.Models.Enum;
+﻿@using Newtonsoft.Json;
+@using ProyectoMancariBlue.Models.Enum;
 @model ProyectoMancariBlue.Models.Obj.Request.EmpleadoRequest
 
 @{
     ViewData["Title"] = "Administradores";
+    string layoutName = Context.Request.Cookies["Layout"] ?? "_Layout";
+    Layout = layoutName ?? "_Layout";
 }
 @functions {
     string NombreCompleto(string n, string a)
@@ -10,8 +13,7 @@
         return n + " " + a;
 
     }
-
- }
+}
 
 <div class="app-title">
     <div>
@@ -61,48 +63,51 @@
                                 {
                                     foreach (var item in Model.Empleado)
                                     {
-                                        <tr>
-                                            <td>
-                                                @NombreCompleto(item.Nombre, item.Apellidos)
-                                            </td>
-                                            <td>
-                                                @Html.DisplayFor(modelItem => item.Cedula)
-                                            </td>
-                                            <td>
-                                                @Html.DisplayFor(modelItem => item.Correo)
-                                            </td>
-                                            <td>
-                                                @Html.DisplayFor(modelItem => item.Puesto)
-                                            </td>
-                                       
-                                            <td>
-                                                @if (item.Estado)
-                                                {
+                                        @if (Context.Request.Cookies["Id"] != item.Id.ToString())
+                                        {
+                                            <tr>
+                                                <td>
+                                                    @NombreCompleto(item.Nombre, item.Apellidos)
+                                                </td>
+                                                <td>
+                                                    @Html.DisplayFor(modelItem => item.Cedula)
+                                                </td>
+                                                <td>
+                                                    @Html.DisplayFor(modelItem => item.Correo)
+                                                </td>
+                                                <td>
+                                                    @Html.DisplayFor(modelItem => item.Puesto)
+                                                </td>
 
-                                                    <span class="badge badge-success">Activo</span>
-                                                }
-                                                else
-                                                {
-                                                    <span class="badge badge-danger">Inactivo</span>
+                                                <td>
+                                                    @if (item.Estado)
+                                                    {
 
-                                                }
+                                                        <span class="badge badge-success">Activo</span>
+                                                    }
+                                                    else
+                                                    {
+                                                        <span class="badge badge-danger">Inactivo</span>
 
-                                            </td>
-                                            <td>
-                                                @Html.DisplayFor(modelItem => item.Rol.Descripcion)
-                                            </td>
-                                            <td>
-                                                @if (Context.Request.Cookies["Id"] != item.Id.ToString())
-                                                {
-                                                    <a class="btn btn-primary" asp-action="EditarAdmin" asp-route-id="@item.Id">Cambiar Rol</a>
-                                                    <a class="btn btn-info" asp-action="DetailsAdmin" asp-route-id="@item.Id">Ver</a>
+                                                    }
 
-                                                }
+                                                </td>
+                                                <td>
+                                                    @Html.DisplayFor(modelItem => item.Rol.Descripcion)
+                                                </td>
+                                                <td>
+                                                    @if (Context.Request.Cookies["Id"] != item.Id.ToString())
+                                                    {
+                                                        <a class="btn btn-primary" onclick="OpenModalModifyRegistroEmpleadoRol(this,'mdlModifyEmpleado',0)" data-registro='@JsonConvert.SerializeObject(item)' style="color:white;">Cambiar rol </a>
+                                                        <a class="btn btn-info" onclick="GeneratePassword('@JsonConvert.SerializeObject(item)')" style="color:white;">Generar contraseña</a>
 
-                                            </td>
+                                                    }
+
+                                                </td>
 
 
-                                        </tr>
+                                            </tr>
+                                        }
                                     }
                                 }
                             </tbody>
@@ -121,136 +126,70 @@ else
 }
 
 
-@*Modal to add Empleado*@
-<div class="modal fade" id="mdlAddEmpleado">
+
+
+@*Modal to modify Empleado*@
+<div class="modal fade" id="mdlModifyEmpleado">
     <div class="modal-dialog modal-lg dialogPDF">
         <div class="modal-content contentPDF">
             <div class="modal-header" style="background-color: #007C89; color:white; justify-content: center; ">
-                <h5 class="modal-title">Agregar Empleado</h5>
+                <h5 class="modal-title" id="lblTitle">Modificar rol</h5>
             </div>
-            <div class="modal-body">
-                <input type="hidden" id="hdfEstado" value="0" />
-                <input type="hidden" id="hdfId" value="0" />
-                <div class="row" style=" padding-left: 1rem;">
-                    <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 pt-4 p-0">
-                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
-                            <div class="form-group">
-                                <label for="txtCedula">Cédula</label>
-                                <input type="text" id="txtCedula" class="form-control" placeholder="Digite la cédula" autocomplete="off">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 pt-4 p-0">
-                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
-                            <div class="form-group">
-                                <label for="ddlAddEmpleadoModal">Selecciona la raza</label>
-                                <input type="text" id="ddlAddEmpleadoRazaModal" list="AddEmpleadoRazalList" class="form-control" placeholder="Buscar raza..." autocomplete="off">
-                                <datalist id="AddEmpleadoRazalList">
+            <form asp-controller="Empleado" asp-action="ModificarEmpleadoModalRol" method="post">
+                @* <input type="hidden" name="Id" id="IdEmpleadoModify" asp-for="EmpleadoModify.Id" />
+                <input type="hidden" name="Contrasena" id="ContrasenaEmpleadoModify" asp-for="EmpleadoModify.Contrasena" />
+                <input type="hidden" name="DiasDisponibles" id="DiasDisponiblesEmpleadoModify" asp-for="EmpleadoModify.DiasDisponibles" /> *@
 
-                                    @{
-                                        foreach (var value in Enum.GetValues(typeof(ECattle)))
-                                        {
-                                            var cattle = (ECattle)value;
-                                            <option value="@((int)cattle)">@cattle.GetDisplayName()</option>
-                                        }
-                                    }
-                                </datalist>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 pt-4 p-0">
-                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
-                            <div class="form-group">
-                                <label for="ddlAddEmpleadoModal">Selecciona el padre</label>
-                                <input type="text" id="ddlAddEmpleadoModal" list="AddEmpleadoList" class="form-control" placeholder="Buscar padre..." autocomplete="off">
-                                <datalist id="AddEmpleadoList">
 
-                                    @{
-                                        if ((IEnumerable<SelectListItem>)ViewBag.EmpleadoList != null)
-                                        {
-                                            foreach (var item in (IEnumerable<SelectListItem>)ViewBag.EmpleadoList)
-                                            {
-                                                <option value="@item.Value">@item.Text</option>
-                                            }
-                                        }
-                                    }
-                                </datalist>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 pt-4 p-0">
-                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
-                            <div class="form-group">
-                                <label for="ddlAddEmpleadoModal">Selecciona la madre</label>
-                                <input type="text" id="ddlAddEmpleadoMothreModal" list="AddEmpleadoMotherlList" class="form-control" placeholder="Buscar madre..." autocomplete="off">
-                                <datalist id="AddEmpleadoMotherlList">
+                <div class="modal-body">
+                    <input type="hidden" id="hdfEstado" value="0" />
+                    <input type="hidden" id="hdfId" value="0" />
+                    <div class="row" style=" padding-left: 1rem;">
 
-                                    @{
-                                        if ((IEnumerable<SelectListItem>)ViewBag.EmpleadoMotherList != null)
-                                        {
-                                            foreach (var item in (IEnumerable<SelectListItem>)ViewBag.EmpleadoMotherList)
-                                            {
-                                                <option value="@item.Value">@item.Text</option>
-                                            }
-
-                                        }
-                                    }
-                                </datalist>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 pt-4 p-0">
-                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
-                            <div class="form-group">
-                                <label>Seleccione el género</label>
-                                <div>
-                                    <input type="radio" id="genderMale" checked="true" name="EmpleadoGender" value="M">
-                                    <label for="genderMale">Macho</label>
-                                </div>
-                                <div>
-                                    <input type="radio" id="genderFemale" name="EmpleadoGender" value="H">
-                                    <label for="genderFemale">Hembra</label>
+                        <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 pt-4 p-0">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
+                                <div class="form-group">
+                                    <label style="font-size:large" for="ddlModifyRolModal">Rol actual del usuario</label>
+                                    <input type="hidden" name="Id" id="IdEmpleadoModify" asp-for="EmpleadoRol.Id" />
+                                  
+                                    <br />
+                                    <label id="lblRolActual" style="font-size:large"></label>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 pt-4 p-0 " id="EmpleadoEmContainer">
-                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                            <div class="form-group">
-                                <label for="EmpleadoBirths">Cantidad de partos</label>
-                                <input type="number" id="txtEmpleadoBirths" name="EmpleadoBirths" class="form-control" placeholder="Ingrese la cantidad de partos" min="1" step="1">
+                        <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 pt-4 p-0">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
+                                <div class="form-group">
+                                    <label style="font-size:large" for="ddlModifyRolModalRol">Seleccione el rol</label>
+                                    <input type="hidden" name="IdRol" id="IdRolEmpleadoModifyRol" asp-for="EmpleadoRol.IdRol" />
+                                    <input style="font-size:large; " type="text" id="ddlModifyRolModalRol" list="ModifyRolList" class="form-control" placeholder="Buscar Rol..." autocomplete="off">
+                                    <datalist id="ModifyRolList">
+
+                                        @{
+                                            if (Model.ListaRol != null)
+                                            {
+                                                foreach (var item in Model.ListaRol)
+                                                {
+                                                        <option value="@item.Id" data-id="@item.Id">@item.Nombre</option>
+                                                }
+                                            }
+                                        }
+                                    </datalist>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 pt-4 p-0 ">
-                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                            <div class="form-group">
-                                <label for="EmpleadoHeigth">Peso en KG</label>
-                                <input type="number" id="txtEmpleadoHeigth" name="EmpleadoHeigth" class="form-control" placeholder="Ingrese el peso en KG" min="1" step="1">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 pt-4 p-0">
-                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
-                            <div class="mb-3">
-                                <label for="lblDate" class="form-label">Fecha de nacimiento</label>
-                                <input type="date" class="form-control" id="dtDate">
-                            </div>
-                        </div>
+
                     </div>
                 </div>
-
-            </div>
-            <br />
-            <div class="modal-footer">
-                <button type="button" id="btnAddEmpleado" class="btn btn-primary" onclick="NewEmpleado()">Aceptar</button>
-                <button type="button" id="btnCloseModalAddEmpleado" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
-            </div>
+                <br />
+                <div class="modal-footer">
+                    <button type="submit" id="btnModifyEmpleado" class="btn btn-primary">Aceptar</button>
+                    <button type="button" id="btnCloseModalModifyEmpleado" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
-
 @section Scripts {
     <script src="~/js/plugins/jquery.datatables.min.js"></script>
     <script src="~/js/plugins/datatables.bootstrap.min.js"></script>
@@ -293,7 +232,178 @@ else
                     }
                 });
             });
+
+            $('form').on('submit', function (e) {
+                showSpinner();
+
+                e.preventDefault();
+
+                var form = $(this);
+                var url = form.attr('action');
+
+
+                setTimeout(function () {
+                    $.ajax({
+                        type: 'POST',
+                        url: url,
+                        data: form.serialize(),
+                        success: function (response) {
+                            if (response.success) {
+                                Swal.fire({
+                                    title: 'Éxito',
+                                    text: response.message,
+                                    icon: 'success'
+                                }).then(() => {
+                                    window.location.href = '@Url.Action("GetAdmins", "Empleado")';
+                                });
+                            } else {
+                                Swal.fire({
+                                    title: 'Error',
+                                    text: response.errors,
+                                    icon: 'error'
+                                });
+                            }
+                        },
+                        error: function () {
+                            Swal.fire({
+                                title: 'Error',
+                                text: 'Ocurrió un error inesperado.',
+                                icon: 'error'
+                            });
+                        }
+                    });
+
+                    hideSpinner();
+                }, 1000);
+            });
+
+
+
+            InitializerEventDropDownList('ddlModifyRolModalRol', 'ModifyRolList', 'IdRolEmpleadoModifyRol');
         });
+
+        function GeneratePassword(registroJson) {
+            var registro = JSON.parse(registroJson);
+
+            Swal.fire({
+                title: 'Confirmación',
+                text: '¿Estás seguro de que desea modificar el rol??',
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonText: 'Sí',
+                cancelButtonText: 'No'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: '@Url.Action("GenerarContrasenna", "Empleado")',
+                        type: 'POST',
+                        data: { id: registro.Id },
+                        success: function (response) {
+                            Swal.fire({
+                                title: 'Éxito',
+                                text: 'La contraseña ha sido generada y enviada al correo del empleado.',
+                                icon: 'success'
+                            });
+                        },
+                        error: function () {
+                            Swal.fire({
+                                title: 'Error',
+                                text: 'Ocurrió un error al generar la contraseña.',
+                                icon: 'error'
+                            });
+                        }
+                    });
+                }
+            });
+
+        
+        }
+
+        function OpenModalModifyRegistroEmpleadoRol(button, modal, option) {
+
+            var RegistroJson = button.getAttribute("data-registro");
+            var registro = JSON.parse(RegistroJson);
+            console.log(registro);
+
+
+            $('#IdEmpleadoModify').val(registro.Id);
+                $('#lblRolActual').text(registro.Rol.Nombre);
+              
+               // ActivateInputEvent('ddlModifyProvinciaModal');
+               
+                
+
+                // $('#txtIdentificacion').prop('readonly', false);
+                // $('#ddlModifyProvinciaModal').prop('readonly', false);
+                // $('#ddlModifyCantonModal').prop('readonly', false);
+         
+            
+
+            OpenModal(modal);
+
+        }
+
+
+        function InitializerEventDropDownList(DropDownInput, dataList, HDF) {
+            var typingTimer;
+            var doneTypingInterval = 1000;
+
+            document.getElementById(DropDownInput).addEventListener("input", function () {
+                clearTimeout(typingTimer);
+
+                typingTimer = setTimeout(function () {
+                    var inputValue = document.getElementById(DropDownInput).value.toLowerCase();
+                    var inputObject = document.getElementById(DropDownInput);
+                    var options = document.getElementById(dataList).options;
+
+                    for (var i = 0; i < options.length; i++) {
+                        var option = options[i];
+                        var text = option.textContent.toLowerCase();
+
+                        if (text.indexOf(removeAccents(inputValue)) !== -1) {
+                            option.style.display = "block";
+                        } else {
+                            option.style.display = "none";
+                        }
+                    }
+                    var selectedOption = null;
+                    for (var i = 0; i < options.length; i++) {
+                        if (options[i].value.toLowerCase() === inputObject.value.toLowerCase()) {
+                            selectedOption = options[i];
+
+                            break;
+                        }
+                    }
+                    if (selectedOption) {
+                        inputObject.value = selectedOption.textContent;
+                        document.getElementById(HDF).value = selectedOption.getAttribute('data-id');
+
+
+
+                    }
+                    else {
+                        document.getElementById(HDF).value = '';
+                    }
+                    if (GetDropDownValueSelected(DropDownInput, dataList) === null) {
+                        inputObject.value = '';
+                        inputObject.placeholder = "No se encontró el registro digitado";
+
+
+                        typingTimer = setTimeout(function () {
+                            inputObject.placeholder = "Seleccione una opción...";
+                        }, 700)
+                    }
+                    else {
+
+
+                        document.getElementById(DropDownInput).value = GetDropDownTextContentSelected(DropDownInput, dataList);
+                        options[0].selected = true;
+                    }
+                }, doneTypingInterval);
+
+
+            });
+        }
 
     </script>
 

@@ -24,7 +24,7 @@ namespace ProyectoMancariBlue.Models.Clases
 
         public static decimal CalcularPreaviso(LiquidacionDTO liquidacion)
         {
-            if (liquidacion.MotivoSalida.Equals(EReasonDeparture.Renuncia)|| liquidacion.MotivoSalida.Equals(EReasonDeparture.DespidoSinResponsabilidadPatronal))
+            if (liquidacion.MotivoSalida.Equals(EReasonDeparture.Renuncia)|| liquidacion.MotivoSalida.Equals(EReasonDeparture.DespidoSinResponsabilidadPatronal) || !liquidacion.Preaviso)
             {
                 return 0;
             }

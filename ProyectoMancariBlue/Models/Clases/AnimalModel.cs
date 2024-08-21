@@ -38,7 +38,10 @@ namespace ProyectoMancariBlue.Models.Clases
         {
             return await _context.Animal.FindAsync(id);
         }
-
+        public  List<Animal> GetAnimalsByIds(List<long> lista)
+        {
+            return   _context.Animal.Where(v=>lista.Contains(v.Id)).ToList();
+        }
         public List<Animal> GetAnimal()
         {
             return  _context.Animal.ToList();

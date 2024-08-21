@@ -26,6 +26,8 @@ namespace ProyectoMancariBlue.Models.Interfaces
 
         Task<bool> EmpleadoExists(string cedula, string correo);
 
+        Task<Empleado> GetEmpleadoByCedulaOrCorreo(string cedula, string correo);
+
         Task<List<Empleado>> GetEmpleadoRol();
         Task<List<Empleado>> GetEmpleados();
 
@@ -37,5 +39,6 @@ namespace ProyectoMancariBlue.Models.Interfaces
         Task<Empleado> GetByCedulaAsync(string cedula);
         Task<Empleado> GetByCorreoAsync(string correo);
         Task<Empleado> GetByLoginAsync(string cedula, string contrasena);
+        Task<Empleado> UpdateAsyncRole(Empleado empleado);
     }
 }

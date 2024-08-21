@@ -5,6 +5,7 @@ namespace ProyectoMancariBlue.Models.Obj
 {
     public class Empleado
     {
+        
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public long Id { get; set; }
@@ -79,6 +80,8 @@ namespace ProyectoMancariBlue.Models.Obj
         public virtual Distrito Distrito { get; set; }  
         [Required(ErrorMessage = "El campo Estado es requerido")]
         public bool Estado { get; set; }
+       
+        public bool UsuarioSistema { get; set; }
         [Column("Dias_Disponibles")] 
         
         public int DiasDisponibles { get; set; }

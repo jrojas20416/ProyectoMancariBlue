@@ -3,6 +3,8 @@
 @model ProyectoMancariBlue.Models.Obj.Request.AnimalRequest
 @{
     ViewData["Title"] = "Animales";
+    string layoutName = Context.Request.Cookies["Layout"] ?? "_Layout";
+    Layout = layoutName ?? "_Layout";
 }
 
 <div class="app-title">
@@ -73,7 +75,7 @@
                                     </td>
 
                                     <td>
-                                        <a class="btn btn-info" onclick="OpenModalInfoAnimalCria(this,'mdlAnimalCria')" data-animal='@JsonConvert.SerializeObject(item)'>Ver Crías Registradas</a>
+                                        <a class="btn btn-info" onclick="OpenModalInfoAnimalCria(this,'mdlAnimalCria')" data-animal='@JsonConvert.SerializeObject(item)' style="color:white;">Ver Crías Registradas</a>
                                     </td>
                                 </tr>
                             }
@@ -144,7 +146,7 @@
                                     </td>
 
                                     <td>
-                                        <a class="btn btn-info" onclick="OpenModalInfoAnimalCria(this,'mdlAnimalCria')" data-animal='@JsonConvert.SerializeObject(item)'>Ver Crías Registradas</a>
+                                        <a class="btn btn-info" onclick="OpenModalInfoAnimalCria(this,'mdlAnimalCria')" data-animal='@JsonConvert.SerializeObject(item)' style="color:white;">Ver Crías Registradas</a>
                                     </td>
                                 </tr>
                             }

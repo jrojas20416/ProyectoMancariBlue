@@ -11,5 +11,9 @@ namespace ProyectoMancariBlue.Models.Obj.Request
         public IEnumerable<Rol> ListaRol { get; set; }
         public EmpleadoDTO EmpleadoCreate { get; set; }
         public EmpleadoDTO EmpleadoModify { get; set; }
+        public EmpleadoDTO EmpleadoRol { get; set; }
+
+        public long IdEmpleadoView { get; set; }
+        public int IdNewRolView { get; set; }
     }
 }

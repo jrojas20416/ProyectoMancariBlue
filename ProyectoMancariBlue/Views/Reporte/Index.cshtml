@@ -1,5 +1,9 @@
-﻿@{
+﻿@using Newtonsoft.Json;
+@model ProyectoMancariBlue.Models.Obj.Request.ReporteRequest
+@{
     ViewData["Title"] = "Reportes";
+    string layoutName = Context.Request.Cookies["Layout"] ?? "_Layout";
+    Layout = layoutName ?? "_Layout";
 }
 @functions {
     string NombreCompleto(string n, string a)
@@ -14,154 +18,397 @@
         <h1><i class="fa fa-th-list" style="margin-right: 10px;"></i>Administración de Reportes</h1>
         <p>Reportes</p>
         <br>
-        <a asp-action="CrearReporte" asp-controller="Reporte" class="btn btn-primary"><i class="fa fa-plus" aria-hidden="true"></i>Crear Reporte</a>
+        <a onclick="OpenModal('mdlAddReporte')" class="btn btn-primary" style="color:white;"><i class="fa fa-plus" aria-hidden="true"></i>Crear Reporte</a>
     </div>
     <ul class="app-breadcrumb breadcrumb side">
         <li class="breadcrumb-item"><i class="fa fa-home fa-lg"></i></li>
         <li class="breadcrumb-item">Reportes</li>
     </ul>
 </div>
-<div class="row" style="flex-direction:column">
-    <div class="col-md-14">
-        <div class="tile">
-            <div class="tile-body">
-                <div class="table-responsive">
-                    <table class="table table-hover table-bordered" id="treportes">
-                        <thead>
-                            <tr>
-                                <th>
-                                    Código CVO
-                                </th>
-                                <th>
-                                    Código Transporte
-                                </th>
-                                <th>
-                                   Transacción
-                                </th>
-                                <th>
-                                    Identificación
-                                </th>
-                                <th>
-                                    Nombre Cliente
-                                </th>
-                                <th>
-                                   Ganado
-                                </th>
-                                <th>
-                                   Fecha Venta
-                                </th>
-                                <th>
-                                    Acciones
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>
-                                    CVO-001
-                                </td>
-                                <td>
-                                    TR00-1
-                                </td>
-                                <td>
-                                   001-T
-                                </td>
-                                <td>
-                                    3-12321-2323
-                                </td>
-                                <td>
-                                    Cliente 1
-                                </td>
-                                <td>
-                                    001
-                                </td>
-                                <td>
-                                  04/01/2024
-                                </td>
-                                <td>
-                                    <a class="btn btn-primary" asp-action="EditarReporte" asp-controller="Reporte">Editar</a>
-                                    <a class="btn btn-info" asp-action="VerReporte" asp-controller="Reporte">Detalle</a>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    CVO-002
-                                </td>
-                                <td>
-                                    TR00-2
-                                </td>
-                                <td>
-                                    002-T
-                                </td>
-                                <td>
-                                    3-12321-2323
-                                </td>
-                                <td>
-                                    Cliente 2
-                                </td>
-                                <td>
-                                    002
-                                </td>
-                                <td>
-                                    15/01/2024
-                                </td>
-                                <td>
-                                    <a class="btn btn-primary" asp-action="EditarReporte" asp-controller="Reporte">Editar</a>
-                                    <a class="btn btn-info" asp-action="VerReporte" asp-controller="Reporte">Detalle</a>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+
+@if (Model != null && Model.listaReporte != null && Model.listaReporte.Any())
+{
+    <div class="row">
+        <div class="col-md-12">
+            <div class="tile">
+                <div class="tile-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover table-bordered" id="treporte">
+                            <thead>
+                                <tr>
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.ReporteCreate.CodigoCVO)
+                                    </th>
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.ReporteCreate.CodigoTransporte)
+                                    </th>
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.ReporteCreate.Transaccion)
+                                    </th>
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.ReporteCreate.Identificacion)
+                                    </th>
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.ReporteCreate.NombreCliente)
+                                    </th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (Model != null)
+                                {
+                                    foreach (var item in Model.listaReporte)
+                                    {
+                                        <tr>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.CodigoCVO)
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.CodigoTransporte)
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.Venta.Descripcion)
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.Identificacion)
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.NombreCliente)
+                                            </td>
+                                            <td>
+                                                <a class="btn btn-info" onclick="OpenModalInfoGanado(this,'mdlInfoGanado')" data-reporte='@JsonConvert.SerializeObject(item)' style="color:white;">Ver</a>
+                                                <a class="btn btn-danger cambiar-estado-btn" data-id='@item.Id' style="color:white;">Eliminar</a>
+                                            </td>
+                                        </tr>
+                                    }
+                                }
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
+}
+else
+{
+    <div>
+        <h3>Lo sentimos no tenemos datos por mostrar</h3>
+    </div>
+}
+
+@*Modal to Information Ganado*@
+<div class="modal fade" id="mdlInfoGanado">
+    <div class="modal-dialog modal-lg dialogPDF">
+        <div class="modal-content contentPDF">
+            <div class="modal-header" style="background-color: #007C89; color:white; justify-content: center; ">
+                <h5 class="modal-title">Información Ganado</h5>
+            </div>
+            <div class="modal-body">
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 pt-4 p-0">
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
+                        <div id="informacionAnimalContainer">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <br />
+            <div class="modal-footer">
+                <button type="button" id="btnCloseModalInfoGanado" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
 </div>
+
+@*Modal to add Reporte*@
+<div class="modal fade" id="mdlAddReporte">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header" style="background-color: #007C89; color:white; justify-content: center;">
+                <h5 class="modal-title">Agregar Reporte</h5>
+            </div>
+            <form asp-controller="Reporte" asp-action="CrearReporte" method="post" id="formAddReporte">
+                <div class="modal-body">
+                    <input type="hidden" name="Id" id="hdfId" asp-for="ReporteCreate.Id" />
+                    <div class="row" style="padding-left: 1rem;">
+                        <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 pt-4 p-0">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                <div class="mb-3">
+                                    <label for="CodigoCVO" class="form-label">Codigo CVO</label>
+                                    <input type="text" class="form-control" name="CodigoCVO" id="CodigoCVO" asp-for="ReporteCreate.CodigoCVO" placeholder="Digite el código CVO..." autocomplete="off">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 pt-4 p-0">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                <div class="mb-3">
+                                    <label for="CodigoTransporte" class="form-label">Codigo Transporte</label>
+                                    <input type="text" class="form-control" name="CodigoTransporte" id="CodigoTransporte" asp-for="ReporteCreate.CodigoTransporte" placeholder="Digite el código de transporte..." autocomplete="off">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 pt-4 p-0">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
+                                <div class="form-group">
+                                    <label for="ddlAddTransaccionModal">Seleccione la Transaccion</label>
+                                    <input type="text" id="ddlAddReporteTransaccionModal" list="AddReporteTransaccionlList" class="form-control" placeholder="Buscar Transaccion..." autocomplete="off">
+                                    <input type="hidden" name="Transaccion" id="IdReporteTransaccionCreate" asp-for=" ReporteCreate.Transaccion" />
+
+                                    <datalist id="AddReporteTransaccionlList">
+
+                                        @{
+                                            if (Model != null && Model.listaTransacciones != null)
+                                            {
+                                                foreach (var item in Model.listaTransacciones)
+                                                {
+
+                                                    <option value="@item.Descripcion" data-id="@item.Id">@item.Descripcion</option>
+                                                }
+                                            }
+                                        }
+
+                                        }
+                                    </datalist>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 pt-4 p-0">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                <div class="mb-3">
+                                    <label for="Identificacion" class="form-label">Identificacion</label>
+                                    <input type="text" class="form-control" name="Identificacion" id="Identificacion" asp-for="ReporteCreate.Identificacion" placeholder="Digite la identificación del cliente..." autocomplete="off">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 pt-4 p-0">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                <div class="mb-3">
+                                    <label for="NombreCliente" class="form-label">Nombre Cliente</label>
+                                    <input type="text" class="form-control" name="NombreCliente" id="NombreCliente" asp-for="ReporteCreate.NombreCliente" placeholder="Digite el nombre del cliente..." autocomplete="off">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 pt-4 p-0">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                <div class="mb-3">
+                                    <label for="FechaCreacion" class="form-label">Fecha de Creación</label>
+                                    <input type="date" class="form-control" name="FechaCreacion" id="FechaCreacion" asp-for="ReporteCreate.FechaCreacion">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <br />
+                <div class="modal-footer">
+                    <button type="submit" id="btnAddReporte" class="btn btn-primary">Aceptar</button>
+                    <button type="button" id="btnCloseModalAddReporte" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+
 
 @section Scripts {
     <script src="~/js/plugins/jquery.datatables.min.js"></script>
     <script src="~/js/plugins/datatables.bootstrap.min.js"></script>
     <script type="text/javascript">$('#treportes').DataTable();</script>
     <script>
-
         $(document).ready(function () {
+            var today = new Date();
+            var day = String(today.getDate()).padStart(2, '0');
+            var month = String(today.getMonth() + 1).padStart(2, '0');
+            var year = today.getFullYear();
+
+            var formattedDate = year + '-' + month + '-' + day;
+
+
+            $('#FechaCreacion').val(formattedDate);
+
+
+            $('#FechaCreacion').prop('readonly', true);
+
+            InitializerEventDropDownList('ddlAddReporteTransaccionModal', 'AddReporteTransaccionlList', 'IdReporteTransaccionCreate');
+
+            $('#btnCloseModalAddReporte').click(function () {
+                $('#formAddReporte')[0].reset();
+                $('#FechaCreacion').val(formattedDate);
+                $('#FechaCreacion').prop('readonly', true);
+            });
+
+            $('#mdlAddReporte').on('hidden.bs.modal', function () {
+                $('#formAddReporte')[0].reset();
+                $('#FechaCreacion').val(formattedDate);
+                $('#FechaCreacion').prop('readonly', true);
+            });
+
+            $('#formAddReporte').submit(function (e) {
+                e.preventDefault();
+
+                var $form = $(this);
+                var formData = $form.serialize();
+
+                $.ajax({
+                    url: $form.attr('action'),
+                    type: 'POST',
+                    data: formData,
+                    success: function (response) {
+                        if (response.success) {
+                            Swal.fire({
+                                title: 'Éxito',
+                                text: response.message,
+                                icon: 'success'
+                            }).then(function () {
+                                $('#mdlAddReporte').modal('hide');
+                                $('#formAddReporte')[0].reset();
+                                location.reload();
+                            });
+                        } else {
+                            Swal.fire({
+                                title: 'Error',
+                                text: response.message,
+                                icon: 'error'
+                            });
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        Swal.fire({
+                            title: 'Error',
+                            text: 'Ha ocurrido un error al enviar el formulario.',
+                            icon: 'error'
+                        });
+                        console.error('Error:', error);
+                    }
+                });
+            });
+
             $('.cambiar-estado-btn').click(function (e) {
                 e.preventDefault();
 
                 var id = $(this).data('id');
 
-                // Mostrar confirmación con SweetAlert2
-                Swal.fire({
-                    title: 'Confirmación',
-                    text: '¿Estás seguro de que deseas cambiar el estado?',
-                    icon: 'question',
-                    showCancelButton: true,
-                    confirmButtonText: 'Sí',
-                    cancelButtonText: 'No'
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        // Realizar la llamada AJAX si se confirma la acción
-                        $.ajax({
-                            url: '@Url.Action("Index", "Empleado")',
-                            type: 'GET',
-                            success: function (response) {
-                                // Mostrar mensaje de éxito con SweetAlert2
-                                Swal.fire('Éxito', 'El estado ha sido cambiado correctamente.', 'success').then(function () {
-                                    // Recargar la página
-                                    location.reload();
-                                });
-                            },
-                            error: function (xhr, status, error) {
-                                // Mostrar mensaje de error con SweetAlert2
-                                Swal.fire('Error', 'Ha ocurrido un error al cambiar el estado.', 'error');
-                                console.error('Error:', error);
-                            }
-                        });
+                $.ajax({
+                    url: '@Url.Action("ValidarEliminacion", "Reporte")',
+                    type: 'GET',
+                    data: { id: id },
+                    success: function (response) {
+                        if (response.success) {
+                            Swal.fire({
+                                title: 'Confirmación',
+                                text: '¿Estás seguro de que deseas eliminar este registro?',
+                                icon: 'question',
+                                showCancelButton: true,
+                                confirmButtonText: 'Sí',
+                                cancelButtonText: 'No'
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+
+                                    $.ajax({
+                                        url: '@Url.Action("Delete", "Reporte")',
+                                        type: 'GET',
+                                        data: { id: id },
+                                        success: function (response) {
+
+                                            Swal.fire('Éxito', response.message, 'success').then(function () {
+
+                                                location.reload();
+                                            });
+                                        },
+                                        error: function (xhr, status, error) {
+
+                                            Swal.fire('Error', 'Ha ocurrido un error al eliminar las vacaciones.', 'error');
+                                            console.error('Error:', error);
+                                        }
+                                    });
+                                }
+                            });
+                        } else {
+                            Swal.fire('Error', response.message, 'error');
+                            console.error('Error:', error);
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        Swal.fire('Error', 'Ha ocurrido un error al eliminar las vacaciones.', 'error');
+                        console.error('Error:', error);
                     }
                 });
+
+
             });
         });
 
-    </script>
+        function InitializerEventDropDownList(DropDownInput, dataList, HDF) {
+            var typingTimer;
+            var doneTypingInterval = 1000;
 
+            document.getElementById(DropDownInput).addEventListener("input", function () {
+                clearTimeout(typingTimer);
+
+                typingTimer = setTimeout(function () {
+                    var inputValue = document.getElementById(DropDownInput).value.toLowerCase();
+                    var inputObject = document.getElementById(DropDownInput);
+                    var options = document.getElementById(dataList).options;
+
+                    for (var i = 0; i < options.length; i++) {
+                        var option = options[i];
+                        var text = option.textContent.toLowerCase();
+
+                        if (text.indexOf(removeAccents(inputValue)) !== -1) {
+                            option.style.display = "block";
+                        } else {
+                            option.style.display = "none";
+                        }
+                    }
+                    var selectedOption = null;
+                    for (var i = 0; i < options.length; i++) {
+                        if (options[i].value.toLowerCase() === inputObject.value.toLowerCase()) {
+                            selectedOption = options[i];
+                            break;
+                        }
+                    }
+                    if (selectedOption) {
+                        inputObject.value = selectedOption.textContent;
+                        document.getElementById(HDF).value = selectedOption.getAttribute('data-id');
+                    } else {
+                        document.getElementById(HDF).value = '';
+                    }
+                    if (GetDropDownValueSelected(DropDownInput, dataList) === null) {
+                        inputObject.value = '';
+                        inputObject.placeholder = "No se encontró el registro digitado";
+                        $('#txtDescription').val('');
+
+                        typingTimer = setTimeout(function () {
+                            inputObject.placeholder = "Seleccione una opción...";
+                        }, 700);
+                    } else {
+                        document.getElementById(DropDownInput).value = GetDropDownTextContentSelected(DropDownInput, dataList);
+                        options[0].selected = true;
+                    }
+                }, doneTypingInterval);
+            });
+        }
+
+        function OpenModalInfoGanado(button, modal) {
+            var reporteJson = button.getAttribute("data-reporte");
+            var reporte = JSON.parse(reporteJson);
+
+            console.log(reporte);
+
+            $.ajax({
+                url: '/Reporte/ObtenerAnimales',
+                data: { idAnimal: reporte.Venta.IdAnimal },
+                type: 'GET',
+                success: function (data) {
+                    $('#informacionAnimalContainer').html(data);
+                },
+                error: function (error) {
+                    console.log('Error al obtener la información del animal:', error);
+                }
+            });
+
+            OpenModal(modal);
+        }
+    </script>
 }

@@ -39,9 +39,19 @@ namespace ProyectoMancariBlue.Models.Obj
         public DateTime FechaNacimiento
         {
             get { return _fechaNacimiento; }
-            set { _fechaNacimiento = value.Date; } // Esto asegura que solo la parte de la fecha se almacene
+            set { _fechaNacimiento = value.Date; } 
         }
         private DateTime _fechaNacimiento;
+
+
+        [Display(Name = "Fecha de ultima vacuna")]
+        [DataType(DataType.Date)]
+        public DateTime? FechaUltimaVacuna
+        {
+            get { return _fechaUltimaVacuna; }
+            set { _fechaUltimaVacuna = value.HasValue ? value.Value.Date : (DateTime?)null; }
+        }
+        private DateTime? _fechaUltimaVacuna;
 
         [Required(ErrorMessage = "El campo Estado es requerido")]
         public bool Estado { get; set; }
