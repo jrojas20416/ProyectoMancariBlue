@@ -7,17 +7,17 @@ namespace ProyectoMancariBlue.Models.Enum
         [Display(Name = "Sin registrar", Description = "Registro para vincular animales de los que no se tenga registros en el sistema.")]
         Sin_registrar =0,
 
-        [Display(Name = "Medicamentos", Description = "Medicamentos varios para animales")]
-        Medicamentos = 1,
-
         [Display(Name = "Vacunas", Description = "Vacunas varias para animales")]
-        Vacunas = 2,
+        Vacunas = 1,
 
-        [Display(Name = "Alimentos", Description = "Alimentos varios para animales")]
-        Alimentos = 3,
+        [Display(Name = "Alimentos", Description = "Alimentos varias para animales")]
+        Alimentos = 2,
 
-        [Display(Name = "Animal", Description = "Animales")]
-        Animales = 4,
+        [Display(Name = "Animales", Description = "Animales")]
+        Animales = 3,
+
+        [Display(Name = "Medicamentos", Description = "Medicamentos varios para animales")]
+        Medicamentos = 4,
 
         [Display(Name = "Materia Prima", Description = "Materia varia para animales")]
         Materia_prima = 5,
