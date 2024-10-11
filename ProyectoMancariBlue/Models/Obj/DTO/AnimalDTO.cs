@@ -22,7 +22,7 @@ namespace ProyectoMancariBlue.Models.Obj.DTO
         public bool Estado { get; set; }
         [DisplayName("Código animal")]
         public string Codigo { get; set; }
-        public AnimalDTO PadreAnimal { get; set; }
-        public AnimalDTO MadreAnimal { get; set; }
+        public AnimalDTO? PadreAnimal { get; set; }
+        public AnimalDTO? MadreAnimal { get; set; }
     }
 }
