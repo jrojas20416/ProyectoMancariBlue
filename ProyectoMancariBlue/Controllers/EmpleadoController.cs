@@ -29,7 +29,6 @@ using iText.Layout.Borders;
 using ProyectoMancariBlue.Models.Enum;
 using System.Text;
 using Newtonsoft.Json;
-using iText.Commons.Actions.Contexts;
 
 
 namespace ProyectoMancariBlue.Controllers
@@ -63,12 +62,12 @@ namespace ProyectoMancariBlue.Controllers
             _historicoPagoModel = historicoPagoModel;
             _liquidacionModel = liquidacionModel;
             _liquidacionModel = liquidacionModel;
-           
+
         }
 
         public static class GlobalVariables
         {
-          //  public static string MyGlobalVariable { get; set; } = layoutName;
+            //  public static string MyGlobalVariable { get; set; } = layoutName;
         }
 
         public IActionResult AccessDenied()
@@ -112,114 +111,152 @@ namespace ProyectoMancariBlue.Controllers
         {
             var contrasena = _empleadoModel.HashPassword(empleado.EmpleadoLogin.Contrasena);
             empleado.EmpleadoLogin.Contrasena = contrasena;
-            var respuesta = await _empleadoModel.LoginAsync(empleado.EmpleadoLogin);
+            var respuesta = _empleadoModel.LoginAsync(empleado.EmpleadoLogin);
 
-            if (respuesta != null)
+            if (respuesta.Result != null)
             {
-                // Verificar si UsuarioSistema es false o si IdRol es igual a 2
-                if (!respuesta.UsuarioSistema || respuesta.IdRol== 2)
-                {
-                    TempData["AlertMessage"] = "No posee permisos para acceder al sistema.";
-                    TempData["AlertType"] = "warning";
-                    return RedirectToAction("Index");
-                }
 
-                var cookieOptions = new CookieOptions
+                if (respuesta.Result.Estado)
                 {
-                    Expires = DateTime.UtcNow.AddHours(1),
-                    Secure = true,
-                    HttpOnly = true
-                };
-                Response.Cookies.Append("Id", respuesta.Id.ToString(), cookieOptions);
-                Response.Cookies.Append("Rol", respuesta.Rol.Nombre, cookieOptions);
+                    if (respuesta.Result.UsuarioSistema)
+                    {
+                        if (!respuesta.Result.Locked)
+                        {
+                            respuesta.Result.Locked = false;
+                            respuesta.Result.LoginAttempts = 0;
 
-                if (respuesta.RContrasena)
-                {
-                    TempData["AlertMessage"] = "Se requiere Cambiar la contraseña";
-                    TempData["AlertType"] = "info";
-                    return RedirectToAction("CambiarContrasena");
+
+                           await  _empleadoModel.UpdateAsync(respuesta.Result);
+
+                            var cookieOptions = new CookieOptions
+                            {
+                                Expires = DateTime.UtcNow.AddHours(1),
+                                Secure = true,
+                                HttpOnly = true
+                            };
+                            Response.Cookies.Append("Id", respuesta.Result.Id.ToString(), cookieOptions);
+                            Response.Cookies.Append("Rol", respuesta.Result.Rol.Nombre, cookieOptions);
+
+                            if (respuesta.Result.RContrasena)
+                            {
+                                TempData["AlertMessage"] = "Se requiere Cambiar la contraseña";
+                                TempData["AlertType"] = "info";
+                                return RedirectToAction("CambiarContrasena");
+                            }
+                            else
+                            {
+                                Response.Cookies.Append("NombreCompleto", respuesta.Result.Nombre, cookieOptions);
+                                Response.Cookies.Append("RolDescription", respuesta.Result.Rol.Descripcion, cookieOptions);
+
+                                List<Claim> claims = new List<Claim>()
+{
+    new Claim(ClaimTypes.NameIdentifier, respuesta.Result.Cedula),
+    new Claim("id", respuesta.Result.Id.ToString()),
+    new Claim(ClaimTypes.Role, respuesta.Result.Rol.Nombre)
+};
+
+                                ClaimsIdentity claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+                                AuthenticationProperties properties = new AuthenticationProperties()
+                                {
+                                    AllowRefresh = true
+                                };
+
+                                await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme,
+                                    new ClaimsPrincipal(claimsIdentity), properties);
+
+                                TempData["AlertMessage"] = "Inicio de Sesión";
+                                TempData["AlertType"] = "success";
+
+                                string layoutName = "_Layout"; // Valor por defecto
+
+                                switch (respuesta.Result.Rol.Id)
+                                {
+                                    case 3:
+                                        layoutName = "_EmpleadoLayout";
+                                        break;
+                                    case 4:
+                                        layoutName = "_VeterinariaLayout";
+                                        break;
+                                    case 5:
+                                        layoutName = "_BodegueroLayout";
+                                        break;
+                                    case 6:
+                                        layoutName = "_ContadorLayout";
+                                        break;
+                                }
+
+                                Response.Cookies.Append("Layout", layoutName, cookieOptions);
+
+                                if (!string.IsNullOrEmpty(ReturnUrl) && Url.IsLocalUrl(ReturnUrl))
+                                {
+                                    return Redirect(ReturnUrl);
+                                }
+
+                                return RedirectToAction("Index", "Home");
+                            }
+                        }
+                        else
+                        {
+                            TempData["AlertMessage"] = "Error, el usuario se encuentra bloqueado.";
+                            TempData["AlertType"] = "error";
+                            return RedirectToAction("Index");
+                        }
+
+                    }
+                    else
+                    {
+                        TempData["AlertMessage"] = "Error, las credenciales ingresadas no pertenecen a un usuario del sistema.";
+                        TempData["AlertType"] = "error";
+                        return RedirectToAction("Index");
+
+                    }
+
+
                 }
                 else
                 {
-                    Response.Cookies.Append("NombreCompleto", respuesta.Nombre, cookieOptions);
-                    Response.Cookies.Append("RolDescription", respuesta.Rol.Descripcion, cookieOptions);
+                    TempData["AlertMessage"] = "Error, el usuario se encuentra inactivo";
+                    TempData["AlertType"] = "error";
+                    return RedirectToAction("Index");
 
-                    List<Claim> claims = new List<Claim>()
-            {
-                new Claim(ClaimTypes.NameIdentifier, respuesta.Cedula),
-                new Claim("id", respuesta.Id.ToString()),
-                new Claim(ClaimTypes.Role, respuesta.Rol.Nombre)
-            };
-
-                    ClaimsIdentity claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-                    AuthenticationProperties properties = new AuthenticationProperties()
-                    {
-                        AllowRefresh = true
-                    };
-
-                    await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme,
-                        new ClaimsPrincipal(claimsIdentity), properties);
-
-                    TempData["AlertMessage"] = "Inicio de Sesión";
-                    TempData["AlertType"] = "success";
-
-                    string layoutName = "_Layout"; // Valor por defecto
-
-                    switch (respuesta.Rol.Id)
-                    {
-                        case 3:
-                            layoutName = "_EmpleadoLayout";
-                            break;
-                        case 4:
-                            layoutName = "_VeterinariaLayout";
-                            break;
-                        case 5:
-                            layoutName = "_BodegueroLayout";
-                            break;
-                        case 6:
-                            layoutName = "_ContadorLayout";
-                            break;
-                    }
-
-                    Response.Cookies.Append("Layout", layoutName, cookieOptions);
-
-                    if (!string.IsNullOrEmpty(ReturnUrl) && Url.IsLocalUrl(ReturnUrl))
-                    {
-                        return Redirect(ReturnUrl);
-                    }
-
-                    return RedirectToAction("Index", "Home");
                 }
+
+            }
+            var userFound = await _empleadoModel.GetByCedulaOrEmail(empleado.EmpleadoLogin.Empleado);
+
+            if (userFound != null && userFound.Locked)
+            {
+                TempData["AlertMessage"] = "Error, el usuario se encuentra bloqueado.";
+                TempData["AlertType"] = "error";
+                return RedirectToAction("Index");
+            }
+            else {
+                await _empleadoModel.updateLoginattemptsUser(empleado.EmpleadoLogin.Empleado);
+                TempData["AlertMessage"] = "Error, Verifique las credenciales";
+                TempData["AlertType"] = "error";
+                return RedirectToAction("Index");
             }
 
-            TempData["AlertMessage"] = "Error, Verifique las credenciales";
-            TempData["AlertType"] = "error";
-            return RedirectToAction("Index");
+          
         }
 
         [HttpPost]
         public async Task<IActionResult> RestablecerContrasena(EmpleadoInicio empleado)
         {
+            var respuesta =  _empleadoModel.RContrasenaAsync(empleado.RestorePassword);
 
-            // Realizar la operación de restablecimiento de contraseña
+            if (respuesta != null)
+            {
 
-            var restablecerRespuesta = await _empleadoModel.RContrasenaAsync(empleado.RestorePassword);
-
-         
-                if (restablecerRespuesta != null)
-                {
-                    TempData["AlertMessage"] = "Se restableció su contraseña, verifique el correo.";
-                    TempData["AlertType"] = "success";
-                }
-                else
-                {
-                    TempData["AlertMessage"] = "Error, verifique los datos.";
-                    TempData["AlertType"] = "error";
-                }
-
+                TempData["AlertMessage"] = "Se restablecio su contraseña, verifique el corrreo";
+                TempData["AlertType"] = "success";
                 return RedirectToAction("Index");
             }
-        
+            TempData["AlertMessage"] = "Error, verifique los datos";
+            TempData["AlertType"] = "error";
+            return RedirectToAction("Index");
+
+        }
 
         [HttpPost]
         public async Task<IActionResult> CambiarContrasena(CambiarContrasena user)
@@ -236,10 +273,10 @@ namespace ProyectoMancariBlue.Controllers
             {
                 TempData["AlertMessage"] = "Error Verifique los datos";
                 TempData["AlertType"] = "error";
-                return View("Cambiarontrasena");
+                return View("CambiarContrasena");
             }
         }
-       [Authorize(Roles = "Admin,Dependiente")]
+        [Authorize(Roles = "Admin,Dependiente")]
         [HttpGet]
         public async Task<IActionResult> GetEmpleados()
         {
@@ -250,7 +287,7 @@ namespace ProyectoMancariBlue.Controllers
             empleadoRequest.ListaRol = await _rolModel.GetRolAsync();
             // empleadoRequest.ListaCanton = _mapper.Map<IEnumerable<CantonDTO>>(await _cantonModel.GetAllAsync());
             // empleadoRequest.ListaDistrito = _mapper.Map<IEnumerable<DistritoDTO>>(await _distritoModel.GetAllAsync());
-           
+
             return View(empleadoRequest);
         }
 
@@ -265,20 +302,21 @@ namespace ProyectoMancariBlue.Controllers
             return Json(_mapper.Map<List<DistritoDTO>>(await _distritoModel.GetByCantonIdAsync(cantonId)));
 
         }
-       [Authorize(Roles = "Admin,Dependiente")]
+        [Authorize(Roles = "Admin,Dependiente")]
         [HttpGet]
         public async Task<IActionResult> GetAdmins()
         {
             var usuarios = _empleadoModel.GetEmpleados().Result.Where(x => x.UsuarioSistema && x.Estado).ToList();
             var Rol = await _rolModel.GetRolAsync();
-            var EmpleadoRequest = new EmpleadoRequest() {
+            var EmpleadoRequest = new EmpleadoRequest()
+            {
                 Empleado = _mapper.Map<List<EmpleadoDTO>>(usuarios),
                 ListaRol = _mapper.Map<List<Rol>>(Rol)
             };
 
             return View("IndexA", EmpleadoRequest);
         }
-       [Authorize(Roles = "Admin,Dependiente")]
+        [Authorize(Roles = "Admin,Dependiente")]
         [HttpPost]
         public async Task<IActionResult> CambiarEstado(long id)
         {
@@ -291,7 +329,7 @@ namespace ProyectoMancariBlue.Controllers
         }
 
 
-       [Authorize(Roles = "Admin,Dependiente")]
+        [Authorize(Roles = "Admin,Dependiente")]
         [HttpGet]
         public async Task<IActionResult> EditarAdmin(long id)
         {
@@ -305,7 +343,7 @@ namespace ProyectoMancariBlue.Controllers
             return View(empleado);
         }
 
-       [Authorize(Roles = "Admin,Dependiente")]
+        [Authorize(Roles = "Admin,Dependiente")]
         [HttpPost]
 
         public async Task<IActionResult> EditarAdmin(Empleado empleado)
@@ -322,7 +360,7 @@ namespace ProyectoMancariBlue.Controllers
             return View(empleado);
         }
 
-       [Authorize(Roles = "Admin,Dependiente")]
+        [Authorize(Roles = "Admin,Dependiente")]
 
         [HttpGet]
         public async Task<IActionResult> CrearEmpleado()
@@ -333,10 +371,10 @@ namespace ProyectoMancariBlue.Controllers
         {
             PrestacionRequest request = new PrestacionRequest();
             request.ListaEmpleados = _mapper.Map<List<EmpleadoDTO>>(await _empleadoModel.GetAllAsync());
-           
+
             return View(request);
         }
-       [Authorize(Roles = "Admin,Dependiente")]
+        [Authorize(Roles = "Admin,Dependiente")]
 
         [HttpPost]
         public async Task<IActionResult> CrearEmpleado(Empleado empleado, [FromServices] IWebHostEnvironment hostingEnvironment)
@@ -350,6 +388,8 @@ namespace ProyectoMancariBlue.Controllers
                 }
                 empleado.Estado = true;
                 empleado.RContrasena = true;
+                empleado.Locked = false;
+                empleado.LoginAttempts = 0;
                 var respuesta = _empleadoModel.CreateEmpleado(empleado);
                 if (respuesta != null)
                 {
@@ -370,7 +410,7 @@ namespace ProyectoMancariBlue.Controllers
             }
         }
 
-       [Authorize(Roles = "Admin,Dependiente")]
+        [Authorize(Roles = "Admin,Dependiente")]
         [HttpGet]
         public async Task<IActionResult> EditarEmpleado(long id)
         {
@@ -379,11 +419,11 @@ namespace ProyectoMancariBlue.Controllers
 
             return View(usuario);
         }
-       [Authorize(Roles = "Admin,Dependiente")]
+        [Authorize(Roles = "Admin,Dependiente")]
         [HttpPost]
         public async Task<IActionResult> EditarEmpleado(Empleado empleado)
         {
-            var respuesta = await _empleadoModel.UpdateEmpleado(empleado); 
+            var respuesta = await _empleadoModel.UpdateEmpleado(empleado);
             if (respuesta != null)
             {
                 TempData["AlertMessage"] = "Se edito correctamente el empleado";
@@ -395,7 +435,7 @@ namespace ProyectoMancariBlue.Controllers
             return View(empleado.Id);
         }
 
-       [Authorize(Roles = "Admin,Dependiente")]
+        [Authorize(Roles = "Admin,Dependiente")]
         public async Task<IActionResult> VerEmpleado(long id)
         {
             var usuario = await _empleadoModel.GetEmpleadoById(id);
@@ -407,7 +447,7 @@ namespace ProyectoMancariBlue.Controllers
             return RedirectToAction(nameof(GetEmpleados));
         }
 
-       [Authorize(Roles = "Admin,Dependiente")]
+        [Authorize(Roles = "Admin,Dependiente")]
         public async Task<IActionResult> DetailsAdmin(long id)
         {
             var usuario = await _empleadoModel.GetEmpleadoById(id);
@@ -425,8 +465,8 @@ namespace ProyectoMancariBlue.Controllers
         {
             try
             {
-                
-               
+
+
                 string errors = "";
                 if (!Validar(empleado, ref errors, false))
                 {
@@ -476,7 +516,7 @@ namespace ProyectoMancariBlue.Controllers
                 var empleadoE = _mapper.Map<Empleado>(empleado);
                 var validacion = _empleadoModel.EmpleadoExists(empleado.Cedula, empleado.Correo);
 
-                var respuesta = await _empleadoModel.UpdateAsync (empleadoE);
+                var respuesta = await _empleadoModel.UpdateAsync(empleadoE);
                 if (respuesta != null)
                 {
 
@@ -500,13 +540,13 @@ namespace ProyectoMancariBlue.Controllers
         {
             try
             {
-                var empleadoFound =  await _empleadoModel.GetByIdAsync(empleado.Id.Value);
+                var empleadoFound = await _empleadoModel.GetByIdAsync(empleado.Id.Value);
                 string errors = "";
                 if (!ValidarRol(empleadoFound, ref errors, empleado.IdRol.Value))
                 {
                     return Json(new { success = false, errors });
                 }
-            
+
                 var respuesta = await _empleadoModel.UpdateAsync(empleadoFound);
                 if (respuesta != null)
                 {
@@ -532,7 +572,7 @@ namespace ProyectoMancariBlue.Controllers
             try
             {
                 var empleadoFound = await _empleadoModel.GetByIdAsync(empleado.Id.Value);
-                
+
 
                 var respuesta = await _empleadoModel.UpdateAsyncRole(empleadoFound);
                 if (respuesta != null)
@@ -589,9 +629,19 @@ namespace ProyectoMancariBlue.Controllers
                 errors = "Debe digitar la edad";
                 return false;
             }
+            if (empleado.Edad <18)
+            {
+                errors = "La edad debe ser mayor o igual a 18.";
+                return false;
+            }
             if (empleado.Salario == null)
             {
                 errors = "Debe digitar el salario";
+                return false;
+            }
+            if (empleado.Salario <=0)
+            {
+                errors = "El salario debe ser mayor a 0.";
                 return false;
             }
             if (empleado.ProvinciaId == null)
@@ -641,7 +691,8 @@ namespace ProyectoMancariBlue.Controllers
                 errors = "El rol debe ser distinto al actual.";
                 return false;
             }
-            else {
+            else
+            {
                 empleado.IdRol = nuevorol;
             }
             return true;
@@ -674,7 +725,7 @@ namespace ProyectoMancariBlue.Controllers
         {
             try
             {
-               
+
                 var PagosE = _historicoPagoModel.GetPagosByEmpleadoIdAsync(id).Result.Take(3).ToList();
                 var Pagos = _mapper.Map<IEnumerable<HistoricoPagoDTO>>(PagosE);
                 if (Pagos != null)
@@ -698,7 +749,7 @@ namespace ProyectoMancariBlue.Controllers
             {
                 var Empleado = _empleadoModel.GetByIdAsync(id).Result;
                 Empleado.Estado = false;
-               await _empleadoModel.UpdateAsync(Empleado);
+                await _empleadoModel.UpdateAsync(Empleado);
                 return Json(new { success = false, message = "" });
             }
             catch (Exception ex)
@@ -713,7 +764,7 @@ namespace ProyectoMancariBlue.Controllers
         {
             try
             {
-               
+
                 var PagosE = _historicoPagoModel.GetPagosDesdeDiciembre(id).Result.Take(12).ToList();
                 var Pagos = _mapper.Map<IEnumerable<HistoricoPagoDTO>>(PagosE);
                 if (Pagos != null)
@@ -929,7 +980,7 @@ namespace ProyectoMancariBlue.Controllers
                     empleadoObj = empleado
                 };
                 empleado.Estado = false;
-              
+
                 decimal aguinaldoProporcional = LiquidacionCalculator.CalcularAguinaldoProporcional(liquidacion);
                 decimal vacacionesNoDisfrutadas = LiquidacionCalculator.CalcularVacaciones(liquidacion);
                 decimal preaviso = liquidacion.Preaviso ? LiquidacionCalculator.CalcularPreaviso(liquidacion) : 0;
@@ -1012,8 +1063,8 @@ namespace ProyectoMancariBlue.Controllers
                     var byteInfo = ms.ToArray();
 
                     var base64 = Convert.ToBase64String(byteInfo);
-                    
-                    return Json(new { success = true, message = "PDF generado exitosamente.",IdE= IdEmpleado, pdfBase64 = base64,nombrePdf=empleado.Nombre+"_"+"Liquidacion.pdf" });
+
+                    return Json(new { success = true, message = "PDF generado exitosamente.", IdE = IdEmpleado, pdfBase64 = base64, nombrePdf = empleado.Nombre + "_" + "Liquidacion.pdf" });
                 }
             }
             catch (Exception ex)
@@ -1044,7 +1095,7 @@ namespace ProyectoMancariBlue.Controllers
             catch (Exception ex)
             {
 
-                return Json(new { success = true, message = "Ha ocurrido un error. "+ex.Message });
+                return Json(new { success = true, message = "Ha ocurrido un error. " + ex.Message });
             }
         }
         public string DetalleLiquidacion(LiquidacionDTO liquidacion)
@@ -1057,7 +1108,7 @@ namespace ProyectoMancariBlue.Controllers
             decimal Cesantia = LiquidacionCalculator.CalcularCesantia(liquidacion);
             decimal Vacaciones = LiquidacionCalculator.CalcularVacaciones(liquidacion);
             builder.AppendLine("Detalles de la liquidación")
-                    
+
                    .AppendLine($"Aguinaldo proporcional: {AguinaldoProporcional.ToString("C", culture)}");
 
             if (liquidacion.Preaviso)
@@ -1072,7 +1123,7 @@ namespace ProyectoMancariBlue.Controllers
             builder.AppendLine($"Cesantía: {Cesantia.ToString("C", culture)}")
                    .AppendLine($"Vacaciones no gozadas: {Vacaciones.ToString("C", culture)}")
                    .AppendLine("----------------------------------------------------------------------")
-                   .AppendLine("Total: "+(AguinaldoProporcional+Preaviso+Cesantia+Vacaciones).ToString("C", culture));
+                   .AppendLine("Total: " + (AguinaldoProporcional + Preaviso + Cesantia + Vacaciones).ToString("C", culture));
 
             return builder.ToString();
         }
@@ -1084,10 +1135,24 @@ namespace ProyectoMancariBlue.Controllers
             if (FechaSalida == null) { errors = "Debe seleccionar la fecha de salida"; return false; }
             if (empleadoObj == null) { errors = "Ha ocurrido un error al encontrar el empleado"; return false; }
             var registro = _empleadoModel.GetEmpleadoById(IdEmpleado).Result;
-            if (!registro .Estado) { errors = "No es posible generar la liquidación del empleado porque se encuentra inactivo"; return false; }
+            if (!registro.Estado) { errors = "No es posible generar la liquidación del empleado porque se encuentra inactivo"; return false; }
             return true;
         }
+        public async Task<IActionResult> Disable(int id)
+        {
+            try
+            {
+                var usuario = await _empleadoModel.GetByIdAsync(id);
+                usuario.UsuarioSistema = false;
+                await _empleadoModel.UpdateAsync(usuario);
+                return Json(new { success = true, message = "Usuario deshabilitado correctamente." });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = true, message = "Error al inhabilitar el usuario " + ex.Message });
+            }
 
+        }
 
     }
 }

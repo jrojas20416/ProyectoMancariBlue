@@ -5,7 +5,7 @@ namespace ProyectoMancariBlue.Models.Enum
     public enum  EProductType
     {
         [Display(Name = "Sin registrar", Description = "Registro para vincular animales de los que no se tenga registros en el sistema.")]
-        Sin_registrar =0,
+        Sin_registrar = 0,
 
         [Display(Name = "Vacunas", Description = "Vacunas varias para animales")]
         Vacunas = 1,
@@ -23,7 +23,7 @@ namespace ProyectoMancariBlue.Models.Enum
         Materia_prima = 5,
 
         [Display(Name = "Materiales", Description = "Materiales varios para construcción")]
-        Materiales= 6,
+        Materiales = 6,
 
         [Display(Name = "Herramientas", Description = "Herramientas varias para trabajo")]
         Herramientas = 7,

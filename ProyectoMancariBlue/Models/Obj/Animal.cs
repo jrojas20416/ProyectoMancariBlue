@@ -10,11 +10,9 @@ namespace ProyectoMancariBlue.Models.Obj
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public long Id { get; set; }
 
-        [Required(ErrorMessage = "El campo Padre es requerido")]
         [ForeignKey("PadreAnimal")]
         public long? Padre { get; set; }
 
-        [Required(ErrorMessage = "El campo Madre es requerido")]
         [ForeignKey("MadreAnimal")]
         public long? Madre { get; set; }
 

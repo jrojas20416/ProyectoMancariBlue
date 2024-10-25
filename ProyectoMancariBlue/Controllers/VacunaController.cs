@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using iText.Kernel.Events;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -8,6 +9,7 @@ using ProyectoMancariBlue.Models.Interfaces;
 using ProyectoMancariBlue.Models.Obj;
 using ProyectoMancariBlue.Models.Obj.DTO;
 using ProyectoMancariBlue.Models.Obj.Request;
+using static iText.StyledXmlParser.Jsoup.Select.Evaluator;
 using static ProyectoMancariBlue.Controllers.EmpleadoController;
 
 namespace ProyectoMancariBlue.Controllers
@@ -60,6 +62,7 @@ namespace ProyectoMancariBlue.Controllers
                     var animal=await _animalModel.GetAnimalById(model.IdAnimal.Value);
                     animal.FechaUltimaVacuna = model.FechaAplicacion.Value;
                     var RegistroVacuna = _mapper.Map<RegistroVacuna>(model);
+                    RegistroVacuna.FechaCreacion=DateTime.Now;
                     await _registroVacunaModel.PostRegistroVacuna(RegistroVacuna);
                     producto.Stock -= 1;
                     _producto.Update(producto);
@@ -93,20 +96,58 @@ namespace ProyectoMancariBlue.Controllers
             }
             return Json(new { success = false, errors });
         }
+        public async Task<IActionResult> ValidarEliminacionVacuna(int Id)
+        {
+            try
+            {
+
+                var registro = await _registroVacunaModel.GetRegistroVacunaById(Id);
+                TimeSpan DiasTranscurridos = DateTime.Now - registro.FechaCreacion.Value;
+
+                if (DiasTranscurridos.Days > 0)
+                {
+
+                    return Json(new { success = false, message = "No es posible eliminar este registro debido a que ya ha transcurrido más de 1 días desde su creación." });
+                }
+                else
+                {
+                    await _registroVacunaModel.DeleteRegistroVacuna(Id);
+
+                    return Json(new { success = true, message = "Registro eliminado correctamente", Data = registro });
+                }
+            }
+            catch (Exception)
+            {
+
+                return Json(new { success = false, message = "Ha ocurrido un error: " });
+            }
+        }
+
         [HttpDelete]
         public async Task< IActionResult> EliminarRegistro(int id)
         {
             try
             {
-                await _registroVacunaModel.DeleteRegistroVacuna(id);
 
-                return Json(new { success = true, message = "Registro de vacuna eliminado exitosamente." });
+                var registro = await _registroVacunaModel.GetRegistroVacunaById(id);
+                TimeSpan DiasTranscurridos = DateTime.Now - registro.FechaCreacion.Value;
 
+                if (DiasTranscurridos.Days > 0)
+                {
+
+                    return Json(new { success = false, message = "No es posible eliminar este registro debido a que ya ha transcurrido más de 1 días desde su creación." });
+                }
+                else
+                {
+                    await _registroVacunaModel.DeleteRegistroVacuna(id);
+
+                    return Json(new { success = true, message = "Registro eliminado correctamente", Data = registro });
+                }
             }
             catch (Exception)
             {
 
-                return Json(new { success = false, message = "Ha ocurrido un error." });
+                return Json(new { success = false, message = "Ha ocurrido un error: " });
             }
         }
         public IActionResult VerVacuna()

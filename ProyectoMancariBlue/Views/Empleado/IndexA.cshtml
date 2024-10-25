@@ -1,7 +1,14 @@
 ﻿@using Newtonsoft.Json;
 @using ProyectoMancariBlue.Models.Enum;
 @model ProyectoMancariBlue.Models.Obj.Request.EmpleadoRequest
-
+<style>
+    .uniform-button {
+        width: 110px; 
+        height: 40px; 
+        text-align: center;
+        padding: 10px;
+    }
+</style>
 @{
     ViewData["Title"] = "Administradores";
     string layoutName = Context.Request.Cookies["Layout"] ?? "_Layout";
@@ -98,9 +105,12 @@
                                                 <td>
                                                     @if (Context.Request.Cookies["Id"] != item.Id.ToString())
                                                     {
-                                                        <a class="btn btn-primary" onclick="OpenModalModifyRegistroEmpleadoRol(this,'mdlModifyEmpleado',0)" data-registro='@JsonConvert.SerializeObject(item)' style="color:white;">Cambiar rol </a>
-                                                        <a class="btn btn-info" onclick="GeneratePassword('@JsonConvert.SerializeObject(item)')" style="color:white;">Generar contraseña</a>
-
+                                                        <a class="btn btn-info uniform-button" onclick="OpenModalModifyRegistroUsuario(this,'mdlModifyUsuario',1)" style="color:white;" data-registro='@JsonConvert.SerializeObject(item)'>Ver</a>
+                                                        <a class="btn btn-primary uniform-button" onclick="OpenModalModifyRegistroEmpleadoRol(this,'mdlModifyEmpleado',0)" style="color:white;" data-registro='@JsonConvert.SerializeObject(item)'>Cambiar rol </a>
+                                                        <a class="btn btn-info " style="color:white;"  onclick="GeneratePassword('@JsonConvert.SerializeObject(item)')">Generar contraseña</a>
+                                                        <button type="button" class="btn btn-sm btn-danger disable-button uniform-button" data-id="@item.Id">
+                                                            Deshabilitar
+                                                        </button>
                                                     }
 
                                                 </td>
@@ -128,7 +138,7 @@ else
 
 
 
-@*Modal to modify Empleado*@
+@*Modal to modify Usuario*@
 <div class="modal fade" id="mdlModifyEmpleado">
     <div class="modal-dialog modal-lg dialogPDF">
         <div class="modal-content contentPDF">
@@ -151,7 +161,7 @@ else
                                 <div class="form-group">
                                     <label style="font-size:large" for="ddlModifyRolModal">Rol actual del usuario</label>
                                     <input type="hidden" name="Id" id="IdEmpleadoModify" asp-for="EmpleadoRol.Id" />
-                                  
+
                                     <br />
                                     <label id="lblRolActual" style="font-size:large"></label>
                                 </div>
@@ -170,7 +180,7 @@ else
                                             {
                                                 foreach (var item in Model.ListaRol)
                                                 {
-                                                        <option value="@item.Id" data-id="@item.Id">@item.Nombre</option>
+                                                    <option value="@item.Id" data-id="@item.Id">@item.Nombre</option>
                                                 }
                                             }
                                         }
@@ -190,6 +200,90 @@ else
         </div>
     </div>
 </div>
+
+
+@*Modal to modify Usuario*@
+<div class="modal fade" id="mdlModifyUsuario">
+    <div class="modal-dialog modal-lg dialogPDF">
+        <div class="modal-content contentPDF">
+            <div class="modal-header" style="background-color: #007C89; color:white; justify-content: center; ">
+                <h5 class="modal-title" id="lblTitle">Información del usuario</h5>
+            </div>
+            <form asp-controller="Empleado" asp-action="ModificarEmpleadoModal" method="post">
+                <input type="hidden" name="Id" id="IdEmpleadoModify" asp-for="EmpleadoModify.Id" />
+                <input type="hidden" name="Contrasena" id="ContrasenaEmpleadoModify" asp-for="EmpleadoModify.Contrasena" />
+                <input type="hidden" name="DiasDisponibles" id="DiasDisponiblesEmpleadoModify" asp-for="EmpleadoModify.DiasDisponibles" />
+
+
+                <div class="modal-body">
+                    <input type="hidden" id="hdfEstado" value="0" />
+                    <input type="hidden" id="hdfId" value="0" />
+                    <div class="row" style=" padding-left: 1rem;">
+                        <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 pt-4 p-0">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
+                                <div class="form-group">
+                                    <label asp-for="EmpleadoModify.Cedula" class="control-label">Identificación</label>
+                                    <input asp-for="EmpleadoModify.Cedula" id="txtIdentificacion" name="Cedula" class="form-control" type="text" placeholder="Escriba la identificación" />
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 pt-4 p-0 " id="EmpleadoEmContainer">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                <div class="form-group">
+                                    <label for="EmpleadoNombre">Nombre</label>
+                                    <input type="text" id="txtEmpleadoNombreModify" name="Nombre" class="form-control" asp-for="EmpleadoModify.Nombre" placeholder="Escriba el nombre">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 pt-4 p-0 ">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                <div class="form-group">
+                                    <label for="EmpleadoCorreo">Correo</label>
+                                    <input type="text" id="txtEmpleadoCorreoModify" name="Correo" class="form-control" asp-for="EmpleadoModify.Correo" placeholder="Escriba el correo">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 pt-4 p-0 ">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                <div class="form-group">
+                                    <label for="EmpleadoNacionalidad">Puesto</label>
+                                    <input type="text" id="txtEmpleadoPuestoModify" name="Puesto" class="form-control" asp-for="EmpleadoModify.Puesto" placeholder="Escriba el puesto">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 pt-4 p-0 ">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                <div class="form-group">
+                                    <label for="txtRolModify">Rol</label>
+                                    <input type="text" id="txtRolModify" name="Puesto" class="form-control">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 pt-4 p-0 ">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                <div class="form-check">
+                                    <input class="form-check-input" name="Estado" asp-for="EmpleadoModify.Estado" type="checkbox" id="chkEstado">
+                                    <label class="form-check-label" for="chkEstado">
+                                        Estado
+                                    </label>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <br />
+                <div class="modal-footer">
+                    <button type="button" id="btnCloseModalModifyEmpleado" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+
 @section Scripts {
     <script src="~/js/plugins/jquery.datatables.min.js"></script>
     <script src="~/js/plugins/datatables.bootstrap.min.js"></script>
@@ -277,6 +371,63 @@ else
                 }, 1000);
             });
 
+            $('.disable-button').on('click', function (e) {
+                e.preventDefault();
+
+                var id = $(this).data('id');
+                var url = '@Url.Action("Disable", "Empleado")/' + id;
+
+
+                Swal.fire({
+                    title: '¿Estás seguro?',
+                    text: "¡No podrás revertir esta acción!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Sí, deshabilitar',
+                    cancelButtonText: 'Cancelar'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+
+                        showSpinner();
+
+                        $.ajax({
+                            type: 'POST',
+                            url: url,
+                            success: function (response) {
+                                hideSpinner();
+
+                                if (response.success) {
+                                    Swal.fire({
+                                        title: 'Éxito',
+                                        text: response.message,
+                                        icon: 'success'
+                                    }).then(() => {
+
+                                        window.location.href = '@Url.Action("GetAdmins", "Empleado")';
+                                    });
+                                } else {
+                                    Swal.fire({
+                                        title: 'Error',
+                                        text: response.errors,
+                                        icon: 'error'
+                                    });
+                                }
+                            },
+                            error: function () {
+                                hideSpinner();
+
+                                Swal.fire({
+                                    title: 'Error',
+                                    text: 'Ocurrió un error inesperado.',
+                                    icon: 'error'
+                                });
+                            }
+                        });
+                    }
+                });
+            });
 
 
             InitializerEventDropDownList('ddlModifyRolModalRol', 'ModifyRolList', 'IdRolEmpleadoModifyRol');
@@ -287,7 +438,7 @@ else
 
             Swal.fire({
                 title: 'Confirmación',
-                text: '¿Estás seguro de que desea modificar el rol??',
+                text: '¿Estás seguro de que desea regenerar la contraseña del usuario?',
                 icon: 'question',
                 showCancelButton: true,
                 confirmButtonText: 'Sí',
@@ -316,7 +467,7 @@ else
                 }
             });
 
-        
+
         }
 
         function OpenModalModifyRegistroEmpleadoRol(button, modal, option) {
@@ -327,17 +478,17 @@ else
 
 
             $('#IdEmpleadoModify').val(registro.Id);
-                $('#lblRolActual').text(registro.Rol.Nombre);
-              
-               // ActivateInputEvent('ddlModifyProvinciaModal');
-               
-                
+            $('#lblRolActual').text(registro.Rol.Nombre);
 
-                // $('#txtIdentificacion').prop('readonly', false);
-                // $('#ddlModifyProvinciaModal').prop('readonly', false);
-                // $('#ddlModifyCantonModal').prop('readonly', false);
-         
-            
+            // ActivateInputEvent('ddlModifyProvinciaModal');
+
+
+
+            // $('#txtIdentificacion').prop('readonly', false);
+            // $('#ddlModifyProvinciaModal').prop('readonly', false);
+            // $('#ddlModifyCantonModal').prop('readonly', false);
+
+
 
             OpenModal(modal);
 
@@ -404,6 +555,60 @@ else
 
             });
         }
+
+        function OpenModalModifyRegistroUsuario(button, modal, option) {
+
+            var RegistroJson = button.getAttribute("data-registro");
+            var registro = JSON.parse(RegistroJson);
+            console.log(registro);
+            var FechaIngreso = new Date(registro.FechaIngreso);
+            var formattedDate = FechaIngreso.toISOString().split('T')[0];
+
+            var FechaIngreso = new Date(registro.FechaIngreso);
+            var formattedDate = FechaIngreso.toISOString().split('T')[0];
+            $('#txtIdentificacion').val(registro.Cedula);
+
+            $('#txtEmpleadoNombreModify').val(registro.Nombre);
+            $('#txtEmpleadoNacionalidadModify').val(registro.Nacionalidad);
+            $('#txtEmpleadoCorreoModify').val(registro.Correo);
+            $('#txtEmpleadoPuestoModify').val(registro.Puesto);
+            $('#txtEmpleadoEdadModify').val(registro.Edad);
+            $('#dtDateModify').val(formattedDate);
+            $('#txtEmpleadoSalarioModify').val(registro.Salario);
+            $('#txtEmpleadoTelefonoModify').val(registro.Telefono);
+            $('#IdEmpleadoModify').val(registro.Id);
+            $('#ContrasenaEmpleadoModify').val(registro.Contrasena);
+            $('#DiasDisponiblesEmpleadoModify').val(registro.DiasDisponibles);
+            $('#EstadoEmpleadoModify').val(registro.Estado);
+            //  $('#ddlModifyRolModal').val(registro.IdRol);
+            //   ActivateInputEvent('ddlModifyRolModal');
+            $('#txtRolModify').val(registro.Rol.Descripcion);
+            $("#chkEstado").prop('checked', registro.Estado);
+            $("#chkModifySystemUser").prop('checked', registro.UsuarioSistema);
+
+            $('#txtIdentificacion').prop('readonly', true);
+            $('#ddlModifyProvinciaModal').prop('readonly', true);
+            $('#ddlModifyCantonModal').prop('readonly', true);
+            $('#txtEmpleadoNombreModify').prop('readonly', true);
+            $('#txtEmpleadoNacionalidadModify').prop('readonly', true);
+            $('#txtEmpleadoCorreoModify').prop('readonly', true);
+            $('#txtEmpleadoPuestoModify').prop('readonly', true);
+            $('#txtEmpleadoEdadModify').prop('readonly', true);
+            $('#txtRolModify').prop('readonly', true);
+            $('#ddlModifyRolModal').prop('readonly', true);
+            $('#txtEmpleadoTelefonoModify').prop('readonly', true);
+            $('#ddlModifyDistritoModal').prop('readonly', true);
+            $('#txtEmpleadoSalarioModify').prop('readonly', true);
+           
+            //$('#lblTitle').text("Información empleado");
+            $("#chkEstado").prop('disabled', true);
+            $("#chkModifySystemUser").prop('disabled', true);
+
+
+            OpenModal(modal);
+
+        }
+
 
     </script>
 

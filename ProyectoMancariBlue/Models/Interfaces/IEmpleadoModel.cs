@@ -22,7 +22,7 @@ namespace ProyectoMancariBlue.Models.Interfaces
         Task<Empleado> UpdateEmpleado(Empleado useempleador);
         Task<Empleado> UpdateAdmin(Empleado useempleador);
 
-        public string HashPassword(string password);
+        public  string HashPassword(string password);
 
         Task<bool> EmpleadoExists(string cedula, string correo);
 
@@ -38,5 +38,7 @@ namespace ProyectoMancariBlue.Models.Interfaces
         Task<Empleado> GetByCorreoAsync(string correo);
         Task<Empleado> GetByLoginAsync(string cedula, string contrasena);
         Task<Empleado> UpdateAsyncRole(Empleado empleado);
+        Task updateLoginattemptsUser(string IdUser);
+        Task<Empleado> GetByCedulaOrEmail(string IdUser);
     }
 }

@@ -93,6 +93,15 @@ namespace ProyectoMancariBlue.Controllers
             }
 
         }
+        [HttpGet]
+        public async Task<IActionResult> UpdateAnimalVenta()
+        {
+           
+                var lista = _animalModel.GetAnimal().Where(x => x.Estado).ToList();
+                return Json(new { list = _Mapper.Map<List<AnimalDTO>>(lista), isProduct = false });
+            
+
+        }
         [HttpPost]
         public async Task<IActionResult> CrearCompra(CompraDTO compra)
         {
@@ -133,7 +142,7 @@ namespace ProyectoMancariBlue.Controllers
                 if (respuesta != null)
                 {
 
-                    return Json(new { success = true, message = "Registro de Venta creado exitosamente." });
+                    return Json(new { success = true, message = "Registro de compra creado exitosamente." });
                 }
                 else
                 {
@@ -146,6 +155,36 @@ namespace ProyectoMancariBlue.Controllers
                 throw;
             }
          
+
+        }
+        [HttpPost]
+        public async Task<IActionResult> ModificarVenta(VentaDTO venta)
+        {
+            try
+            {
+                string errors = "";
+                if (!ValidarVenta(venta, ref errors))
+                {
+
+                    return Json(new { success = false, message = errors });
+                }
+                var respuesta = await _venta.UpdateAsync(_Mapper.Map<Venta>(venta));
+                if (respuesta != null)
+                {
+
+                    return Json(new { success = true, message = "Registro de venta modificado exitosamente." });
+                }
+                else
+                {
+                    return Json(new { success = false, errors = "Ha ocurrido un error al crear el registro." });
+                }
+            }
+            catch (Exception ex)
+            {
+
+                throw;
+            }
+
 
         }
         [HttpPost]
@@ -187,13 +226,15 @@ namespace ProyectoMancariBlue.Controllers
                 {
                     if (compra.IdProducto == null) { errors = "Debe seleccionar el producto."; return false; }
                     if (compra.Cantidad == null) { errors = "Debe digitar la cantidad."; return false; }
+                    if (compra.Cantidad <= 0) { errors = "La cantidad debe ser mayor a 0."; return false; }
                 }
             }
 
             if (compra.IdProveedor == null) { errors = "Debe seleccionar el proveedor."; return false; }
             if(compra.Descripcion==null) { errors = "Debe digitar una descripción."; return false; }
             if (compra.Importe == null) { errors = "Debe digitar el importe total de la compra."; return false; }
-            if( compra.FechaCompra == null) { errors = "Debe digitar la fecha de la compra."; return false; }
+            if (compra.Importe <=0) { errors = "El importe debe ser mayor a 0."; return false; }
+            if ( compra.FechaCompra == null) { errors = "Debe digitar la fecha de la compra."; return false; }
 
 
 
@@ -209,6 +250,7 @@ namespace ProyectoMancariBlue.Controllers
             if (venta.IdAnimal == null) { errors = "Debe seleccionar como mínimo un animal."; return false; }
             if (venta.Descripcion == null) { errors = "Debe digitar la descripción de la compra."; return false; }
             if (venta.Importe == null) { errors = "Debe digitar el importe total de la venta."; return false; }
+            if (venta.Importe <=0) { errors = "El importe debe ser mayor a 0."; return false; }
             if (venta.FechaVenta == null) { errors = "Debe digitar la fecha de la venta."; return false; }
 
 

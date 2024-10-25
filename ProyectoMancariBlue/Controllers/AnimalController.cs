@@ -114,7 +114,7 @@ namespace ProyectoMancariBlue.Controllers
                 if (respuesta != null)
                 {
                   
-                    return Json("Se creado el registro: "+respuesta.Codigo+" con éxito");
+                    return Json("Se ha creado el registro: "+respuesta.Codigo+" con éxito");
                 }
               
                 return Json("Error al crear el animal");

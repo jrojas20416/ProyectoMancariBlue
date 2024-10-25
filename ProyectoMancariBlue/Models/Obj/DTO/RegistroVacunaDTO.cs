@@ -32,6 +32,23 @@ namespace ProyectoMancariBlue.Models.Obj.DTO
             }
         }
 
+        private DateTime? _fechaCreacion;
+        
+        public DateTime? FechaCreacion
+        {
+            get => _fechaCreacion;
+            set
+            {
+                if (value.HasValue)
+                {
+                    _fechaCreacion = value.Value.Date;
+                }
+                else
+                {
+                    _fechaCreacion = null;
+                }
+            }
+        }
 
         public virtual AnimalDTO AnimalObj { get; set; }
         public virtual ProductoDto ProductoObj { get; set; }

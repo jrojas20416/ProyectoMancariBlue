@@ -34,7 +34,23 @@ namespace ProyectoMancariBlue.Models.Obj
                 }
             }
         }
-
+        private DateTime? _fechaCreacion;
+        [Column("Fecha_Creacion")]
+        public DateTime? FechaCreacion
+        {
+            get => _fechaCreacion;
+            set
+            {
+                if (value.HasValue)
+                {
+                    _fechaCreacion = value.Value.Date;
+                }
+                else
+                {
+                    _fechaCreacion = null;
+                }
+            }
+        }
         public virtual Animal AnimalObj { get; set; }
         public virtual Producto ProductoObj { get; set; }
 

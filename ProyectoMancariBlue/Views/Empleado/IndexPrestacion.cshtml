@@ -23,7 +23,9 @@
         <h1><i class="fa fa-th-list" style="margin-right: 10px;"></i>Administración de Empleados</h1>
         <p>Empleados</p>
         <br>
-        <a asp-action="Index" asp-controller="Empleado" class="btn btn-primary"><i aria-hidden="true"></i>Lista de Empleados</a>
+        <a asp-action="GetEmpleados" asp-controller="Empleado" class="btn btn-primary">
+            <i aria-hidden="true"></i> Lista de Empleados
+        </a>
     </div>
     <ul class="app-breadcrumb breadcrumb side">
         <li class="breadcrumb-item"><i class="fa fa-home fa-lg"></i></li>
@@ -73,7 +75,7 @@
                                             @Html.DisplayFor(modelItem => item.Rol.Descripcion)
                                         </td>
                                         <td>
-                                            @formatteDate(item.FechaIngreso.Value)
+                                            @formatteDate(item.FechaIngreso.Value);
                                         </td>
 
                                         <td>

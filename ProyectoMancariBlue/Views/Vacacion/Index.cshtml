@@ -62,7 +62,7 @@
                                         <td>@ExtraerFechaFormato(vacacion.FechaFinal.Value)</td>
                                         <td>@vacacion.DiasSolicitados</td>
                                         <td>
-                                            @* <a class="btn btn-sm btn-warning" onclick="OpenModalModifyRegistroVacacion(this,'mdlModifyVacacion',0)" data-registro='@JsonConvert.SerializeObject(vacacion)'>Editar</a> *@
+                                            <a class="btn btn-sm btn-warning" onclick="OpenModalModifyRegistroVacacion(this,'mdlModifyVacacion',0)" data-registro='@JsonConvert.SerializeObject(vacacion)' style="color:white;">Editar</a>
                                             <a class="btn btn-danger cambiar-estado-btn" data-id='@vacacion.Id' style="color:white;">Eliminar</a>
                                         </td>
                                     </tr>

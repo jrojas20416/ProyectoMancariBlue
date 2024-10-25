@@ -54,7 +54,8 @@
                 <a class="app-nav__item" href="#" data-toggle="dropdown" aria-label="Open Profile Menu"><i class="fa fa-user fa-lg"></i></a>
                 <ul class="dropdown-menu settings-menu dropdown-menu-right">
                     <li><a class="dropdown-item" asp-controller="Empleado" asp-action="CambiarContrasena"><i class="fa fa-lock fa-lg"></i> Cambiar Contraseña</a></li>
-                    <li><a class="dropdown-item" asp-controller="Empleado" asp-action="CerrarSesion"><i class="fa fa-sign-out fa-lg"></i>Cerrar Sesion</a></li>
+                    <li><a class="dropdown-item" href="#" onclick="confirmarCerrarSesion(event)"><i class="fa fa-sign-out fa-lg"></i> Cerrar Sesión</a></li>
+
                 </ul>
             </li>
         </ul>
@@ -145,6 +146,25 @@
     }
 
     <script type="text/javascript">
+        function confirmarCerrarSesion(event) {
+            event.preventDefault();
+
+            Swal.fire({
+                title: '¿Estás seguro?',
+                text: "Se cerrará la sesión actual.",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Sí, cerrar sesión',
+                cancelButtonText: 'Cancelar'
+            }).then((result) => {
+                if (result.isConfirmed) {
+
+                    window.location.href = '@Url.Action("CerrarSesion", "Empleado")';
+                }
+            });
+        }
 
 
         function OpenModal(modal) {

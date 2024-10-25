@@ -15,5 +15,7 @@ namespace ProyectoMancariBlue.Models.Interfaces
         List<Reporte> GetAllReporte();
 
         List<Reporte> GetVenta();
+        Task<Reporte> UpdateAsync(Reporte reporte);
+       
     }
 }

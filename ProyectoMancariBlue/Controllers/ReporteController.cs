@@ -1,4 +1,8 @@
 ﻿using AutoMapper;
+using iText.Kernel.Pdf;
+using iText.Layout.Element;
+using iText.Layout.Properties;
+using iText.Layout;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -9,6 +13,7 @@ using ProyectoMancariBlue.Models.Interfaces;
 using ProyectoMancariBlue.Models.Obj;
 using ProyectoMancariBlue.Models.Obj.DTO;
 using ProyectoMancariBlue.Models.Obj.Request;
+using System.Globalization;
 
 namespace ProyectoMancariBlue.Controllers
 {
@@ -19,6 +24,7 @@ namespace ProyectoMancariBlue.Controllers
         private readonly IMapper _mapper;
         private readonly IVenta _venta;
         private readonly IAnimalModel _animal;
+
 
 
         public ReporteController(IReporteModel _ReporteModel, IMapper mapper, IVenta venta, IAnimalModel animal)
@@ -43,7 +49,7 @@ namespace ProyectoMancariBlue.Controllers
                 {
                     return NotFound();
                 }
-           
+
                 reporteRequest.listaReporte = _mapper.Map<List<ReporteDTO>>(reporte);
                 return View(reporteRequest);
             }
@@ -94,15 +100,15 @@ namespace ProyectoMancariBlue.Controllers
 
         public IActionResult VerReporteVenta()
         {
-            
+
             var reportes = _reporteModel.GetVenta();
 
-           
+
             var reporteDTOs = reportes.Select(r => _mapper.Map<ReporteDTO>(r)).ToList();
 
-           
+
             return View(reporteDTOs);
-            
+
         }
 
         public async Task<IActionResult> Delete(int Id)
@@ -225,9 +231,89 @@ namespace ProyectoMancariBlue.Controllers
 
                 throw;
             }
-            
+
         }
 
+        public async Task<IActionResult> GenerarPDFReporte (long RegistroId)
+        {
+            ReporteDTO registro = _mapper.Map<ReporteDTO>(await _reporteModel.GetReporteById(RegistroId));
+            Venta venta = await _venta.GetByIdAsync(registro.Transaccion.Value);
+        
+            var listaAnimales = _animal.GetAnimalsByIds(venta.IdAnimal
+                      .Split(',')
+                      .Select(id => long.Parse(id))
+                      .ToList());
+
+            using (MemoryStream ms = new MemoryStream())
+            {
+                PdfWriter writer = new PdfWriter(ms);
+                PdfDocument pdf = new PdfDocument(writer);
+                Document document = new Document(pdf);
+
+                document.Add(new Paragraph("Información Ganado")
+                    .SetTextAlignment(TextAlignment.CENTER)
+                    .SetFontSize(20)
+                    .SetBold());
+
+                document.Add(new Paragraph($"Codigo CVO: {registro.CodigoCVO}")
+                    .SetFontSize(12));
+                document.Add(new Paragraph($"Codigo Transporte: {registro.CodigoTransporte}")
+                    .SetFontSize(12));
+                document.Add(new Paragraph($"Identificación del cliente: {registro.Identificacion}")
+                    .SetFontSize(12));
+                document.Add(new Paragraph($"Nombre Cliente: {registro.NombreCliente}")
+                    .SetFontSize(12));
+                document.Add(new Paragraph($"Transacción: {registro.Transaccion}")
+                    .SetFontSize(12));
+
+                document.Add(new Paragraph(" "));
+
+                float[] columnWidths = { 1, 2, 2 };
+                iText.Layout.Element.Table table = new iText.Layout.Element.Table(UnitValue.CreatePercentArray(columnWidths))
+                    .SetWidth(UnitValue.CreatePercentValue(100));
+
+                Style headerStyle = new Style()
+                    .SetBackgroundColor(iText.Kernel.Colors.ColorConstants.LIGHT_GRAY)
+                    .SetTextAlignment(TextAlignment.CENTER)
+                    .SetBold();
+
+                Style dataStyle = new Style()
+                    .SetTextAlignment(TextAlignment.CENTER);
+
+                table.AddHeaderCell(new Cell().Add(new Paragraph("Id")).AddStyle(headerStyle));
+                table.AddHeaderCell(new Cell().Add(new Paragraph("Código")).AddStyle(headerStyle));
+                table.AddHeaderCell(new Cell().Add(new Paragraph("Raza")).AddStyle(headerStyle));
+
+                foreach (var animal in listaAnimales)
+                {
+                    table.AddCell(new Cell().Add(new Paragraph(animal.Id.ToString())).AddStyle(dataStyle));
+                    table.AddCell(new Cell().Add(new Paragraph(animal.Codigo)).AddStyle(dataStyle));
+                    table.AddCell(new Cell().Add(new Paragraph(animal.Raza.GetDisplayName())).AddStyle(dataStyle));
+                }
+
+                document.Add(table);
+
+                document.Close();
+                var byteInfo = ms.ToArray();
+
+                return File(byteInfo, "application/pdf", $"{registro.NombreCliente}_InformacionGanado.pdf");
+            }
+        }
+        public async Task<IActionResult> Edit(ReporteDTO model)
+        {
+
+            var errors = "";
+            //var reporte = await _reporteModel.GetReporteById(model.IdProducto.Value);
+            if (Validar(model, ref errors))
+            {
+                var reporte = _mapper.Map<Reporte>(model);
+                await _reporteModel.UpdateAsync(reporte);
+
+
+                return Json(new { success = true, message = "Registro de reporte modificado exitosamente." });
+            }
+            return Json(new { success = false, errors });
+        }
 
     }
 }

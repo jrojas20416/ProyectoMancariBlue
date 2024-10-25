@@ -174,10 +174,9 @@ public class ApplicationProfile : Profile
         .ReverseMap();
 
 
-        
-        CreateMap<ReporteDTO, Reporte>()
-            .ForMember(dest => dest.Id, opt => opt.Ignore()) 
-            .ForMember(dest => dest.FechaCreacion, opt => opt.Ignore());
+
+        CreateMap<ReporteDTO, Reporte>();
+            
     }
 
 }

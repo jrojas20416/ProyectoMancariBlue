@@ -44,7 +44,7 @@
                         <table class="table table-hover table-bordered" id="ttransaccionc">
                             <thead>
                                 <tr>
-                                 
+
                                     <th>
                                         Proveedor
                                     </th>
@@ -72,7 +72,7 @@
                                 @foreach (var compra in Model.CompraDTOs)
                                 {
                                     <tr>
-                                      
+
                                         <td>
                                             @compra.Proveedor.Nombre
                                         </td>
@@ -102,7 +102,7 @@
                                             @FormatearColones(compra.Importe)
                                         </td>
                                         <td>
-                                            @* <a class="btn btn-primary" onclick="OpenModalModifyCompra(this,'mdlModifyCompra',0)" data-registro='@JsonConvert.SerializeObject(compra)' style="color:white;" >Editar</a> *@
+                                            <a class="btn btn-primary" onclick="OpenModalModifyCompra(this,'mdlModifyCompra',0)" data-registro='@JsonConvert.SerializeObject(compra)' style="color:white;">Editar</a>
                                             <a class="btn btn-info" onclick="OpenModalModifyCompra(this,'mdlModifyCompra',1)" data-registro='@JsonConvert.SerializeObject(compra)' style="color:white;">Detalle</a>
                                             <a class="btn btn-danger cambiar-estado-btn" data-id='@compra.Id' style="color:white;">Anular</a>
                                         </td>
@@ -156,7 +156,7 @@
                                 @foreach (var venta in Model.ventaDTOs)
                                 {
                                     <tr>
-                                       
+
                                         <td>
                                             @venta.CedulaCliente
                                         </td>
@@ -173,8 +173,8 @@
                                             @FormatearColones(venta.Importe)
                                         </td>
                                         <td>
-                                          @*   <a class="btn btn-primary" onclick="OpenModalModifyVenta(this,'mdlModifyVenta',0)" data-registro='@JsonConvert.SerializeObject(venta)'>Editar</a> *@
-                                            <a class="btn btn-info" onclick="OpenModalInfoGanado(this,'mdlInfoGanado')" data-reporte='@JsonConvert.SerializeObject(venta)' style="color:white">Ver animales</a>
+                                            <a class="btn btn-primary" style="color:white;" onclick="OpenModalModifyVenta(this,'mdlModifyVenta',0)" data-registro='@JsonConvert.SerializeObject(venta)'>Editar</a>
+                                            <a class="btn btn-info" onclick="OpenModalInfoGanado(this,'mdlInfoGanado')" data-reporte='@JsonConvert.SerializeObject(venta)' style="color:white">Detalle</a>
                                             <a class="btn btn-danger cambiar-estado-btn-Venta" data-id='@venta.Id' style="color:white;">Anular</a>
                                         </td>
                                     </tr>
@@ -332,7 +332,7 @@
     <div class="modal-dialog modal-lg dialogPDF">
         <div class="modal-content contentPDF">
             <div class="modal-header" style="background-color: #007C89; color:white; justify-content: center; ">
-                <h5 class="modal-title">Agregar Compra</h5>
+                <h5 class="modal-title" id="lblTitleMdfCompra">Modificar Compra</h5>
             </div>
             <form asp-controller="Transaccion" asp-action="ModificarCompra" method="post">
                 <div class="modal-body">
@@ -343,8 +343,8 @@
                             <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
                                 <div class="form-group">
                                     <label for="ddlModifyTipoProductoModal">Tipo de producto</label>
-                                    <input type="text" id="ddlModifyTipoProductoModal" list="ModifyTipoProductolList" class="form-control" placeholder="Buscar tipo de producto..." autocomplete="off">
-                                    <input type="hidden" name="IdTipoProducto" id="ModifyIdCompraTipoProducto" asp-for="CompraCreate.IdTipoProducto" />
+                                    <input type="text" id="ddlModifyTipoProductoModal" list="ModifyTipoProductolList" class="form-control" placeholder="Buscar tipo de producto..." autocomplete="off" >
+                                    <input type="hidden" name="IdTipoProducto"  id="ModifyIdCompraTipoProducto" asp-for="CompraCreate.IdTipoProducto" />
                                     <datalist id="ModifyTipoProductolList">
                                         @{
                                             foreach (var value in Enum.GetValues(typeof(EProductType)))
@@ -474,7 +474,7 @@
                     <input type="hidden" id="hdfEstado" value="0" />
                     <input type="hidden" id="hdfId" value="0" />
                     <div class="row" style=" padding-left: 1rem;">
-                        <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 pt-4 p-0" id="div_Animales">
+                        <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 pt-4 p-0" >
                             <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
                                 <div class="form-group">
                                     <label for="ddlAddVentaIdentificacionClienteModal">Identificación del cliente</label>
@@ -490,7 +490,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 pt-4 p-0" id="div_Animales">
+                        <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 pt-4 p-0" >
                             <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
                                 <div class="form-group">
                                     <label for="ddlAnimals">Seleccione los animales</label>
@@ -547,18 +547,19 @@
     <div class="modal-dialog modal-lg dialogPDF">
         <div class="modal-content contentPDF">
             <div class="modal-header" style="background-color: #007C89; color:white; justify-content: center; ">
-                <h5 class="modal-title">Agregar Venta</h5>
+                <h5 class="modal-title">Modificar Venta</h5>
             </div>
-            <form asp-controller="Transaccion" asp-action="CrearVenta" method="post">
+            <form asp-controller="Transaccion" asp-action="ModificarVenta" method="post">
                 <div class="modal-body">
                     <input type="hidden" id="hdfEstado" value="0" />
-                    <input type="hidden" id="hdfId" value="0" />
+                    <input type="hidden" id="hdfIdModifyVenta" asp-for="VentaCreate.Id" name="Id" value="0" />
+                    <input type="hidden" id="hdfCreationDateModify" asp-for="VentaCreate.FechaCreacion" name="FechaCreacion" value="0" />
                     <div class="row" style=" padding-left: 1rem;">
-                        <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 pt-4 p-0" id="div_Animales">
+                        <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 pt-4 p-0" >
                             <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
                                 <div class="form-group">
                                     <label for="ddlModifyVentaIdentificacionClienteModal">Identificación del cliente</label>
-                                    <input type="text" id="ddlModifyVentaIdentificacionClienteModal" name="CedulaCliente" asp-for="VentaCreate.CedulaCliente" class="form-control" placeholder="Identificación del cliente..." autocomplete="off">
+                                    <input type="text" id="ddlModifyVentaIdentificacionClienteModal"  name="CedulaCliente" asp-for="VentaCreate.CedulaCliente" class="form-control" placeholder="Identificación del cliente..." autocomplete="off">
                                 </div>
                             </div>
                         </div>
@@ -570,12 +571,12 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 pt-4 p-0" id="div_Animales">
+                        <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 pt-4 p-0" >
                             <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
                                 <div class="form-group">
                                     <label for="ddlAnimal">Seleccione los animales</label>
                                     <input type="hidden" name="IdAnimal" id="ModifyVentaListAnimal" asp-for="CompraCreate.IdAnimal" />
-                                    <select id="ddlAnimal" name="AnimalIds" class="form-control select2-multiple" multiple="multiple">
+                                    <select id="ddlAnimalModify" name="AnimalIdsModify" class="form-control select2-multiple" multiple="multiple">
                                         @foreach (var animal in Model.VentaListaAnimal)
                                         {
                                             <option value="@animal.Id">@animal.Codigo</option>
@@ -622,32 +623,6 @@
     </div>
 </div>
 
-@*Modal to Modify venta*@
-<div class="modal fade" id="mdlModifyVenta">
-    <div class="modal-dialog modal-lg dialogPDF">
-        <div class="modal-content contentPDF">
-            <div class="modal-header" style="background-color: #007C89; color:white; justify-content: center; ">
-                <h5 class="modal-title">Agregar Venta</h5>
-            </div>
-            <form asp-controller="Transaccion" asp-action="CrearVenta" method="post">
-                <div class="modal-body">
-                    <input type="hidden" id="hdfEstado" value="0" />
-                    <input type="hidden" id="hdfId" value="0" />
-                    <div class="row" style=" padding-left: 1rem;">
-                        
-                    </div>
-
-                </div>
-                <br />
-                <div class="modal-footer">
-                    <button type="submit" id="btnModifyVenta" class="btn btn-primary">Aceptar</button>
-                    <button type="button" id="btnCloseModalModifyVenta" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-
 @*Modal to Information Ganado*@
 <div class="modal fade" id="mdlInfoGanado">
     <div class="modal-dialog modal-lg dialogPDF">
@@ -656,6 +631,48 @@
                 <h5 class="modal-title">Información Ganado</h5>
             </div>
             <div class="modal-body">
+                <div class="row" style=" padding-left: 1rem;">
+                    <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 pt-4 p-0" >
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
+                            <div class="form-group">
+                                <label for="ddlInfoVentaIdentificacionClienteModal">Identificación del cliente</label>
+                                <input type="text" id="ddlInfoVentaIdentificacionClienteModal" readonly name="CedulaCliente" asp-for="VentaCreate.CedulaCliente" class="form-control" placeholder="Identificación del cliente..." autocomplete="off">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 pt-4 p-0 " >
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                            <div class="form-group">
+                                <label for="txtnombreclienteV">Nombre del cliente</label>
+                                <input type="text" id="txtnombreclienteVInfo" readonly name="NombreCliente" asp-for="VentaCreate.NombreCliente" class="form-control" placeholder="Nombre del cliente">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 pt-4 p-0 " id="VentaEmContainer">
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                            <div class="form-group">
+                                <label for="VentaDescripcion">Descripción</label>
+                                <input type="text" id="txtVentaDescripcionInfo" name="Descripcion" readonly asp-for="VentaCreate.Descripcion" class="form-control" placeholder="Descripción">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 pt-4 p-0 ">
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                            <div class="form-group">
+                                <label for="txtVentaImporte">Importe</label>
+                                <input type="number" id="txtVentaImporteInfo" name="Importe" readonly asp-for="VentaCreate.Importe" class="form-control" placeholder="Ingrese el importe de la Venta" min="1" step="1">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 pt-4 p-0">
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
+                            <div class="mb-3">
+                                <label for="lblDate" class="form-label">Fecha</label>
+                                <input type="date" class="form-control" name="FechaVenta" readonly asp-for="VentaCreate.FechaVenta" id="dtDateVentaModalInfo">
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 pt-4 p-0">
                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
                         <div id="informacionAnimalContainer">
@@ -663,13 +680,15 @@
                     </div>
                 </div>
             </div>
-            <br />
             <div class="modal-footer">
                 <button type="button" id="btnCloseModalInfoGanado" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
             </div>
         </div>
+        
+      
     </div>
 </div>
+
 
 
 @section Scripts {
@@ -782,7 +801,7 @@
                 console.log("Elemento seleccionado ID: " + selectedElementId);
 
                 var selectedIds = selectElement.val();
-                console.log("Array de IDs seleccionados: ", selectedIds); 
+                console.log("Array de IDs seleccionados: ", selectedIds);
 
                 if (selectedIds) {
                     $('#AddVentaListAnimal').val(selectedIds.join(','));
@@ -795,10 +814,10 @@
                 var unselectedElementId = e.params.data.id;
                 var selectElement = $(this);
 
-                console.log("Elemento deseleccionado ID: " + unselectedElementId); 
+                console.log("Elemento deseleccionado ID: " + unselectedElementId);
 
                 var selectedIds = selectElement.val();
-                console.log("Array de IDs seleccionados después de deseleccionar: ", selectedIds);  
+                console.log("Array de IDs seleccionados después de deseleccionar: ", selectedIds);
 
                 if (selectedIds) {
                     $('#AddVentaListAnimal').val(selectedIds.join(','));
@@ -808,6 +827,42 @@
                 }
             });
 
+            $('#ddlAnimalModify').select2({
+                placeholder: "Seleccione los animales...",
+                allowClear: true,
+                width: '100%'
+            }).on("select2:select", function (e) {
+                var selectedElementId = e.params.data.id;
+                var selectElement = $(this);
+
+                console.log("Elemento seleccionado ID: " + selectedElementId);
+
+                var selectedIds = selectElement.val();
+                console.log("Array de IDs seleccionados: ", selectedIds);
+
+                if (selectedIds) {
+                    $('#ModifyVentaListAnimal').val(selectedIds.join(','));
+                    console.log("Selected IDs after selection: " + selectedIds.join(','));
+                } else {
+                    console.log("No se encontraron IDs seleccionados.");
+                }
+
+            }).on("select2:unselect", function (e) {
+                var unselectedElementId = e.params.data.id;
+                var selectElement = $(this);
+
+                console.log("Elemento deseleccionado ID: " + unselectedElementId);
+
+                var selectedIds = selectElement.val();
+                console.log("Array de IDs seleccionados después de deseleccionar: ", selectedIds);
+
+                if (selectedIds) {
+                    $('#ModifyVentaListAnimal').val(selectedIds.join(','));
+                    console.log("Selected IDs after deselection: " + selectedIds.join(','));
+                } else {
+                    console.log("No se encontraron IDs seleccionados después de deseleccionar.");
+                }
+            });
 
 
 
@@ -955,6 +1010,99 @@
                 }
             });
 
+            $('#ddlModifyTipoProductoModal').on('input', function () {
+                var selectedValue = $(this).val();
+                var option = $('#AddTipoProductolList option').filter(function () {
+                    return this.value == selectedValue;
+                });
+                var tipo = option.data('id');
+                console.log(tipo);
+                if (tipo != null) {
+                    if (tipo === 3) {
+                        $("#div_AnimalesModify").show();
+                        $("#divCantidadModify").hide();
+                        $("#div_ProductoesModify").hide();
+                    }
+                    else {
+                        $("#div_ProductoesModify").show();
+                        $("#divCantidadModify").show();
+                        $("#div_AnimalesModify").hide();
+                    }
+                }
+                else {
+
+                    $("#divCantidadModify").hide();
+                    $("#div_ProductoesModify").hide();
+                    $("#div_AnimalesModify").hide();
+                    $("#ddlModifyCompraProductoModal").val('');
+                    $("#ddlModifyCompraAnimalModal").val('');
+                    $("#divCantidad").val('');
+                    $("#ModifyIdCompraAniaml").val('');
+                    $("#ModifyIdCompraProduct").val('');
+                    $("#txtCantidadModify").val('');
+                }
+
+
+                if (option.length > 0) {
+
+
+                    $.ajax({
+                        url: '@Url.Action("UpdateAnimal", "Transaccion")',
+                        type: 'GET',
+                        data: { tipo: tipo },
+                        success: function (data) {
+
+
+                            if (data.isProduct) {
+                                var dataList = document.getElementById('AddCompraProductolList');
+                                console.log(data);
+                                while (dataList.options.length > 0) {
+                                    dataList.removeChild(dataList.options[0]);
+                                }
+                                console.log(data.list.length);
+                                if (data.list.length > 0) {
+                                    for (var i = 0; i < data.list.length; i++) {
+
+                                        var option = document.createElement("option");
+                                        option.value = data.list[i].id;
+                                        option.text = data.list[i].nombre;
+                                        option.dataset.id = data.list[i].id;
+                                        dataList.appendChild(option);
+                                    }
+                                }
+                                else {
+                                    Swal.fire('', 'No se encontraron productos disponibles.', 'error');
+                                }
+                            }
+                            else {
+                                var dataList = document.getElementById('AddCompraAnimallList');
+                                console.log(data);
+                                while (dataList.options.length > 0) {
+                                    dataList.removeChild(dataList.options[0]);
+                                }
+                                console.log(data.list.length);
+                                if (data.list.length > 0) {
+                                    for (var i = 0; i < data.list.length; i++) {
+
+                                        var option = document.createElement("option");
+                                        option.value = data.list[i].id;
+                                        option.text = data.list[i].codigo;
+                                        option.dataset.id = data.list[i].id;
+                                        dataList.appendChild(option);
+                                    }
+                                }
+                                else {
+                                    Swal.fire('', 'No se encontraron animales disponibles.', 'error');
+                                }
+                            }
+
+                        },
+                        error: function () {
+                            alert('Error al obtener los animales.');
+                        }
+                    });
+                }
+            });
 
             InitializerEventDropDownListProductType('ddlAddTipoProductoModal', 'AddTipoProductolList', 'AddIdCompraTipoProducto');
             InitializerEventDropDownList('ddlAddCompraAnimalModal', 'AddCompraAnimallList', 'AddIdCompraAniaml');
@@ -1166,7 +1314,8 @@
                     });
 
 
-                    $("#ddlModifyCompraProductoModal").val(registro.Cantidad);
+                    $("#ddlModifyCompraProductoModal").val(registro.IdProducto);
+                    console.log(registro);
                     ActivateInputEvent('ddlModifyCompraProductoModal');
 
 
@@ -1183,7 +1332,7 @@
 
 
                             if (data.isProduct) {
-                                var dataList = document.getElementById('ModifyCompraProductolList');
+                                var dataList = document.getElementById('ModifyCompraAnimallList');
                                 console.log(data);
                                 while (dataList.options.length > 0) {
                                     dataList.removeChild(dataList.options[0]);
@@ -1247,7 +1396,7 @@
                 $("#txtCompraImporteModify").val(registro.Importe);
                 $("#dtDateCompraModalModify").val(formattedDate);
                 $("#ModifyIdCompra").val(registro.Id);
-
+                $("#lblTitleMdfCompra").text("Modificar compra");
 
 
                 $('#ddlModifyCompraProveedorModal').prop('readonly', false);
@@ -1330,7 +1479,7 @@
                     });
 
 
-                    $("#ddlModifyCompraProductoModal").val(registro.Cantidad);
+                    $("#ddlModifyCompraProductoModal").val(registro.IdProducto);
                     ActivateInputEvent('ddlModifyCompraProductoModal');
 
 
@@ -1411,7 +1560,7 @@
                 $("#txtCompraImporteModify").val(registro.Importe);
                 $("#dtDateCompraModalModify").val(formattedDate);
                 $("#ModifyIdCompra").val(registro.Id);
-
+                $("#lblTitleMdfCompra").text("Detalle de la compra");
 
 
                 $('#ddlModifyCompraProveedorModal').prop('readonly', true);
@@ -1440,684 +1589,46 @@
             var registro = JSON.parse(CompraJson);
             console.log(registro);
             if (option === 0) {
-
-                var fechaVenta = new Date(registro.FechaVenta);
-                var formattedDate = fechaVenta.toISOString().split('T')[0];
-                $("#ddlModifyTipoProductoModal").val(registro.IdAnimal);
-               
-                if (registro.IdTipoProducto != 3) {
-                    $("#txtCantidadModify").val(registro.Cantidad);
-
-                    $.ajax({
-                        url: '@Url.Action("UpdateAnimal", "Transaccion")',
-                        type: 'GET',
-                        data: { tipo: registro.IdTipoProducto },
-                        success: function (data) {
-
-
-                            if (data.isProduct) {
-                                var dataList = document.getElementById('ModifyCompraProductolList');
-                                console.log(data);
-                                while (dataList.options.length > 0) {
-                                    dataList.removeChild(dataList.options[0]);
-                                }
-                                console.log(data.list.length);
-                                if (data.list.length > 0) {
-                                    for (var i = 0; i < data.list.length; i++) {
-
-                                        var option = document.createElement("option");
-                                        option.value = data.list[i].id;
-                                        option.text = data.list[i].nombre;
-                                        option.dataset.id = data.list[i].id;
-                                        dataList.appendChild(option);
-                                    }
-                                }
-                                else {
-                                    Swal.fire('', 'No se encontraron productos disponibles.', 'error');
-                                }
-                            }
-                            else {
-                                var dataList = document.getElementById('ModifyCompraAnimallList');
-                                console.log(data);
-                                while (dataList.options.length > 0) {
-                                    dataList.removeChild(dataList.options[0]);
-                                }
-                                console.log(data.list.length);
-                                if (data.list.length > 0) {
-                                    for (var i = 0; i < data.list.length; i++) {
-
-                                        var option = document.createElement("option");
-                                        option.value = data.list[i].id;
-                                        option.text = data.list[i].codigo;
-                                        option.dataset.id = data.list[i].id;
-                                        dataList.appendChild(option);
-                                    }
-                                }
-                                else {
-                                    Swal.fire('', 'No se encontraron animales disponibles.', 'error');
-                                }
-                            }
-
-                        },
-                        error: function () {
-                            alert('Error al obtener los animales.');
-                        }
-                    });
-
-
-                    $("#ddlModifyCompraProductoModal").val(registro.Cantidad);
-                    ActivateInputEvent('ddlModifyCompraProductoModal');
-
-
-                    $("#div_AnimalesModify").hide();
-                    $("#div_ProductoesModify").show();
-                    $("#divCantidadModify").show();
-                }
-                else {
-                    $.ajax({
-                        url: '@Url.Action("UpdateAnimal", "Transaccion")',
-                        type: 'GET',
-                        data: { tipo: registro.IdTipoProducto },
-                        success: function (data) {
-
-
-                            if (data.isProduct) {
-                                var dataList = document.getElementById('ModifyCompraProductolList');
-                                console.log(data);
-                                while (dataList.options.length > 0) {
-                                    dataList.removeChild(dataList.options[0]);
-                                }
-                                console.log(data.list.length);
-                                if (data.list.length > 0) {
-                                    for (var i = 0; i < data.list.length; i++) {
-
-                                        var option = document.createElement("option");
-                                        option.value = data.list[i].id;
-                                        option.text = data.list[i].nombre;
-                                        option.dataset.id = data.list[i].id;
-                                        dataList.appendChild(option);
-                                    }
-                                }
-                                else {
-                                    Swal.fire('', 'No se encontraron productos disponibles.', 'error');
-                                }
-                            }
-                            else {
-                                var dataList = document.getElementById('ModifyCompraAnimallList');
-                                console.log(data);
-                                while (dataList.options.length > 0) {
-                                    dataList.removeChild(dataList.options[0]);
-                                }
-                                console.log(data.list.length);
-                                if (data.list.length > 0) {
-                                    for (var i = 0; i < data.list.length; i++) {
-
-                                        var option = document.createElement("option");
-                                        option.value = data.list[i].id;
-                                        option.text = data.list[i].codigo;
-                                        option.dataset.id = data.list[i].id;
-                                        dataList.appendChild(option);
-                                    }
-                                }
-                                else {
-                                    Swal.fire('', 'No se encontraron animales disponibles.', 'error');
-                                }
-                            }
-
-                        },
-                        error: function () {
-                            alert('Error al obtener los animales.');
-                        }
-                    });
-
-
-                    $("#ddlModifyCompraAnimalModal").val(registro.IdAnimal);
-                    ActivateInputEvent('ddlModifyCompraAnimalModal');
-
-                    $("#div_AnimalesModify").show();
-                    $("#div_ProductoesModify").hide();
-                    $("#divCantidadModify").hide();
-                }
-
-
-                $("#ddlModifyCompraProveedorModal").val(registro.IdProveedor);
-                ActivateInputEvent('ddlModifyCompraProveedorModal');
-                $("#txtCompraDescripcionModify").val(registro.Descripcion);
-                $("#txtCompraImporteModify").val(registro.Importe);
-                $("#dtDateCompraModalModify").val(formattedDate);
-                $("#ModifyIdCompra").val(registro.Id);
-
-
-
-                $('#ddlModifyCompraProveedorModal').prop('readonly', false);
-                $('#txtCompraDescripcionModify').prop('readonly', false);
-                $('#txtCompraImporteModify').prop('readonly', false);
-                $('#dtDateCompraModalModify').prop('readonly', false);
-                $('#ddlModifyCompraAnimalModal').prop('readonly', false);
-                $('#ddlModifyCompraProductoModal').prop('readonly', false);
-                $('#ddlModifyTipoProductoModal').prop('readonly', false);
-                $('#ddlModifyCompraModal').prop('readonly', false);
-                $('#txtCantidadModify').prop('readonly', false);
-                $('#btnModifyCompra').show();
-
-
-                OpenModal(modal);
-
-            }
-            else {
-                var fechaCompra = new Date(registro.FechaCompra);
-                var formattedDate = fechaCompra.toISOString().split('T')[0];
-                $("#ddlModifyTipoProductoModal").val(registro.IdTipoProducto);
-                ActivateInputEvent('ddlModifyTipoProductoModal');
-                if (registro.IdTipoProducto != 3) {
-                    $("#txtCantidadModify").val(registro.Cantidad);
-
-                    $.ajax({
-                        url: '@Url.Action("UpdateAnimal", "Transaccion")',
-                        type: 'GET',
-                        data: { tipo: registro.IdTipoProducto },
-                        success: function (data) {
-
-
-                            if (data.isProduct) {
-                                var dataList = document.getElementById('ModifyCompraProductolList');
-                                console.log(data);
-                                while (dataList.options.length > 0) {
-                                    dataList.removeChild(dataList.options[0]);
-                                }
-                                console.log(data.list.length);
-                                if (data.list.length > 0) {
-                                    for (var i = 0; i < data.list.length; i++) {
-
-                                        var option = document.createElement("option");
-                                        option.value = data.list[i].id;
-                                        option.text = data.list[i].nombre;
-                                        option.dataset.id = data.list[i].id;
-                                        dataList.appendChild(option);
-                                    }
-                                }
-                                else {
-                                    Swal.fire('', 'No se encontraron productos disponibles.', 'error');
-                                }
-                            }
-                            else {
-                                var dataList = document.getElementById('ModifyCompraAnimallList');
-                                console.log(data);
-                                while (dataList.options.length > 0) {
-                                    dataList.removeChild(dataList.options[0]);
-                                }
-                                console.log(data.list.length);
-                                if (data.list.length > 0) {
-                                    for (var i = 0; i < data.list.length; i++) {
-
-                                        var option = document.createElement("option");
-                                        option.value = data.list[i].id;
-                                        option.text = data.list[i].codigo;
-                                        option.dataset.id = data.list[i].id;
-                                        dataList.appendChild(option);
-                                    }
-                                }
-                                else {
-                                    Swal.fire('', 'No se encontraron animales disponibles.', 'error');
-                                }
-                            }
-
-                        },
-                        error: function () {
-                            alert('Error al obtener los animales.');
-                        }
-                    });
-
-
-                    $("#ddlModifyCompraProductoModal").val(registro.Cantidad);
-                    ActivateInputEvent('ddlModifyCompraProductoModal');
-
-
-                    $("#div_AnimalesModify").hide();
-                    $("#div_ProductoesModify").show();
-                    $("#divCantidadModify").show();
-                }
-                else {
-                    $.ajax({
-                        url: '@Url.Action("UpdateAnimal", "Transaccion")',
-                        type: 'GET',
-                        data: { tipo: registro.IdTipoProducto },
-                        success: function (data) {
-
-
-                            if (data.isProduct) {
-                                var dataList = document.getElementById('ModifyCompraProductolList');
-                                console.log(data);
-                                while (dataList.options.length > 0) {
-                                    dataList.removeChild(dataList.options[0]);
-                                }
-                                console.log(data.list.length);
-                                if (data.list.length > 0) {
-                                    for (var i = 0; i < data.list.length; i++) {
-
-                                        var option = document.createElement("option");
-                                        option.value = data.list[i].id;
-                                        option.text = data.list[i].nombre;
-                                        option.dataset.id = data.list[i].id;
-                                        dataList.appendChild(option);
-                                    }
-                                }
-                                else {
-                                    Swal.fire('', 'No se encontraron productos disponibles.', 'error');
-                                }
-                            }
-                            else {
-                                var dataList = document.getElementById('ModifyCompraAnimallList');
-                                console.log(data);
-                                while (dataList.options.length > 0) {
-                                    dataList.removeChild(dataList.options[0]);
-                                }
-                                console.log(data.list.length);
-                                if (data.list.length > 0) {
-                                    for (var i = 0; i < data.list.length; i++) {
-
-                                        var option = document.createElement("option");
-                                        option.value = data.list[i].id;
-                                        option.text = data.list[i].codigo;
-                                        option.dataset.id = data.list[i].id;
-                                        dataList.appendChild(option);
-                                    }
-                                }
-                                else {
-                                    Swal.fire('', 'No se encontraron animales disponibles.', 'error');
-                                }
-                            }
-
-                        },
-                        error: function () {
-                            alert('Error al obtener los animales.');
-                        }
-                    });
-
-
-                    $("#ddlModifyCompraAnimalModal").val(registro.IdAnimal);
-                    ActivateInputEvent('ddlModifyCompraAnimalModal');
-
-                    $("#div_AnimalesModify").show();
-                    $("#div_ProductoesModify").hide();
-                    $("#divCantidadModify").hide();
-                }
-
-
-                $("#ddlModifyCompraProveedorModal").val(registro.IdProveedor);
-                ActivateInputEvent('ddlModifyCompraProveedorModal');
-                $("#txtCompraDescripcionModify").val(registro.Descripcion);
-                $("#txtCompraImporteModify").val(registro.Importe);
-                $("#dtDateCompraModalModify").val(formattedDate);
-                $("#ModifyIdCompra").val(registro.Id);
-
-
-
-                $('#ddlModifyCompraProveedorModal').prop('readonly', true);
-                $('#txtCompraDescripcionModify').prop('readonly', true);
-                $('#txtCompraImporteModify').prop('readonly', true);
-                $('#dtDateCompraModalModify').prop('readonly', true);
-                $('#ddlModifyCompraAnimalModal').prop('readonly', true);
-                $('#ddlModifyCompraProductoModal').prop('readonly', true);
+                $('#ddlModifyVentaIdentificacionClienteModal').val(registro.CedulaCliente);
+                $('#txtnombreclienteVModify').val(registro.NombreCliente);
+                $('#txtVentaDescripcionModify').val(registro.Descripcion);
+                $('#txtVentaImporteModify').val(registro.Importe);
+                $('#dtDateVentaModalModify').val(registro.FechaVenta.split('T')[0]);
+                $('#ModifyVentaListAnimal').val(registro.IdAnimal);
+                $('#dtDateVentaModalModify').val(registro.FechaCreacion.split('T')[0]);
+                $('#hdfIdModifyVenta').val(registro.Id);
+                $('#hdfCreationDateModify').val(registro.FechaCreacion);
+                var selectedAnimals = registro.IdAnimal.split(',');
                 $('#ddlModifyTipoProductoModal').prop('readonly', true);
-                $('#ddlModifyCompraModal').prop('readonly', true);
-                $('#txtCantidadModify').prop('readonly', true);
-                $('#btnModifyCompra').hide();
+                $('#ddlAnimalModify').val(selectedAnimals).trigger('change');
 
-
-
+                OpenModal(modal);
 
                 OpenModal(modal);
 
             }
+
 
         }
-
-        function OpenModalModifyVenta(button, modal, option) {
-
-            var CompraJson = button.getAttribute("data-registro");
-            var registro = JSON.parse(CompraJson);
-            console.log(registro);
-            if (option === 0) {
-
-                var fechaVenta = new Date(registro.FechaVenta);
-                var formattedDate = fechaVenta.toISOString().split('T')[0];
-                $("#ddlModifyTipoProductoModal").val(registro.IdAnimal);
-
-                if (registro.IdTipoProducto != 3) {
-                    $("#txtCantidadModify").val(registro.Cantidad);
-
-                    $.ajax({
-                        url: '@Url.Action("UpdateAnimal", "Transaccion")',
-                        type: 'GET',
-                        data: { tipo: registro.IdTipoProducto },
-                        success: function (data) {
-
-
-                            if (data.isProduct) {
-                                var dataList = document.getElementById('ModifyCompraProductolList');
-                                console.log(data);
-                                while (dataList.options.length > 0) {
-                                    dataList.removeChild(dataList.options[0]);
-                                }
-                                console.log(data.list.length);
-                                if (data.list.length > 0) {
-                                    for (var i = 0; i < data.list.length; i++) {
-
-                                        var option = document.createElement("option");
-                                        option.value = data.list[i].id;
-                                        option.text = data.list[i].nombre;
-                                        option.dataset.id = data.list[i].id;
-                                        dataList.appendChild(option);
-                                    }
-                                }
-                                else {
-                                    Swal.fire('', 'No se encontraron productos disponibles.', 'error');
-                                }
-                            }
-                            else {
-                                var dataList = document.getElementById('ModifyCompraAnimallList');
-                                console.log(data);
-                                while (dataList.options.length > 0) {
-                                    dataList.removeChild(dataList.options[0]);
-                                }
-                                console.log(data.list.length);
-                                if (data.list.length > 0) {
-                                    for (var i = 0; i < data.list.length; i++) {
-
-                                        var option = document.createElement("option");
-                                        option.value = data.list[i].id;
-                                        option.text = data.list[i].codigo;
-                                        option.dataset.id = data.list[i].id;
-                                        dataList.appendChild(option);
-                                    }
-                                }
-                                else {
-                                    Swal.fire('', 'No se encontraron animales disponibles.', 'error');
-                                }
-                            }
-
-                        },
-                        error: function () {
-                            alert('Error al obtener los animales.');
-                        }
-                    });
-
-
-                    $("#ddlModifyCompraProductoModal").val(registro.Cantidad);
-                    ActivateInputEvent('ddlModifyCompraProductoModal');
-
-
-                    $("#div_AnimalesModify").hide();
-                    $("#div_ProductoesModify").show();
-                    $("#divCantidadModify").show();
-                }
-                else {
-                    $.ajax({
-                        url: '@Url.Action("UpdateAnimal", "Transaccion")',
-                        type: 'GET',
-                        data: { tipo: registro.IdTipoProducto },
-                        success: function (data) {
-
-
-                            if (data.isProduct) {
-                                var dataList = document.getElementById('ModifyCompraProductolList');
-                                console.log(data);
-                                while (dataList.options.length > 0) {
-                                    dataList.removeChild(dataList.options[0]);
-                                }
-                                console.log(data.list.length);
-                                if (data.list.length > 0) {
-                                    for (var i = 0; i < data.list.length; i++) {
-
-                                        var option = document.createElement("option");
-                                        option.value = data.list[i].id;
-                                        option.text = data.list[i].nombre;
-                                        option.dataset.id = data.list[i].id;
-                                        dataList.appendChild(option);
-                                    }
-                                }
-                                else {
-                                    Swal.fire('', 'No se encontraron productos disponibles.', 'error');
-                                }
-                            }
-                            else {
-                                var dataList = document.getElementById('ModifyCompraAnimallList');
-                                console.log(data);
-                                while (dataList.options.length > 0) {
-                                    dataList.removeChild(dataList.options[0]);
-                                }
-                                console.log(data.list.length);
-                                if (data.list.length > 0) {
-                                    for (var i = 0; i < data.list.length; i++) {
-
-                                        var option = document.createElement("option");
-                                        option.value = data.list[i].id;
-                                        option.text = data.list[i].codigo;
-                                        option.dataset.id = data.list[i].id;
-                                        dataList.appendChild(option);
-                                    }
-                                }
-                                else {
-                                    Swal.fire('', 'No se encontraron animales disponibles.', 'error');
-                                }
-                            }
-
-                        },
-                        error: function () {
-                            alert('Error al obtener los animales.');
-                        }
-                    });
-
-
-                    $("#ddlModifyCompraAnimalModal").val(registro.IdAnimal);
-                    ActivateInputEvent('ddlModifyCompraAnimalModal');
-
-                    $("#div_AnimalesModify").show();
-                    $("#div_ProductoesModify").hide();
-                    $("#divCantidadModify").hide();
-                }
-
-
-                $("#ddlModifyCompraProveedorModal").val(registro.IdProveedor);
-                ActivateInputEvent('ddlModifyCompraProveedorModal');
-                $("#txtCompraDescripcionModify").val(registro.Descripcion);
-                $("#txtCompraImporteModify").val(registro.Importe);
-                $("#dtDateCompraModalModify").val(formattedDate);
-                $("#ModifyIdCompra").val(registro.Id);
-
-
-
-                $('#ddlModifyCompraProveedorModal').prop('readonly', false);
-                $('#txtCompraDescripcionModify').prop('readonly', false);
-                $('#txtCompraImporteModify').prop('readonly', false);
-                $('#dtDateCompraModalModify').prop('readonly', false);
-                $('#ddlModifyCompraAnimalModal').prop('readonly', false);
-                $('#ddlModifyCompraProductoModal').prop('readonly', false);
-                $('#ddlModifyTipoProductoModal').prop('readonly', false);
-                $('#ddlModifyCompraModal').prop('readonly', false);
-                $('#txtCantidadModify').prop('readonly', false);
-                $('#btnModifyCompra').show();
-
-
-                OpenModal(modal);
-
-            }
-            else {
-                var fechaCompra = new Date(registro.FechaCompra);
-                var formattedDate = fechaCompra.toISOString().split('T')[0];
-                $("#ddlModifyTipoProductoModal").val(registro.IdTipoProducto);
-                ActivateInputEvent('ddlModifyTipoProductoModal');
-                if (registro.IdTipoProducto != 3) {
-                    $("#txtCantidadModify").val(registro.Cantidad);
-
-                    $.ajax({
-                        url: '@Url.Action("UpdateAnimal", "Transaccion")',
-                        type: 'GET',
-                        data: { tipo: registro.IdTipoProducto },
-                        success: function (data) {
-
-
-                            if (data.isProduct) {
-                                var dataList = document.getElementById('ModifyCompraProductolList');
-                                console.log(data);
-                                while (dataList.options.length > 0) {
-                                    dataList.removeChild(dataList.options[0]);
-                                }
-                                console.log(data.list.length);
-                                if (data.list.length > 0) {
-                                    for (var i = 0; i < data.list.length; i++) {
-
-                                        var option = document.createElement("option");
-                                        option.value = data.list[i].id;
-                                        option.text = data.list[i].nombre;
-                                        option.dataset.id = data.list[i].id;
-                                        dataList.appendChild(option);
-                                    }
-                                }
-                                else {
-                                    Swal.fire('', 'No se encontraron productos disponibles.', 'error');
-                                }
-                            }
-                            else {
-                                var dataList = document.getElementById('ModifyCompraAnimallList');
-                                console.log(data);
-                                while (dataList.options.length > 0) {
-                                    dataList.removeChild(dataList.options[0]);
-                                }
-                                console.log(data.list.length);
-                                if (data.list.length > 0) {
-                                    for (var i = 0; i < data.list.length; i++) {
-
-                                        var option = document.createElement("option");
-                                        option.value = data.list[i].id;
-                                        option.text = data.list[i].codigo;
-                                        option.dataset.id = data.list[i].id;
-                                        dataList.appendChild(option);
-                                    }
-                                }
-                                else {
-                                    Swal.fire('', 'No se encontraron animales disponibles.', 'error');
-                                }
-                            }
-
-                        },
-                        error: function () {
-                            alert('Error al obtener los animales.');
-                        }
-                    });
-
-
-                    $("#ddlModifyCompraProductoModal").val(registro.Cantidad);
-                    ActivateInputEvent('ddlModifyCompraProductoModal');
-
-
-                    $("#div_AnimalesModify").hide();
-                    $("#div_ProductoesModify").show();
-                    $("#divCantidadModify").show();
-                }
-                else {
-                    $.ajax({
-                        url: '@Url.Action("UpdateAnimal", "Transaccion")',
-                        type: 'GET',
-                        data: { tipo: registro.IdTipoProducto },
-                        success: function (data) {
-
-
-                            if (data.isProduct) {
-                                var dataList = document.getElementById('ModifyCompraProductolList');
-                                console.log(data);
-                                while (dataList.options.length > 0) {
-                                    dataList.removeChild(dataList.options[0]);
-                                }
-                                console.log(data.list.length);
-                                if (data.list.length > 0) {
-                                    for (var i = 0; i < data.list.length; i++) {
-
-                                        var option = document.createElement("option");
-                                        option.value = data.list[i].id;
-                                        option.text = data.list[i].nombre;
-                                        option.dataset.id = data.list[i].id;
-                                        dataList.appendChild(option);
-                                    }
-                                }
-                                else {
-                                    Swal.fire('', 'No se encontraron productos disponibles.', 'error');
-                                }
-                            }
-                            else {
-                                var dataList = document.getElementById('ModifyCompraAnimallList');
-                                console.log(data);
-                                while (dataList.options.length > 0) {
-                                    dataList.removeChild(dataList.options[0]);
-                                }
-                                console.log(data.list.length);
-                                if (data.list.length > 0) {
-                                    for (var i = 0; i < data.list.length; i++) {
-
-                                        var option = document.createElement("option");
-                                        option.value = data.list[i].id;
-                                        option.text = data.list[i].codigo;
-                                        option.dataset.id = data.list[i].id;
-                                        dataList.appendChild(option);
-                                    }
-                                }
-                                else {
-                                    Swal.fire('', 'No se encontraron animales disponibles.', 'error');
-                                }
-                            }
-
-                        },
-                        error: function () {
-                            alert('Error al obtener los animales.');
-                        }
-                    });
-
-
-                    $("#ddlModifyCompraAnimalModal").val(registro.IdAnimal);
-                    ActivateInputEvent('ddlModifyCompraAnimalModal');
-
-                    $("#div_AnimalesModify").show();
-                    $("#div_ProductoesModify").hide();
-                    $("#divCantidadModify").hide();
-                }
-
-
-                $("#ddlModifyCompraProveedorModal").val(registro.IdProveedor);
-                ActivateInputEvent('ddlModifyCompraProveedorModal');
-                $("#txtCompraDescripcionModify").val(registro.Descripcion);
-                $("#txtCompraImporteModify").val(registro.Importe);
-                $("#dtDateCompraModalModify").val(formattedDate);
-                $("#ModifyIdCompra").val(registro.Id);
-
-
-
-                $('#ddlModifyCompraProveedorModal').prop('readonly', true);
-                $('#txtCompraDescripcionModify').prop('readonly', true);
-                $('#txtCompraImporteModify').prop('readonly', true);
-                $('#dtDateCompraModalModify').prop('readonly', true);
-                $('#ddlModifyCompraAnimalModal').prop('readonly', true);
-                $('#ddlModifyCompraProductoModal').prop('readonly', true);
-                $('#ddlModifyTipoProductoModal').prop('readonly', true);
-                $('#ddlModifyCompraModal').prop('readonly', true);
-                $('#txtCantidadModify').prop('readonly', true);
-                $('#btnModifyCompra').hide();
-
-
-
-
-                OpenModal(modal);
-
-            }
-
-        }
-
 
         function OpenModalInfoGanado(button, modal) {
             var reporteJson = button.getAttribute("data-reporte");
             var reporte = JSON.parse(reporteJson);
 
             console.log(reporte);
+
+
+
+
+            $('#txtnombreclienteVInfo').val(reporte.NombreCliente);
+            $('#txtVentaDescripcionInfo').val(reporte.Descripcion);
+            $('#txtVentaImporteInfo').val(reporte.Importe)
+            $('#ddlInfoVentaIdentificacionClienteModal').val(reporte.CedulaCliente);
+            $('#dtDateVentaModalInfo').val(reporte.FechaVenta.split('T')[0]);
+
+
+
+
 
             $.ajax({
                 url: '/Transaccion/ObtenerAnimales',

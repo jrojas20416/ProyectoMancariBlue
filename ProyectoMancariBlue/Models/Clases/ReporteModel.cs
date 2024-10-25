@@ -101,8 +101,16 @@ namespace ProyectoMancariBlue.Models.Clases
 
         public List<Reporte> GetVenta()
         {
-            // Aquí puedes ajustar la lógica para filtrar o buscar ventas específicas si es necesario
             return _context.Reporte.Where(r => r.Transaccion != null).ToList();
         }
+
+        public async Task<Reporte> UpdateAsync(Reporte reporte)
+        {
+            _context.Reporte.Update(reporte);
+            await _context.SaveChangesAsync();
+            return reporte;
+        }
+
+       
     }
 }

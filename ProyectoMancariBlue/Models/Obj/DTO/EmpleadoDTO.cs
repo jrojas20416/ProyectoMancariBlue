@@ -44,6 +44,8 @@ namespace ProyectoMancariBlue.Models.Obj.DTO
         public Rol? Rol { get; set; }
         public bool Estado { get; set; }
         public bool UsuarioSistema { get; set; }
+        public bool Locked { get; set; }
+        public int LoginAttempts { get; set; }
         public ProvinciaDTO? Provincia { get; set; }
         public CantonDTO? Canton { get; set; }
         public DistritoDTO? Distrito { get; set; }

@@ -198,6 +198,7 @@
             <form asp-controller="Vacuna" asp-action="EditarVacuna" method="post">
                 <div class="modal-body">
 
+                    <input type="hidden" name="FechaCreacion" id="FechaCreacionhDF" asp-for="RegistroVacunaModifyModal.FechaCreacion" />
                     <input type="hidden" name="Id" id="IdRegistroModify" asp-for="RegistroVacunaModifyModal.Id" />
                     <div class="row" style=" padding-left: 1rem;">
 
@@ -308,7 +309,7 @@
                                 } else {
                                     Swal.fire({
                                         title: 'Error',
-                                        text: result.errors,
+                                        text: result.message,
                                         icon: 'error'
                                     });
                                 }
@@ -434,6 +435,7 @@
             console.log(registro);
             if (option === 0) {
 
+                console.log(new Date(registro.FechaCreacion).toISOString().split('T')[0]);
                 var fechaAplicacion = new Date(registro.FechaAplicacion);
                 var formattedDate = fechaAplicacion.toISOString().split('T')[0];
                 $("#ddlModifyAnimalModal").val(registro.IdAnimal);
@@ -442,6 +444,7 @@
                 ActivateInputEvent('ddlModifyProductoModal');
                 $("#txtFechaAplicacion").val(formattedDate);
                 $("#IdAnimalModify").val(registro.IdAnimal);
+                $("#FechaCreacionhDF").val(new Date(registro.FechaCreacion).toISOString().split('T')[0]);
                 $("#IdProductoModify").val(registro.IdProducto);
                 $("#IdRegistroModify").val(registro.Id);
                 $('#btnModifyRegister').show();

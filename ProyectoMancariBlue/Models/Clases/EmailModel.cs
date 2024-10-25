@@ -25,10 +25,10 @@ namespace ProyectoMancariBlue.Models.Clases
                 var email = new MimeMessage();
 
 
-                email.From.Add(MailboxAddress.Parse(_config["SmtpSettings:Username"]));
-                email.To.Add(MailboxAddress.Parse(request.To));
-                email.Subject = request.Subject;
-                email.Body = new TextPart(TextFormat.Html) { Text = request.Body };
+            email.From.Add(MailboxAddress.Parse(_config["SmtpSettings:Username"]));
+            email.To.Add(MailboxAddress.Parse(request.To));
+            email.Subject = request.Subject;
+            email.Body = new TextPart(TextFormat.Html) { Text = request.Body };
 
                 using var smtp = new SmtpClient();
                 smtp.Connect(_config["SmtpSettings:Server"], int.Parse(_config["SmtpSettings:Port"]), SecureSocketOptions.StartTls);
@@ -38,9 +38,9 @@ namespace ProyectoMancariBlue.Models.Clases
             }
             catch (Exception ex)
             {
-
+                
                 Console.WriteLine($"Error enviando correo: {ex.Message}");
-                throw;
+                throw; 
             }
 
         }

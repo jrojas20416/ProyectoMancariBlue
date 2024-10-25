@@ -60,6 +60,9 @@
                                         @Html.DisplayNameFor(model => model.EmpleadoCreate.Estado)
                                     </th>
                                     <th>
+                                        Vacaciones 
+                                    </th>
+                                    <th>
                                         @Html.DisplayNameFor(model => model.EmpleadoCreate.Rol.Descripcion)
                                     </th>
                                     <th>Acciones</th>
@@ -95,6 +98,19 @@
                                                 else
                                                 {
                                                     <span class="badge badge-danger">Inactivo</span>
+
+                                                }
+
+                                            </td>
+                                            <td>
+                                                @if (item.DiasDisponibles >=7)
+                                                {
+
+                                                    <span class="badge badge-warning">@Html.DisplayFor(modelItem => item.DiasDisponibles)</span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="badge badge-success">@Html.DisplayFor(modelItem => item.DiasDisponibles)</span>
 
                                                 }
 
@@ -339,18 +355,17 @@ else
                 <input type="hidden" name="Id" id="IdEmpleadoModify" asp-for="EmpleadoModify.Id" />
                 <input type="hidden" name="Contrasena" id="ContrasenaEmpleadoModify" asp-for="EmpleadoModify.Contrasena" />
                 <input type="hidden" name="DiasDisponibles" id="DiasDisponiblesEmpleadoModify" asp-for="EmpleadoModify.DiasDisponibles" />
-               
-
+                <input type="hidden" name="Locked" id="LockedEmpleadoModify" asp-for="EmpleadoModify.Locked" />
+                <input type="hidden" name="LoginAttempts" id="LoginAttemptsEmpleadoModify" asp-for="EmpleadoModify.LoginAttempts" />
                 <div class="modal-body">
                     <input type="hidden" id="hdfEstado" value="0" />
                     <input type="hidden" id="hdfId" value="0" />
                     <div class="row" style=" padding-left: 1rem;">
                         <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 pt-4 p-0">
-                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                                 <div class="form-group">
                                     <label asp-for="EmpleadoModify.Cedula" class="control-label">Identificación</label>
-                                    <input asp-for="EmpleadoModify.Cedula" id="txtIdentificacion" name="Cedula" class="form-control" type="text" placeholder="Escriba la identificación" />
-
+                                    <input asp-for="EmpleadoModify.Cedula" id="txtIdentificacionModify" name="Cedula" class="form-control" type="text" placeholder="Escriba la identificación" readonly />
                                 </div>
                             </div>
                         </div>
@@ -438,7 +453,7 @@ else
                             <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                                 <div class="form-group">
                                     <label for="EmpleadoCorreo">Correo</label>
-                                    <input type="text" id="txtEmpleadoCorreoModify" name="Correo" class="form-control" asp-for="EmpleadoModify.Correo" placeholder="Escriba el correo">
+                                    <input type="text" id="txtEmpleadoCorreoModify" name="Correo" class="form-control" asp-for="EmpleadoModify.Correo" readonly placeholder="Escriba el correo">
                                 </div>
                             </div>
                         </div>
@@ -482,6 +497,7 @@ else
                                 </div>
                             </div>
                         </div>
+
                         <input type="hidden" name="IdRol" id="IdRolEmpleadoModify" asp-for="EmpleadoModify.IdRol" />
                   @*       <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 pt-4 p-0">
                             <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
@@ -956,6 +972,7 @@ else
             if (option === 0) {
 
                 $('#txtIdentificacion').val(registro.Cedula);
+                $('#txtIdentificacionModify').val(registro.Cedula);
                $('#ddlModifyProvinciaModal').val(registro.ProvinciaId);
                 ActivateInputEvent('ddlModifyProvinciaModal');
                $('#ddlModifyCantonModal').val(registro.CantonId);
@@ -977,12 +994,15 @@ else
                // $('#ddlModifyRolModal').val(registro.IdRol);
                // ActivateInputEvent('ddlModifyRolModal');
                 $('#IdRolEmpleadoModify').val(registro.IdRol);
+                 $('#LockedEmpleadoModify').val(registro.Locked);
+                  $('#LoginAttemptsEmpleadoModify').val(registro.LoginAttempts);
                 $('#btnModifyEmpleado').show();
                 $('#lblTitle').text("Modificar empleado");
                 $("#chkEstado").prop('checked', registro.Estado);
                 $("#chkModifySystemUser").prop('checked', registro.UsuarioSistema);
 
                 $('#txtIdentificacion').prop('readonly', false);
+                $('#txtIdentificacionModify').prop('readonly', true);
                 $('#ddlModifyProvinciaModal').prop('readonly', false);
                 $('#ddlModifyCantonModal').prop('readonly', false);
                 $('#txtEmpleadoNombreModify').prop('readonly', false);

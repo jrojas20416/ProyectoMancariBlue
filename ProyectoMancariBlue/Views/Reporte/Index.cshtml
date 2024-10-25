@@ -33,7 +33,7 @@
             <div class="tile">
                 <div class="tile-body">
                     <div class="table-responsive">
-                        <table class="table table-hover table-bordered" id="treporte">
+                      <table class="table table-hover table-bordered" id="treporte">
                             <thead>
                                 <tr>
                                     <th>
@@ -76,6 +76,7 @@
                                                 @Html.DisplayFor(modelItem => item.NombreCliente)
                                             </td>
                                             <td>
+                                                <a class="btn btn-primary" onclick="OpenModalModifyReport(this,'mdlModifyReport',0)" data-reporte='@JsonConvert.SerializeObject(item)' style="color:white;">Editar</a>
                                                 <a class="btn btn-info" onclick="OpenModalInfoGanado(this,'mdlInfoGanado')" data-reporte='@JsonConvert.SerializeObject(item)' style="color:white;">Ver</a>
                                                 <a class="btn btn-danger cambiar-estado-btn" data-id='@item.Id' style="color:white;">Eliminar</a>
                                             </td>
@@ -105,15 +106,60 @@ else
                 <h5 class="modal-title">Información Ganado</h5>
             </div>
             <div class="modal-body">
+                   <div class="row" style=" padding-left: 1rem;">
+                       <input type="hidden" class="form-control" name="Id" id="RegistroId" asp-for="ReporteCreate.Id" >
+                       <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 pt-4 p-0">
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                        <div class="mb-3">
+                            <label for="CodigoCVOInfo" class="form-label">Codigo CVO</label>
+                            <input type="text" class="form-control" name="CodigoCVO" id="CodigoCVOInfo" asp-for="ReporteCreate.CodigoCVO" placeholder="Digite el código CVO..." readonly autocomplete="off">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 pt-4 p-0">
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                        <div class="mb-3">
+                            <label for="CodigoTransporteInfo" class="form-label">Codigo Transporte</label>
+                            <input type="text" class="form-control" name="CodigoTransporte" id="CodigoTransporteInfo" asp-for="ReporteCreate.CodigoTransporte" readonly placeholder="Digite el código de transporte..." autocomplete="off">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 pt-4 p-0">
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                        <div class="mb-3">
+                            <label for="IdentificacionInfo" class="form-label">Identificacion del cliente</label>
+                            <input type="text" class="form-control" name="Identificacion" id="IdentificacionInfo" asp-for="ReporteCreate.Identificacion" readonly placeholder="Digite la identificación del cliente..." autocomplete="off">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 pt-4 p-0">
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                        <div class="mb-3">
+                            <label for="NombreClienteInfo" class="form-label">Nombre Cliente</label>
+                            <input type="text" class="form-control" name="NombreCliente" id="NombreClienteInfo" asp-for="ReporteCreate.NombreCliente" readonly placeholder="Digite el nombre del cliente..." autocomplete="off">
+                        </div>
+                    </div>
+                </div>
+                 <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 pt-4 p-0">
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                        <div class="mb-3">
+                            <label for="transaccionInfo" class="form-label">Transacción</label>
+                            <input type="text" class="form-control" name="NombreCliente" id="transaccionInfo"  readonly placeholder="Transacción..." autocomplete="off">
+                        </div>
+                    </div>
+                </div>
                 <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 pt-4 p-0">
                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
                         <div id="informacionAnimalContainer">
                         </div>
                     </div>
                 </div>
+                 </div>
+
             </div>
             <br />
             <div class="modal-footer">
+                  <button class="btn btn-success" type="submit" id="downloadPdfBtn">Generar PDF</button>
                 <button type="button" id="btnCloseModalInfoGanado" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
             </div>
         </div>
@@ -209,12 +255,99 @@ else
 </div>
 
 
+<div class="modal fade" id="mdlModifyReport">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header" style="background-color: #007C89; color:white; justify-content: center;">
+                <h5 class="modal-title">Agregar Reporte</h5>
+            </div>
+            <form asp-controller="Reporte" asp-action="Edit" method="post" id="formModifyReporte">
+                <div class="modal-body">
+                    <input type="hidden" name="Id" id="hdfIdModify" asp-for="ReporteCreate.Id" />
+                    <div class="row" style="padding-left: 1rem;">
+                        <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 pt-4 p-0">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                <div class="mb-3">
+                                    <label for="CodigoCVOModify" class="form-label">Codigo CVO</label>
+                                    <input type="text" class="form-control" name="CodigoCVO" id="CodigoCVOModify" asp-for="ReporteCreate.CodigoCVO" placeholder="Digite el código CVO..." autocomplete="off">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 pt-4 p-0">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                <div class="mb-3">
+                                    <label for="CodigoTransporteModify" class="form-label">Codigo Transporte</label>
+                                    <input type="text" class="form-control" name="CodigoTransporte" id="CodigoTransporteModify" asp-for="ReporteCreate.CodigoTransporte" placeholder="Digite el código de transporte..." autocomplete="off">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 pt-4 p-0">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
+                                <div class="form-group">
+                                    <label for="ddlModifyTransaccionModal">Seleccione la Transaccion</label>
+                                    <input type="text" id="ddlModifyReporteTransaccionModal" list="ModifyReporteTransaccionlList" class="form-control" placeholder="Buscar Transaccion..." autocomplete="off">
+                                    <input type="hidden" name="Transaccion" id="IdReporteTransaccionModify" asp-for=" ReporteCreate.Transaccion" />
+
+                                    <datalist id="ModifyReporteTransaccionlList">
+
+                                        @{
+                                            if (Model != null && Model.listaTransacciones != null)
+                                            {
+                                                foreach (var item in Model.listaTransacciones)
+                                                {
+
+                                                    <option value="@item.Descripcion" data-id="@item.Id">@item.Descripcion</option>
+                                                }
+                                            }
+                                        }
+
+                                        }
+                                    </datalist>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 pt-4 p-0">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                <div class="mb-3">
+                                    <label for="IdentificacionModify" class="form-label">Identificacion</label>
+                                    <input type="text" class="form-control" name="Identificacion" id="IdentificacionModify" asp-for="ReporteCreate.Identificacion" placeholder="Digite la identificación del cliente..." autocomplete="off">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 pt-4 p-0">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                <div class="mb-3">
+                                    <label for="NombreClienteModify" class="form-label">Nombre Cliente</label>
+                                    <input type="text" class="form-control" name="NombreCliente" id="NombreClienteModify" asp-for="ReporteCreate.NombreCliente" placeholder="Digite el nombre del cliente..." autocomplete="off">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 pt-4 p-0">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                <div class="mb-3">
+                                    <label for="FechaCreacionModify" class="form-label">Fecha de Creación</label>
+                                    <input type="date" class="form-control" name="FechaCreacion" id="FechaCreacionModify" asp-for="ReporteCreate.FechaCreacion" readonly>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <br />
+                <div class="modal-footer">
+                    <button type="submit" id="btnModifyReporte" class="btn btn-primary">Aceptar</button>
+                    <button type="button" id="btnCloseModalModifyReporte" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 
 
 @section Scripts {
     <script src="~/js/plugins/jquery.datatables.min.js"></script>
     <script src="~/js/plugins/datatables.bootstrap.min.js"></script>
-    <script type="text/javascript">$('#treportes').DataTable();</script>
+    <script type="text/javascript">$('#treporte').DataTable();</script>
     <script>
         $(document).ready(function () {
             var today = new Date();
@@ -222,16 +355,17 @@ else
             var month = String(today.getMonth() + 1).padStart(2, '0');
             var year = today.getFullYear();
 
+
+
             var formattedDate = year + '-' + month + '-' + day;
-
-
             $('#FechaCreacion').val(formattedDate);
-
-
             $('#FechaCreacion').prop('readonly', true);
-
+              document.getElementById('downloadPdfBtn').addEventListener('click', function () {
+                var registroId = document.getElementById('RegistroId').value;
+                window.location.href = '/Reporte/GenerarPDFReporte?RegistroId=' + registroId;
+            });
             InitializerEventDropDownList('ddlAddReporteTransaccionModal', 'AddReporteTransaccionlList', 'IdReporteTransaccionCreate');
-
+            InitializerEventDropDownList('ddlModifyReporteTransaccionModal', 'ModifyReporteTransaccionlList', 'IdReporteTransaccionModify');
             $('#btnCloseModalAddReporte').click(function () {
                 $('#formAddReporte')[0].reset();
                 $('#FechaCreacion').val(formattedDate);
@@ -244,45 +378,95 @@ else
                 $('#FechaCreacion').prop('readonly', true);
             });
 
-            $('#formAddReporte').submit(function (e) {
+
+            $('form').on('submit', function (e) {
+                showSpinner();
+
                 e.preventDefault();
 
-                var $form = $(this);
-                var formData = $form.serialize();
+                var form = $(this);
+                var url = form.attr('action');
 
-                $.ajax({
-                    url: $form.attr('action'),
-                    type: 'POST',
-                    data: formData,
-                    success: function (response) {
-                        if (response.success) {
-                            Swal.fire({
-                                title: 'Éxito',
-                                text: response.message,
-                                icon: 'success'
-                            }).then(function () {
-                                $('#mdlAddReporte').modal('hide');
-                                $('#formAddReporte')[0].reset();
-                                location.reload();
-                            });
-                        } else {
+                console.log(form.serialize());
+                setTimeout(function () {
+
+
+                    $.ajax({
+                        type: 'POST',
+                        url: url,
+                        data: form.serialize(),
+                        success: function (response) {
+                            if (response.success) {
+                                Swal.fire({
+                                    title: 'Éxito',
+                                    text: response.message,
+                                    icon: 'success'
+                                }).then(() => {
+                                    window.location.href = '@Url.Action("Index", "Reporte")';
+                                });
+                            } else {
+                                Swal.fire({
+                                    title: 'Error',
+                                    text: response.message,
+                                    icon: 'error'
+                                });
+                            }
+                        },
+                        error: function (jqXHR, textStatus, errorThrown) {
+                            console.error("Error en AJAX: ", textStatus, errorThrown);
+                            console.error("Detalles: ", jqXHR.responseText);
+
                             Swal.fire({
                                 title: 'Error',
-                                text: response.message,
+                                text: 'Ocurrió un error inesperado: ' + errorThrown,
                                 icon: 'error'
                             });
                         }
-                    },
-                    error: function (xhr, status, error) {
-                        Swal.fire({
-                            title: 'Error',
-                            text: 'Ha ocurrido un error al enviar el formulario.',
-                            icon: 'error'
-                        });
-                        console.error('Error:', error);
-                    }
-                });
+                    });
+
+                    hideSpinner();
+                }, 1000);
             });
+
+            // $('#formAddReporte').submit(function (e) {
+            //     e.preventDefault();
+
+            //     var $form = $(this);
+            //     var formData = $form.serialize();
+
+            //     $.ajax({
+            //         url: $form.attr('action'),
+            //         type: 'POST',
+            //         data: formData,
+            //         success: function (response) {
+            //             if (response.success) {
+            //                 Swal.fire({
+            //                     title: 'Éxito',
+            //                     text: response.message,
+            //                     icon: 'success'
+            //                 }).then(function () {
+            //                     $('#mdlAddReporte').modal('hide');
+            //                     $('#formAddReporte')[0].reset();
+            //                     location.reload();
+            //                 });
+            //             } else {
+            //                 Swal.fire({
+            //                     title: 'Error',
+            //                     text: response.message,
+            //                     icon: 'error'
+            //                 });
+            //             }
+            //         },
+            //         error: function (xhr, status, error) {
+            //             Swal.fire({
+            //                 title: 'Error',
+            //                 text: 'Ha ocurrido un error al enviar el formulario.',
+            //                 icon: 'error'
+            //             });
+            //             console.error('Error:', error);
+            //         }
+            //     });
+            // });
 
             $('.cambiar-estado-btn').click(function (e) {
                 e.preventDefault();
@@ -318,7 +502,7 @@ else
                                         },
                                         error: function (xhr, status, error) {
 
-                                            Swal.fire('Error', 'Ha ocurrido un error al eliminar las vacaciones.', 'error');
+                                            Swal.fire('Error', 'Ha ocurrido un error al eliminar las reporte.', 'error');
                                             console.error('Error:', error);
                                         }
                                     });
@@ -326,11 +510,11 @@ else
                             });
                         } else {
                             Swal.fire('Error', response.message, 'error');
-                            console.error('Error:', error);
+                            console.error('Error:', response.message);
                         }
                     },
                     error: function (xhr, status, error) {
-                        Swal.fire('Error', 'Ha ocurrido un error al eliminar las vacaciones.', 'error');
+                        Swal.fire('Error', 'Ha ocurrido un error al eliminar las reporte.', 'error');
                         console.error('Error:', error);
                     }
                 });
@@ -396,6 +580,13 @@ else
 
             console.log(reporte);
 
+                     $('#NombreClienteModify').val(reporte.NombreCliente);
+                     $('#IdentificacionInfo').val(reporte.Identificacion);
+                     $('#CodigoTransporteInfo').val(reporte.CodigoTransporte);
+                     $('#CodigoCVOInfo').val(reporte.CodigoCVO);
+                     $('#transaccionInfo').val(reporte.Venta.Descripcion);
+                     $('#RegistroId').val(reporte.Id);
+
             $.ajax({
                 url: '/Reporte/ObtenerAnimales',
                 data: { idAnimal: reporte.Venta.IdAnimal },
@@ -407,8 +598,35 @@ else
                     console.log('Error al obtener la información del animal:', error);
                 }
             });
+        
 
             OpenModal(modal);
+        }
+
+
+        function OpenModalModifyReport(button, modal, option) {
+
+            if (option === 0) {
+              
+                var reporteJson = button.getAttribute("data-reporte");
+                var reporte = JSON.parse(reporteJson);
+                var FechaCreacion = new Date(reporte.FechaCreacion);
+                var formattedDate = FechaCreacion.toISOString().split('T')[0];
+                console.log(reporte);
+                $('#NombreClienteModify').val(reporte.NombreCliente);
+                $('#IdentificacionModify').val(reporte.Identificacion);
+                $('#CodigoTransporteModify').val(reporte.CodigoTransporte);
+                $('#CodigoCVOModify').val(reporte.CodigoCVO);
+                $('#FechaCreacionModify').val(formattedDate);
+                $('#hdfIdModify').val(reporte.Id);
+                $("#ddlModifyReporteTransaccionModal").val(reporte.Venta.Descripcion);
+                ActivateInputEvent('ddlModifyReporteTransaccionModal');
+
+                OpenModal(modal);
+
+            }
+           
+
         }
     </script>
 }

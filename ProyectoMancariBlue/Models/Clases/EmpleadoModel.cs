@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using ProyectoMancariBlue.Models.Interfaces;
 using ProyectoMancariBlue.Models.Obj;
 using System.Text;
+using static iText.StyledXmlParser.Jsoup.Select.Evaluator;
 
 namespace ProyectoMancariBlue.Models.Clases
 {
@@ -26,7 +27,7 @@ namespace ProyectoMancariBlue.Models.Clases
             try
             {
 
-                var respuesta = _context.Empleado.FirstOrDefault(u => (u.Correo == empleado.Empleado || u.Cedula == empleado.Empleado) && u.Contrasena == empleado.Contrasena && u.Estado == true);
+                var respuesta = _context.Empleado.FirstOrDefault(u => (u.Correo == empleado.Empleado || u.Cedula == empleado.Empleado) && u.Contrasena == empleado.Contrasena);
 
                 if (respuesta != null)
                 {
@@ -107,6 +108,8 @@ namespace ProyectoMancariBlue.Models.Clases
                 _emailService.SendEmail(correo);
                 respuesta.Contrasena = Ncontrseña;
                 respuesta.RContrasena = true;
+                respuesta.Locked = false;
+                respuesta.LoginAttempts = 0;
                 _context.SaveChanges();
 
                 return Task.FromResult(respuesta);
@@ -432,6 +435,7 @@ namespace ProyectoMancariBlue.Models.Clases
                 string password = EmpleadoModel.GeneratePassword();
                 await EnviarContrasenna(empleado, password);
                 empleado.Contrasena = HashPassword(password);
+                empleado.Estado = true;
                 var empl = _context.Empleado.Update(empleado);
                 await _context.SaveChangesAsync();
                 if (empl.Entity != null)
@@ -610,6 +614,8 @@ namespace ProyectoMancariBlue.Models.Clases
                 _emailService.SendEmail(correo);
                 empleado.Contrasena = Ncontrseña;
                 empleado.RContrasena = true;
+                empleado.LoginAttempts = 0;
+                empleado.Locked = false;
                 _context.SaveChanges();
 
                 return Task.FromResult((Empleado)empleado);
@@ -620,6 +626,35 @@ namespace ProyectoMancariBlue.Models.Clases
                 return null;
             }
 
+
+        }
+
+        public async Task updateLoginattemptsUser(string IdUser)
+        {
+            var user = await _context.Empleado
+                .FirstOrDefaultAsync(e => e.Correo == IdUser || e.Cedula == IdUser);
+
+            if (user != null)
+            {
+                if (!user.Locked)
+                {
+                    user.LoginAttempts = user.LoginAttempts + 1;
+                    if (user.LoginAttempts >= 3)
+                    {
+                        user.Locked = true;
+                    }
+                }
+
+            }
+            _context.SaveChanges();
+
+        }
+        public async Task<Empleado> GetByCedulaOrEmail(string IdUser)
+        {
+            var user = await _context.Empleado
+                .FirstOrDefaultAsync(e => e.Correo == IdUser || e.Cedula == IdUser);
+
+            return user;
 
         }
     }

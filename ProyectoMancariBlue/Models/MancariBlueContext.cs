@@ -56,6 +56,8 @@ namespace ProyectoMancariBlue.Models
                 u.Property(x => x.Estado).IsRequired();
                 u.Property(x => x.Nacionalidad).IsRequired();
                 u.Property(x => x.UsuarioSistema).IsRequired();
+                u.Property(x => x.LoginAttempts).IsRequired();
+                u.Property(x => x.Locked).IsRequired();
                 u.Property<long?>("IdRol")
               .HasColumnType("bigint");
 
@@ -163,6 +165,7 @@ namespace ProyectoMancariBlue.Models
             {
                 entity.HasKey(e => e.Id);
                 entity.Property(e => e.FechaAplicacion).IsRequired();
+                entity.Property(e => e.FechaCreacion).IsRequired();
                 entity.Property(e => e.IdProducto).IsRequired();
                 entity.Property(e => e.IdAnimal).IsRequired();
 

@@ -82,10 +82,15 @@ namespace ProyectoMancariBlue.Models.Obj
         public bool Estado { get; set; }
        
         public bool UsuarioSistema { get; set; }
-        [Column("Dias_Disponibles")] 
-        
+        [Column("Dias_Disponibles")]
+        [Display(Name = "Vacaciones Disponibles")]
         public int DiasDisponibles { get; set; }
+        [Column("Login_attempts")]
 
+        public int LoginAttempts { get; set; }
+        [Column("Locked")]
+
+        public bool Locked { get; set; }
         public ICollection<HistoricoPago> HistoricoPagos { get; set; }
 
         public ICollection<RegistroLiquidacion> Liquidaciones { get; set; }

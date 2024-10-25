@@ -1,4 +1,8 @@
-﻿function NewAnimal() {
+﻿function getSelectedGender(rdbGender) {
+    return $('input[name="' + rdbGender + '"]:checked').val();
+}
+
+function NewAnimal() {
     showSpinner();
     setTimeout(function () {
     var Padre = GetDropDownValueSelected('ddlAddAnimalModal', 'AddAnimalList')
@@ -98,28 +102,28 @@ function Validate(dropdownListFather, dataSelectedFather, dropdownListMother, da
             }
         }
     }
-    if (GetDropDownValueSelected(dropdownListFather, dataSelectedFather) === null) {
-        Swal.fire('', 'Debe seleccionar el padre del animal', 'error');
-        return false;
-    }
-    if (GetDropDownValueSelected(dropdownListMother, dataSelectedMother) === null) {
-        Swal.fire('', 'Debe seleccionar la madre del animal', 'error');
-        return false;
-    }
+
     if (GetDropDownValueSelected(dropdownListRaza, dataSelectedRaza) === null) {
         Swal.fire('', 'Debe seleccionar la raza del animal', 'error');
         return false;
     }
-    if (getSelectedGender() === 'H') {
-        if ($("#" + NumberRegisteredBirths).val() === '') {
+    const gender = getSelectedGender('animalGender'); // Cambia 'animalGender' por el nombre real
+    if (gender === 'H') {
+        const registeredBirths = $("#" + NumberRegisteredBirths).val();
+
+        // Verificar si es nulo o vacío
+        if (registeredBirths === '') {
             Swal.fire('', 'Debe digitar la cantidad de partos del animal.', 'error');
             return false;
         }
-        else {
-            if ($("#" + NumberRegisteredBirths).val()<0) {
-                Swal.fire('', 'La cantidad de partos no puede ser un valor negativo.', 'error');
-                return false;
-            }
+
+        // Convertir el valor a un número
+        const birthsCount = parseInt(registeredBirths, 10);
+
+        // Verificar si es un valor negativo
+        if (birthsCount < 0) {
+            Swal.fire('', 'La cantidad de partos no puede ser un valor negativo.', 'error');
+            return false;
         }
     }
     if ($("#" + Heigth).val() === '') {
@@ -147,9 +151,7 @@ function Validate(dropdownListFather, dataSelectedFather, dropdownListMother, da
 
     return true;
 }
- function getSelectedGender(rdbGender) {
-     return $('input[name="' + rdbGender+'"]:checked').val();
-        }
+
 
 
 
