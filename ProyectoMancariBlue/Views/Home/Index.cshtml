@@ -15,16 +15,43 @@
     </ul>
 </div>
 
-<main style="display: flex; justify-content: center; align-items: center; height: 15vh;margin-bottom: 40px; ">
+<main style="display: flex; justify-content: center; align-items: center; height: 15vh;margin-bottom: 70px;margin-top: 90px; ">
     <div style="text-align: center;">
-        <img src="~/img/logo.png" class="logo-image" width="200px" height="auto">
+        <img src="~/img/logo.png" class="logo-image" width="200px" height="auto" >
+        <<div style="text-align: center;">
+    <h1 style="font-size: 24px; margin-bottom: 10px; margin-top: -20px; color: #25929B;">
+        ¡Bienvenido al sistema de gestión ganadera Mancari Blue!
+    </h1>
+    <div style="font-size: 20px; margin-top: 20px; margin-bottom: 20px;">
+        Nombre:
+        @if (Context.Request.Cookies.ContainsKey("NombreCompleto"))
+        {
+            var nombreCompleto = Context.Request.Cookies["NombreCompleto"];
+            <span>@nombreCompleto</span>
+        }
+        else
+        {
+            <span>User</span>
+        }
+        <br>
+        Rol:
+        @if (Context.Request.Cookies.ContainsKey("RolDescription"))
+        {
+            var rol = Context.Request.Cookies["RolDescription"];
+            <span>@rol</span>
+        }
+        else
+        {
+            <span>User</span>
+        }
+    </div>
+</div>
         <p style="margin: 0; text-align: center; font-size: 18px; margin-bottom: 40px;">
             Somos una empresa de gestion ganadera, la cual se enfoca en el negocio de venta de ganado de engorde. Cumplimos con todas regulaciones y procesos establecidos por la ley para garantizar
             un correcto manejo de nuestro ganado y asegurar optimas condiciones para el mismo.</p>
     </div>
 </main>
-
-
+<br>
 <div class="row">
     <div class="col-md-6 col-lg-6">
         <div class="widget-small info coloured-icon">

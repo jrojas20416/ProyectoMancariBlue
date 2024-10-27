@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using ProyectoMancariBlue.Models.Clases;
 using ProyectoMancariBlue.Models.Interfaces;
 using ProyectoMancariBlue.Models.Obj;
 using ProyectoMancariBlue.Models.Obj.DTO;
@@ -77,8 +78,9 @@ namespace ProyectoMancariBlue.Controllers
 
         }
 
-        public IActionResult EditarVacacion()
+        public async Task<IActionResult> EditarVacacion()
         {
+          
             return View();
         }
         [Authorize(Roles = "Admin,Dependiente")]
@@ -142,6 +144,24 @@ namespace ProyectoMancariBlue.Controllers
             return builder.ToString();
 
 
+        }
+
+        public string GenerarObservacion(EmpleadoDTO empleadoDTO, DateTime startDate, DateTime endDate)
+        {
+            TimeSpan days = endDate - startDate;
+            StringBuilder builder = new StringBuilder();
+            builder.Append("Colaborador: " + empleadoDTO.Nombre + "\n" + "Días disponibles: " + empleadoDTO.DiasDisponibles)
+                   .Append('\n')
+                   .Append("Fecha de inicio del permiso: " + startDate.ToString("dd/MM/yyyy") + "\n" + "Fecha de finalización del permiso: " + endDate.ToString("dd/MM/yyyy"))
+                   .Append('\n')
+                   .Append("Cantidad de días solicitados: " + days.Days)
+                   .Append('\n');
+            if (empleadoDTO.DiasDisponibles < days.Days)
+                builder.Append("Este empleado no dispone de la cantidad de días disponibles suficientes para realizar la solicitud de vacaciones entre las fechas estimadas.");
+            else
+                builder.Append("El empleado dispone de la cantidad de días necesarios para realizar la solicitud.");
+
+            return builder.ToString();
         }
 
         public bool Validar(VacacionDTO vacacion, ref string errors)

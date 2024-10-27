@@ -160,7 +160,7 @@
     <div class="modal-dialog modal-lg dialogPDF">
         <div class="modal-content contentPDF">
             <div class="modal-header" style="background-color: #007C89; color:white; justify-content: center; ">
-                <h5 class="modal-title">Agregar Vacacion</h5>
+                <h5 class="modal-title">Modificar Vacacion</h5>
             </div>
             <form asp-controller="Vacacion" asp-action="ModificarVacacion" method="post">
                 <input type="hidden" name="DiasSolicitados" id="DiasSolicitadosModify" asp-for="VacacionModify.DiasSolicitados" />
@@ -508,8 +508,32 @@
             }
             return empleado;
         }
-        
 
+
+        function OpenModalModifyRegistroVacacion(button, modal, option) {
+            var registroVacacionJson = button.getAttribute("data-registro");
+            var registro = JSON.parse(registroVacacionJson);
+
+            // Asignar valores a los campos del formulario
+            $("#dtStartDateModify").val(new Date(registro.vacacion.FechaInicio).toISOString().split('T')[0]);
+            $("#dtEndDateModify").val(new Date(registro.vacacion.FechaFinal).toISOString().split('T')[0]);
+            $("#ddlModifyVacacionEmpleadoModal").val(registro.vacacion.CedulaEmpleado);
+            $("#IdVacacionModify").val(registro.vacacion.IdEmpleado);
+
+            // Mostrar la observación generada en el campo de texto
+            $("#txtDescription").val(registro.Observacion);
+
+            // Configuración del modal en base a la opción
+            if (option === 0) {
+                $('#btnModifyVacacion').show();
+            } else {
+                $('#ddlModifyVacacionEmpleadoModal, #dtStartDateModify, #dtEndDateModify, #txtDescription').prop('readonly', true);
+                $('#btnModifyVacacion').hide();
+            }
+
+            // Abrir el modal
+            $("#" + modal).modal("show");
+        }
           
 
         
